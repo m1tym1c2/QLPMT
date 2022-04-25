@@ -1,5 +1,6 @@
 package clinicmanagement;
 
+import java.awt.Color;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
@@ -9,7 +10,8 @@ import javax.swing.ImageIcon;
  */
 public class EmployeeManager extends javax.swing.JFrame {
     public EmployeeManager() {
-        initComponents();        
+        initComponents();     
+        getContentPane().setBackground(Color.white);
     }
 
     @SuppressWarnings("unchecked")
@@ -34,6 +36,7 @@ public class EmployeeManager extends javax.swing.JFrame {
         buttonBack = new customview.MyButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setBackground(new java.awt.Color(229, 229, 229));
 
@@ -46,12 +49,16 @@ public class EmployeeManager extends javax.swing.JFrame {
         icon.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         jLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel.setForeground(new java.awt.Color(1, 84, 43));
         jLabel.setText("QUAN LY NHAN VIEN");
 
         searchView.setText("searchView1");
 
         avatar.setText("Avatar");
 
+        jLabel1.setBackground(new java.awt.Color(1, 63, 65));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(1, 84, 43));
         jLabel1.setText("Tran Ngoc Tien");
 
         ImageIcon imageIconArrow = new ImageIcon(getClass().getResource("/assets/down-arrow.png"));
@@ -97,9 +104,15 @@ public class EmployeeManager extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel2.setBackground(new java.awt.Color(1, 84, 43));
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(1, 84, 43));
         jLabel2.setText("DANH SACH NHAN VIEN");
         jPanel2.add(jLabel2);
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         myTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -132,6 +145,7 @@ public class EmployeeManager extends javax.swing.JFrame {
 
         jPanel3.add(jScrollPane1);
 
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 10));
 
         buttonAddEmployee.setText("Them nhan vien");

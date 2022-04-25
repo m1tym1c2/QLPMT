@@ -132,19 +132,19 @@ public class BillList extends javax.swing.JFrame {
 
         jPanel3.add(jScrollPane1);
 
-        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 10));
+        jPanel4.setLayout(new java.awt.GridBagLayout());
 
         buttonAddEmployee.setText("In danh sach hoa don");
         buttonAddEmployee.setRadius(15);
-        jPanel4.add(buttonAddEmployee);
+        jPanel4.add(buttonAddEmployee, new java.awt.GridBagConstraints());
 
         buttonSalaryEmployee.setText("Lap bang bao cao thang");
         buttonSalaryEmployee.setRadius(15);
-        jPanel4.add(buttonSalaryEmployee);
+        jPanel4.add(buttonSalaryEmployee, new java.awt.GridBagConstraints());
 
         buttonBack.setText("Quay lai");
         buttonBack.setRadius(15);
-        jPanel4.add(buttonBack);
+        jPanel4.add(buttonBack, new java.awt.GridBagConstraints());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
