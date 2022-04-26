@@ -17,6 +17,7 @@ public class EmployeeManager extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanel1 = new javax.swing.JPanel();
         icon = new javax.swing.JLabel();
@@ -25,15 +26,13 @@ public class EmployeeManager extends javax.swing.JFrame {
         avatar = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         buttonOption = new customview.MyButton();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        myTable1 = new customview.MyTable();
-        jPanel4 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
         buttonAddEmployee = new customview.MyButton();
         buttonSalaryEmployee = new customview.MyButton();
         buttonBack = new customview.MyButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableDark1 = new customview.MyTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -104,17 +103,49 @@ public class EmployeeManager extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setLayout(new java.awt.GridBagLayout());
 
         jLabel2.setBackground(new java.awt.Color(1, 84, 43));
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(1, 84, 43));
         jLabel2.setText("DANH SACH NHAN VIEN");
-        jPanel2.add(jLabel2);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.weightx = 3.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel3.add(jLabel2, gridBagConstraints);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        buttonAddEmployee.setText("Them nhan vien");
+        buttonAddEmployee.setRadius(15);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel3.add(buttonAddEmployee, gridBagConstraints);
 
-        myTable1.setModel(new javax.swing.table.DefaultTableModel(
+        buttonSalaryEmployee.setText("Lap bang tinh luong nhan vien");
+        buttonSalaryEmployee.setRadius(15);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel3.add(buttonSalaryEmployee, gridBagConstraints);
+
+        buttonBack.setText("Quay lai");
+        buttonBack.setRadius(15);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel3.add(buttonBack, gridBagConstraints);
+
+        tableDark1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
@@ -133,53 +164,34 @@ public class EmployeeManager extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        myTable1.setToolTipText("");
-        myTable1.setFocusable(false);
-        myTable1.setGridColor(new java.awt.Color(255, 255, 255));
-        myTable1.setPreferredScrollableViewportSize(new java.awt.Dimension(800, 450));
-        myTable1.setSelectionBackground(new java.awt.Color(232, 57, 95));
-        myTable1.setShowHorizontalLines(true);
-        myTable1.setShowVerticalLines(true);
-        myTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(myTable1);
+        tableDark1.setShowGrid(false);
+        tableDark1.setShowHorizontalLines(true);
+        tableDark1.setShowVerticalLines(true);
+        jScrollPane2.setViewportView(tableDark1);
 
-        jPanel3.add(jScrollPane1);
-
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 10));
-
-        buttonAddEmployee.setText("Them nhan vien");
-        buttonAddEmployee.setRadius(15);
-        jPanel4.add(buttonAddEmployee);
-
-        buttonSalaryEmployee.setText("Lap bang tinh luong nhan vien");
-        buttonSalaryEmployee.setRadius(15);
-        jPanel4.add(buttonSalaryEmployee);
-
-        buttonBack.setText("Quay lai");
-        buttonBack.setRadius(15);
-        jPanel4.add(buttonBack);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 3.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 30, 0, 30);
+        jPanel3.add(jScrollPane2, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 822, Short.MAX_VALUE)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE))
         );
 
         pack();
@@ -214,11 +226,9 @@ public class EmployeeManager extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private customview.MyTable myTable1;
+    private javax.swing.JScrollPane jScrollPane2;
     private customview.SearchView searchView;
+    private customview.MyTable tableDark1;
     // End of variables declaration//GEN-END:variables
 }
