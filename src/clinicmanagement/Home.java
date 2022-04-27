@@ -4,6 +4,7 @@
  */
 package clinicmanagement;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
@@ -19,6 +20,7 @@ public class Home extends javax.swing.JFrame {
     public Home() {
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        getContentPane().setBackground(Color.white);
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
     }
 

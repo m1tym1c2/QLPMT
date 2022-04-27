@@ -270,11 +270,21 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         this.setVisible(false);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new PhieuKhamBenh().setVisible(true);
+            }
+        });
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         this.setVisible(false);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new PhieuKhamBenh().setVisible(true);
+            }
+        });
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
