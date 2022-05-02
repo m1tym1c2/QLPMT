@@ -49,6 +49,6 @@ public class SearchView extends JTextField{
         int imageSize = buttonSize - marginimage * 2;
         Image image = ((ImageIcon) icon).getImage ();
         g2.drawImage(image, buttonSize/3, height/2 - buttonSize/2+5, imageSize, imageSize, null);
-        g2.dispose () ;        
+        g2.dispose();        
     } 
 }

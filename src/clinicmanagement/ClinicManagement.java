@@ -4,6 +4,7 @@
  */
 package clinicmanagement;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -14,8 +15,6 @@ import javax.swing.JComponent;
  *
  * @author ngoct
  */
-
-
 public class ClinicManagement extends javax.swing.JFrame {
 
     /**
@@ -23,8 +22,10 @@ public class ClinicManagement extends javax.swing.JFrame {
      */
     public ClinicManagement() {
         initComponents();
+        MatKhau.setEchoChar((char) 0);
+        MatKhau.setForeground(new Color(153, 153, 153));
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
     /**
@@ -36,18 +37,19 @@ public class ClinicManagement extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton2 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jButton3 = new javax.swing.JButton();
-        placeholderTextField1 = new customview.PlaceholderTextField();
-        jLabel1 = new javax.swing.JLabel();
+        Thoat = new javax.swing.JButton();
+        QuenMatKhau = new javax.swing.JLabel();
+        NhoMatKhau = new javax.swing.JCheckBox();
+        MatKhau = new javax.swing.JPasswordField();
+        DangNhap = new javax.swing.JButton();
+        TaiKhoan = new customview.PlaceholderTextField();
+        BackGround = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(800, 498));
         setMinimumSize(new java.awt.Dimension(800, 498));
         setPreferredSize(new java.awt.Dimension(800, 498));
+        setResizable(false);
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 formKeyTyped(evt);
@@ -55,52 +57,63 @@ public class ClinicManagement extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton2.setBackground(new java.awt.Color(239, 132, 83));
-        jButton2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(240, 240, 240));
-        jButton2.setText("Thoát");
-        jButton2.setActionCommand("jButton2");
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+        Thoat.setBackground(new java.awt.Color(239, 132, 83));
+        Thoat.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        Thoat.setForeground(new java.awt.Color(240, 240, 240));
+        Thoat.setText("Thoát");
+        Thoat.setActionCommand("Thoat");
+        Thoat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Thoat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
+                ThoatMouseClicked(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 350, 110, 30));
+        getContentPane().add(Thoat, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 350, 120, 40));
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(51, 51, 255));
-        jLabel2.setText("Quên mật khẩu");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 300, -1, -1));
+        QuenMatKhau.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        QuenMatKhau.setForeground(new java.awt.Color(51, 51, 255));
+        QuenMatKhau.setText("<HTML><U>Quên mật khẩu</U></HTML>");
+        QuenMatKhau.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        getContentPane().add(QuenMatKhau, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 300, -1, -1));
 
-        jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jCheckBox1.setText("Nhớ mật khẩu");
-        getContentPane().add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 300, -1, -1));
+        NhoMatKhau.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        NhoMatKhau.setText("Nhớ mật khẩu");
+        getContentPane().add(NhoMatKhau, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 300, -1, -1));
 
-        jPasswordField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jPasswordField1.setText("******");
-        getContentPane().add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 250, 320, -1));
-
-        jButton3.setBackground(new java.awt.Color(239, 132, 83));
-        jButton3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(240, 240, 240));
-        jButton3.setText("Đăng nhập");
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
+        MatKhau.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        MatKhau.setText("Mật khẩu");
+        MatKhau.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                MatKhauFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                MatKhauFocusLost(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 350, 110, 30));
+        getContentPane().add(MatKhau, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 250, 320, -1));
 
-        placeholderTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        placeholderTextField1.setPlaceholder("Tài khoản");
-        getContentPane().add(placeholderTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 200, 320, -1));
+        DangNhap.setBackground(new java.awt.Color(239, 132, 83));
+        DangNhap.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        DangNhap.setForeground(new java.awt.Color(240, 240, 240));
+        DangNhap.setText("Đăng nhập");
+        DangNhap.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        DangNhap.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                DangNhapMouseClicked(evt);
+            }
+        });
+        getContentPane().add(DangNhap, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 350, 120, 40));
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/277314017_1607857956260423_4203521708542983050_n.png"))); // NOI18N
-        jLabel1.setMaximumSize(new java.awt.Dimension(800, 535));
-        jLabel1.setMinimumSize(new java.awt.Dimension(800, 535));
-        jLabel1.setPreferredSize(new java.awt.Dimension(800, 535));
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -100, 1240, 670));
+        TaiKhoan.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        TaiKhoan.setPlaceholder("Tài khoản");
+        getContentPane().add(TaiKhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 200, 320, -1));
+
+        BackGround.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BackGround.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/277314017_1607857956260423_4203521708542983050_n.png"))); // NOI18N
+        BackGround.setMaximumSize(new java.awt.Dimension(800, 535));
+        BackGround.setMinimumSize(new java.awt.Dimension(800, 535));
+        BackGround.setPreferredSize(new java.awt.Dimension(800, 535));
+        getContentPane().add(BackGround, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -100, 1240, 670));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -109,15 +122,38 @@ public class ClinicManagement extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_formKeyTyped
 
-    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+    private void DangNhapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DangNhapMouseClicked
         Home a = new Home();
         a.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_jButton3MouseClicked
+        this.dispose();
+    }//GEN-LAST:event_DangNhapMouseClicked
 
-    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+    private void ThoatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThoatMouseClicked
         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-    }//GEN-LAST:event_jButton2MouseClicked
+    }//GEN-LAST:event_ThoatMouseClicked
+
+    private void MatKhauFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_MatKhauFocusGained
+
+        MatKhau.setEchoChar('\u25CF');
+        String password = String.valueOf(MatKhau.getPassword());
+
+        if (password.equals("Mật khẩu")) {
+            MatKhau.setText("");
+            MatKhau.setForeground(Color.black);
+        }
+    }//GEN-LAST:event_MatKhauFocusGained
+
+    private void MatKhauFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_MatKhauFocusLost
+        String password = String.valueOf(MatKhau.getPassword());
+    
+    
+    if(password.equals("password") || password.toLowerCase().equals("") )
+    {
+        MatKhau.setText("Mật khẩu");
+        MatKhau.setEchoChar((char)0);
+        MatKhau.setForeground(new Color(153, 153, 153));
+    }
+    }//GEN-LAST:event_MatKhauFocusLost
 
     /**
      * @param args the command line arguments
@@ -155,12 +191,12 @@ public class ClinicManagement extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private customview.PlaceholderTextField placeholderTextField1;
+    private javax.swing.JLabel BackGround;
+    private javax.swing.JButton DangNhap;
+    private javax.swing.JPasswordField MatKhau;
+    private javax.swing.JCheckBox NhoMatKhau;
+    private javax.swing.JLabel QuenMatKhau;
+    private customview.PlaceholderTextField TaiKhoan;
+    private javax.swing.JButton Thoat;
     // End of variables declaration//GEN-END:variables
 }
