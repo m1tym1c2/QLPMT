@@ -14,6 +14,9 @@ import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.util.Rotation;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,10 +24,8 @@ import org.jfree.util.Rotation;
  */
 public class ChiTietBaoCaoThang extends javax.swing.JFrame {
 
-    private boolean User = false;
-    /**
-     * Creates new form ChiTietBaoCaoThang
-     */
+    private boolean User = false;    
+    
     public ChiTietBaoCaoThang() {
         initComponents();
         jPanel4.setVisible(false);
@@ -39,7 +40,8 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
         JFreeChart pieChart2 = createPieChart(createDataset());
         chartPanel = new ChartPanel(pieChart2);
         chartPanel.setBounds(0, 0, 340, 330); //set size PieChart
-        jPanel5.add(chartPanel);
+        jPanel5.add(chartPanel);       
+        
     }
 
     private static PieDataset createDataset() {
@@ -364,32 +366,28 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new BaoCaoDoanhThuThang().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new BaoCaoDoanhThuThang().setVisible(true);
         });
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true);
-                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                for (WindowListener wl : dialog.getWindowListeners()) {
-                    dialog.removeWindowListener(wl);
-                }
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        dialog.dispose();
-                        MedicineUsageManagement frame = new MedicineUsageManagement();
-                        frame.setVisible(true);
-                    }
-                });
-                dialog.setVisible(true);
+        java.awt.EventQueue.invokeLater(() -> {
+            UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true);
+            dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+            for (WindowListener wl : dialog.getWindowListeners()) {
+                dialog.removeWindowListener(wl);
             }
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                    dialog.dispose();
+                    MedicineUsageManagement frame = new MedicineUsageManagement();
+                    frame.setVisible(true);
+                }
+            });
+            dialog.setVisible(true);
         });
         this.dispose();
     }//GEN-LAST:event_jButton3MouseClicked
@@ -439,10 +437,8 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
 
         
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ChiTietBaoCaoThang().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new ChiTietBaoCaoThang().setVisible(true);
         });
     }
     private org.jfree.chart.ChartPanel chartPanel;
