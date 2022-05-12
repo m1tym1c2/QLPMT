@@ -16,7 +16,7 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.table.DefaultTableModel;
 
 public class DatabaseConnection {
-    private static String URL = "jdbc:sqlserver://PHILONG:1433;databaseName=QUANLYCANHTHI";
+    private static String URL = "jdbc:sqlserver://PHILONG:1433;databaseName=QUANLYPHONGMACHTU";
     private static String user = "philong";
     private static String password = "12345678";
     public Connection getConnection(Component c) throws SQLException
@@ -28,7 +28,7 @@ public class DatabaseConnection {
         }
         catch(Exception e)
         {
-            JOptionPane.showMessageDialog(c, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(c, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
         finally
         {
