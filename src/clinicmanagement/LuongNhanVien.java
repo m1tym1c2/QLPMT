@@ -5,7 +5,12 @@
 package clinicmanagement;
 
 import java.awt.event.WindowListener;
+import java.sql.Connection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
 
 /**
  *
@@ -14,12 +19,36 @@ import javax.swing.WindowConstants;
 public class LuongNhanVien extends javax.swing.JFrame {
 
     private boolean User = false;
+    private Connection connection = null;
+    private String user = "sa";
+    private String password = "12345678";
+    private String url = "jdbc:sqlserver://NGOCTIENTNT:1433;databaseName=QUANLYPHONGMACHTU";
+
     /**
      * Creates new form LuongNhanVien
      */
     public LuongNhanVien() {
         initComponents();
         jPanel3.setVisible(false);
+
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM NHANVIEN");
+
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+            int i = 0;
+            while (rs.next()) {
+                i++;
+                String data[] = {Integer.toString(i), rs.getString("MaNhanVien"),"abc" /*rs.getString("TenNhanVien")*/,
+                    rs.getString("LuongCB"), rs.getString("HeSo")};
+                DefaultTableModel tbModel = (DefaultTableModel) jTable1.getModel();
+                tbModel.addRow(data);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -290,23 +319,21 @@ public class LuongNhanVien extends javax.swing.JFrame {
     }//GEN-LAST:event_NutmuitenMouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true);
-                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                for (WindowListener wl : dialog.getWindowListeners()) {
-                    dialog.removeWindowListener(wl);
-                }
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        dialog.dispose();
-                        MedicineUsageManagement frame = new MedicineUsageManagement();
-                        frame.setVisible(true);
-                    }
-                });
-                dialog.setVisible(true);
+        java.awt.EventQueue.invokeLater(() -> {
+            UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true);
+            dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+            for (WindowListener wl : dialog.getWindowListeners()) {
+                dialog.removeWindowListener(wl);
             }
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                    dialog.dispose();
+                    MedicineUsageManagement frame = new MedicineUsageManagement();
+                    frame.setVisible(true);
+                }
+            });
+            dialog.setVisible(true);
         });
         this.dispose();
     }//GEN-LAST:event_jButton1MouseClicked
@@ -345,10 +372,8 @@ public class LuongNhanVien extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LuongNhanVien().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new LuongNhanVien().setVisible(true);
         });
     }
 

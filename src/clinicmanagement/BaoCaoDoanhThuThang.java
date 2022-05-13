@@ -29,29 +29,33 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
         initComponents();
         jPanel3.setVisible(false);
 
-        jComboBox1.addItem("");
-        jComboBox2.addItem("");
-
         try {
             connection = DriverManager.getConnection(url, user, password);
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT DISTINCT BAOCAOTHANG.Nam FROM BAOCAOTHANG, CT_BAOCAOTHANG "
                     + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam");
 
+            jComboBox2.removeAllItems();
+
             while (rs.next()) {
                 jComboBox2.addItem(rs.getString("Nam"));
             }
 
             rs = statement.executeQuery("SELECT DISTINCT BAOCAOTHANG.Thang FROM BAOCAOTHANG, CT_BAOCAOTHANG "
-                    + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam");
+                    + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam AND BAOCAOTHANG.Nam = "
+                    + jComboBox2.getItemAt(0));
+            jComboBox1.removeAllItems();
 
             while (rs.next()) {
                 jComboBox1.addItem(rs.getString("Thang"));
             }
 
             rs = statement.executeQuery("SELECT * FROM BAOCAOTHANG, CT_BAOCAOTHANG "
-                    + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam");
+                    + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam AND BAOCAOTHANG.Nam = "
+                    + jComboBox2.getItemAt(0) + " AND BAOCAOTHANG.Thang = " + jComboBox1.getItemAt(0));
 
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
             int i = 0;
             while (rs.next()) {
                 i++;
@@ -368,7 +372,10 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         java.awt.EventQueue.invokeLater(() -> {
-            new ChiTietBaoCaoThang().setVisible(true);
+            ChiTietBaoCaoThang chiTietBaoCaoThang = new ChiTietBaoCaoThang();
+            chiTietBaoCaoThang.setMonth(jComboBox1.getSelectedItem().toString());
+            chiTietBaoCaoThang.setYear(jComboBox2.getSelectedItem().toString());
+            chiTietBaoCaoThang.setVisible(true);
         });
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -389,7 +396,6 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
 
     private void jComboBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox2ItemStateChanged
         if (!"".equals(evt.getItem().toString())) {
-            if ("".equals(jComboBox2.getItemAt(0))) jComboBox2.removeItemAt(0);
             try {
                 connection = DriverManager.getConnection(url, user, password);
                 Statement statement = connection.createStatement();
@@ -428,13 +434,14 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
             try {
                 connection = DriverManager.getConnection(url, user, password);
                 Statement statement = connection.createStatement();
-                
+
                 ResultSet rs = statement.executeQuery("SELECT * FROM BAOCAOTHANG, CT_BAOCAOTHANG "
                         + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam AND BAOCAOTHANG.Nam = "
                         + jComboBox2.getSelectedItem() + " AND BAOCAOTHANG.Thang = " + evt.getItem().toString());
 
                 DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
                 model.setRowCount(0);
+
                 int i = 0;
                 while (rs.next()) {
                     i++;

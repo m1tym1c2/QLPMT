@@ -10,7 +10,6 @@ import javax.swing.WindowConstants;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.util.Rotation;
@@ -24,38 +23,90 @@ import java.util.logging.Logger;
  */
 public class ChiTietBaoCaoThang extends javax.swing.JFrame {
 
-    private boolean User = false;    
-    
+    private boolean User = false;
+    private Connection connection = null;
+    private String user = "sa";
+    private String password = "12345678";
+    private String url = "jdbc:sqlserver://NGOCTIENTNT:1433;databaseName=QUANLYPHONGMACHTU";
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+        thang.setText(month);
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+        nam.setText(year);
+    }
+
+    private String month;
+    private String year;
+
     public ChiTietBaoCaoThang() {
         initComponents();
         jPanel4.setVisible(false);
-        
-        
+
         JFreeChart pieChart = createPieChart(createDataset());
         chartPanel = new ChartPanel(pieChart);
         chartPanel.setBounds(0, 0, 340, 330);
         chartPanel.setBackground(Color.white);
         jPanel3.add(chartPanel);
-        
+
         JFreeChart pieChart2 = createPieChart(createDataset());
         chartPanel = new ChartPanel(pieChart2);
         chartPanel.setBounds(0, 0, 340, 330); //set size PieChart
-        jPanel5.add(chartPanel);       
-        
+        jPanel5.add(chartPanel);
+
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON");
+            int sumHoaDon = 0;
+            while (rs.next()) {
+                sumHoaDon += rs.getInt("GiaTriHoaDon");
+            }
+            jLabel4.setText(Integer.toString(sumHoaDon) + " VND");
+
+            rs = statement.executeQuery("SELECT * FROM NHANVIEN");
+            int sumLuong = 0;
+            while (rs.next()) {
+                sumLuong += rs.getInt("LuongCB");
+            }
+            jLabel9.setText(Integer.toString(sumLuong) + " VND");
+
+            rs = statement.executeQuery("SELECT * FROM PHIEUNHAPTHUOC");
+            int sumThuoc = 0;
+            while (rs.next()) {
+                sumThuoc += rs.getInt("GiaTriPhieuNhap");
+            }
+            jLabel10.setText(Integer.toString(sumThuoc) + " VND");
+            jLabel11.setText(Integer.toString(sumHoaDon - sumLuong - sumThuoc) + " VND");
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private static PieDataset createDataset() {
         DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Nhân Viên", new Double(2337.3));
-        dataset.setValue("Thuốc", new Double(2173.8));
+        dataset.setValue("Nhân Viên", 2337.3);
+        dataset.setValue("Thuốc", 2173.8);
         return dataset;
     }
 
     private static JFreeChart createPieChart(PieDataset dataset) {
         JFreeChart chart = ChartFactory.createPieChart("", dataset, true, true, false);
-        
+
         return chart;
-    }    
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -405,7 +456,7 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
         } else {
             jPanel4.setVisible(false);
             User = false;
-        }  
+        }
     }//GEN-LAST:event_NutmuitenMouseClicked
 
     /**
@@ -435,7 +486,6 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new ChiTietBaoCaoThang().setVisible(true);

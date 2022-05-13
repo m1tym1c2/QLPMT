@@ -1,17 +1,54 @@
 package clinicmanagement;
 
 import java.awt.Image;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author ngoctienTNT
  */
 public class BillList extends javax.swing.JFrame {
+
+    private Connection connection = null;
+    private String user = "sa";
+    private String password = "12345678";
+    private String url = "jdbc:sqlserver://NGOCTIENTNT:1433;databaseName=QUANLYPHONGMACHTU";
+    
     public BillList() {
         initComponents();        
+        
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+            Statement statement = connection.createStatement();
+            
+            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH, BENHNHAN "
+                    + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
+                    + "AND BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan");
+            
+            DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
+            model.setRowCount(0);
+            int i = 0;
+            while (rs.next()) {
+                i++;
+                String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
+                    rs.getString("NgayKham"), rs.getString("TienKham"), rs.getString("TienThuoc"),
+                    Integer.toString(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
+                DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
+                tbModel.addRow(data);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
