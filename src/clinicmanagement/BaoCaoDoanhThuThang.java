@@ -1,11 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package clinicmanagement;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,16 +16,14 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
 
     private boolean User = false;
     private Connection connection = null;
-    private String user = "sa";
-    private String password = "12345678";
-    private String url = "jdbc:sqlserver://NGOCTIENTNT:1433;databaseName=QUANLYPHONGMACHTU";
 
     public BaoCaoDoanhThuThang() {
         initComponents();
         jPanel3.setVisible(false);
 
         try {
-            connection = DriverManager.getConnection(url, user, password);
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            connection = databaseConnection.getConnection(jButton1);
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT DISTINCT BAOCAOTHANG.Nam FROM BAOCAOTHANG, CT_BAOCAOTHANG "
                     + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam");
@@ -375,6 +368,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
             ChiTietBaoCaoThang chiTietBaoCaoThang = new ChiTietBaoCaoThang();
             chiTietBaoCaoThang.setMonth(jComboBox1.getSelectedItem().toString());
             chiTietBaoCaoThang.setYear(jComboBox2.getSelectedItem().toString());
+//            System.out.println(chiTietBaoCaoThang.getMonth() + " " +chiTietBaoCaoThang.getYear());
             chiTietBaoCaoThang.setVisible(true);
         });
         this.setVisible(false);
@@ -397,7 +391,8 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
     private void jComboBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox2ItemStateChanged
         if (!"".equals(evt.getItem().toString())) {
             try {
-                connection = DriverManager.getConnection(url, user, password);
+                DatabaseConnection databaseConnection = new DatabaseConnection();
+                connection = databaseConnection.getConnection(jButton1);
                 Statement statement = connection.createStatement();
 
                 ResultSet rs = statement.executeQuery("SELECT DISTINCT BAOCAOTHANG.Thang FROM BAOCAOTHANG, CT_BAOCAOTHANG "
@@ -432,7 +427,8 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         if (!"".equals(evt.getItem().toString())) {
             try {
-                connection = DriverManager.getConnection(url, user, password);
+                DatabaseConnection databaseConnection = new DatabaseConnection();
+                connection = databaseConnection.getConnection(jButton1);
                 Statement statement = connection.createStatement();
 
                 ResultSet rs = statement.executeQuery("SELECT * FROM BAOCAOTHANG, CT_BAOCAOTHANG "

@@ -1,24 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package clinicmanagement;
 
 import java.awt.Component;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Vector;
-import javax.swing.JOptionPane;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import javax.swing.table.DefaultTableModel;
 
 public class DatabaseConnection {
-    private static String URL = "jdbc:sqlserver://PHILONG:1433;databaseName=QUANLYPHONGMACHTU";
-    private static String user = "philong";
-    private static String password = "12345678";
+    private static final String URL = "jdbc:sqlserver://NGOCTIENTNT:1433;databaseName=QUANLYPHONGMACHTU";
+    private static final String user = "sa";
+    private static final String password = "12345678";
     public Connection getConnection(Component c) throws SQLException
     {
         Connection conn = null;
@@ -26,7 +16,7 @@ public class DatabaseConnection {
         {
             conn = DriverManager.getConnection(URL, user, password);
         }
-        catch(Exception e)
+        catch(SQLException e)
         {
             //JOptionPane.showMessageDialog(c, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }

@@ -50,25 +50,16 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
     private String month;
     private String year;
 
-    public ChiTietBaoCaoThang() {
-        initComponents();
-        jPanel4.setVisible(false);
-
-        JFreeChart pieChart = createPieChart(createDataset());
-        chartPanel = new ChartPanel(pieChart);
-        chartPanel.setBounds(0, 0, 340, 330);
-        chartPanel.setBackground(Color.white);
-        jPanel3.add(chartPanel);
-
-        JFreeChart pieChart2 = createPieChart(createDataset());
-        chartPanel = new ChartPanel(pieChart2);
-        chartPanel.setBounds(0, 0, 340, 330); //set size PieChart
-        jPanel5.add(chartPanel);
-
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b); 
         try {
-            connection = DriverManager.getConnection(url, user, password);
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            connection = databaseConnection.getConnection(Nam);
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON");
+            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH "
+                    + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh AND MONTH(NgayKham) = " 
+                    + month + " AND YEAR(NgayKham) = " + year);
             int sumHoaDon = 0;
             while (rs.next()) {
                 sumHoaDon += rs.getInt("GiaTriHoaDon");
@@ -82,22 +73,42 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
             }
             jLabel9.setText(Integer.toString(sumLuong) + " VND");
 
-            rs = statement.executeQuery("SELECT * FROM PHIEUNHAPTHUOC");
+            rs = statement.executeQuery("SELECT * FROM PHIEUNHAPTHUOC WHERE MONTH(NgayNhap) = " 
+                    + month + " AND YEAR(NgayNhap) = " + year);
             int sumThuoc = 0;
             while (rs.next()) {
                 sumThuoc += rs.getInt("GiaTriPhieuNhap");
             }
+
+            JFreeChart pieChart = createPieChart(createDataset(sumLuong, sumThuoc));
+            chartPanel = new ChartPanel(pieChart);
+            chartPanel.setBounds(0, 0, 340, 330);
+            chartPanel.setBackground(Color.white);
+            jPanel3.add(chartPanel);
+
+            JFreeChart pieChart2 = createPieChart(createDataset(sumLuong, sumThuoc));
+            chartPanel = new ChartPanel(pieChart2);
+            chartPanel.setBounds(0, 0, 340, 330); //set size PieChart
+            jPanel5.add(chartPanel);
+
             jLabel10.setText(Integer.toString(sumThuoc) + " VND");
             jLabel11.setText(Integer.toString(sumHoaDon - sumLuong - sumThuoc) + " VND");
         } catch (SQLException ex) {
             Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    
 
-    private static PieDataset createDataset() {
+    public ChiTietBaoCaoThang() {
+        initComponents();
+        jPanel4.setVisible(false);        
+    }
+
+    private static PieDataset createDataset(int nhanVien, int thuoc) {
         DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Nhân Viên", 2337.3);
-        dataset.setValue("Thuốc", 2173.8);
+        dataset.setValue("Nhân Viên", nhanVien);
+        dataset.setValue("Thuốc", thuoc);
         return dataset;
     }
 
