@@ -5,6 +5,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -17,35 +22,98 @@ import javax.swing.table.DefaultTableModel;
 public class BillList extends javax.swing.JFrame {
 
     private Connection connection = null;
-    
+
     public BillList() {
-        initComponents();        
+        initComponents();
+
+        Calendar ca = new GregorianCalendar();
+        String day = ca.get(Calendar.DAY_OF_MONTH) + "";
+        String month = ca.get(Calendar.MONTH) + 1 + "";
+        String year = ca.get(Calendar.YEAR) + "";
+
+        if (day.length() == 1) day = "0" + day;
+        if (month.length() == 1) month = "0" + month;
+
+        String dd = year + "-" + month + "-" + day;
         
         try {
-            DatabaseConnection databaseConnection = new DatabaseConnection();
-            connection = databaseConnection.getConnection(jLabel);
-            Statement statement = connection.createStatement();
-            
-            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH, BENHNHAN "
-                    + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
-                    + "AND BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan");
-            
-            DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
-            model.setRowCount(0);
-            int i = 0;
-            while (rs.next()) {
-                i++;
-                String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
-                    rs.getString("NgayKham"), rs.getString("TienKham"), rs.getString("TienThuoc"),
-                    Integer.toString(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
-                DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
-                tbModel.addRow(data);
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dd);
+            jDateChooser1.setDate(date);
+            jDateChooser2.setDate(date);
+            jDateChooser1.setMaxSelectableDate(date);
+            jDateChooser2.setMaxSelectableDate(date);
+            try {
+                DatabaseConnection databaseConnection = new DatabaseConnection();
+                connection = databaseConnection.getConnection(jLabel);
+                Statement statement = connection.createStatement();
+                var formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+                Date date1 = jDateChooser1.getDate();
+                String strDate1 = formatter.format(date1);
+                Date date2 = jDateChooser2.getDate();
+                String strDate2 = formatter.format(date2);
+
+                ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH, BENHNHAN "
+                        + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
+                        + "AND BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan "
+                        + "AND PHIEUKHAMBENH.NgayKham >= " + strDate1 + " AND PHIEUKHAMBENH.NgayKham <= " + strDate2);
+
+                DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
+                model.setRowCount(0);
+                int i = 0;
+                while (rs.next()) {
+                    i++;
+                    String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
+                        rs.getString("NgayKham"), rs.getString("TienKham"), rs.getString("TienThuoc"),
+                        Integer.toString(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
+                    DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
+                    tbModel.addRow(data);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (ParseException ex) {
+            Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+    private void changeTableData()
+    {
+        if (jDateChooser1.getDate() != null && jDateChooser2.getDate() != null) {
+            Date date = jDateChooser1.getDate();
+            var formatter = new SimpleDateFormat("dd/MM/yyyy");
+            String strDate = formatter.format(date);
+            Date date2 = jDateChooser2.getDate();
+            String strDate2 = formatter.format(date2);
+
+            try {
+                DatabaseConnection databaseConnection = new DatabaseConnection();
+                connection = databaseConnection.getConnection(jLabel);
+                Statement statement = connection.createStatement();
+
+                ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH, BENHNHAN "
+                        + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
+                        + "AND BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan "
+                        + "AND PHIEUKHAMBENH.NgayKham >= " + strDate + " AND PHIEUKHAMBENH.NgayKham <= " + strDate2);
+
+                DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
+                model.setRowCount(0);
+                int i = 0;
+                while (rs.next()) {
+                    i++;
+                    String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
+                        rs.getString("NgayKham"), rs.getString("TienKham"), rs.getString("TienThuoc"),
+                        Integer.toString(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
+                    DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
+                    tbModel.addRow(data);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -231,12 +299,24 @@ public class BillList extends javax.swing.JFrame {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         jPanel3.add(buttonBack, gridBagConstraints);
+
+        jDateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooser1PropertyChange(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel3.add(jDateChooser1, gridBagConstraints);
+
+        jDateChooser2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooser2PropertyChange(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 2;
@@ -263,6 +343,14 @@ public class BillList extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
+        changeTableData();
+    }//GEN-LAST:event_jDateChooser1PropertyChange
+
+    private void jDateChooser2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser2PropertyChange
+        changeTableData();
+    }//GEN-LAST:event_jDateChooser2PropertyChange
+
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -274,7 +362,7 @@ public class BillList extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(BillList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
+
         java.awt.EventQueue.invokeLater(() -> {
             new BillList().setVisible(true);
         });
