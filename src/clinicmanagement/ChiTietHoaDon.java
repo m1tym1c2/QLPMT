@@ -2,6 +2,8 @@ package clinicmanagement;
 
 import java.awt.Color;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -18,6 +20,14 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
     private Connection connection = null;
     String maPhieuKhamBenh = "123";
 
+    public String getMaPhieuKhamBenh() {
+        return maPhieuKhamBenh;
+    }
+
+    public void setMaPhieuKhamBenh(String maPhieuKhamBenh) {
+        this.maPhieuKhamBenh = maPhieuKhamBenh;
+    }
+
     public ChiTietHoaDon(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -31,6 +41,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
             ResultSet rs = statement.executeQuery("SELECT * FROM PHIEUKHAMBENH, BENHNHAN, LOAIBENH "
                     + "WHERE PHIEUKHAMBENH.MaBenhNhan = BENHNHAN.MaBenhNhan AND LOAIBENH.MaLoaiBenh = PHIEUKHAMBENH.MaLoaiBenh "
                     + "AND PHIEUKHAMBENH.MaPhieuKhamBenh = " + maPhieuKhamBenh);
+
             rs.next();
             name.setText(rs.getString("TenBenhNhan"));
             date.setText(rs.getString("NgayKham"));
@@ -38,6 +49,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
             jLabel3.setText(rs.getString("TenLoaiBenh"));
             tienKham.setText(rs.getString("TienKham"));
             int money = rs.getInt("TienKham");
+
             rs = statement.executeQuery("SELECT * FROM CT_PHIEUKHAMBENH, THUOC, DONVITINH "
                     + "WHERE CT_PHIEUKHAMBENH.MaThuoc = THUOC.MaThuoc AND THUOC.TenDonViTinh = DONVITINH.TenDonViTinh "
                     + "AND CT_PHIEUKHAMBENH.MaPhieuKhamBenh = " + maPhieuKhamBenh);
@@ -45,6 +57,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
             model.setRowCount(0);
             int i = 0;
             int sum = 0;
+
             while (rs.next()) {
                 i++;
                 String data[] = {Integer.toString(i), rs.getString("TenThuoc"), rs.getString("TenDonViTinh"),
@@ -310,7 +323,22 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
+        try {
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            connection = databaseConnection.getConnection(this);
+            try ( PreparedStatement ps = connection.prepareStatement("DELETE FROM CT_PHIEUKHAMBENH WHERE MaPhieuKhamBenh = ?")) {
+                ps.setString(1, maPhieuKhamBenh);
+                ps.executeUpdate();
+            }
+            
+            try ( PreparedStatement ps = connection.prepareStatement("DELETE FROM PHIEUKHAMBENH WHERE MaPhieuKhamBenh = ?")) {
+                ps.setString(1, maPhieuKhamBenh);
+                ps.executeUpdate();
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.setVisible(false);
         java.awt.EventQueue.invokeLater(() -> {
             new PhieuKhamBenh().setVisible(true);
