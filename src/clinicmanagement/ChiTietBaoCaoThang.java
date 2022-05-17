@@ -22,99 +22,99 @@ import java.util.logging.Logger;
  * @author Dell
  */
 public class ChiTietBaoCaoThang extends javax.swing.JFrame {
-
+    
     private boolean User = false;
     private Connection connection = null;
     private String user = "sa";
     private String password = "12345678";
     private String url = "jdbc:sqlserver://NGOCTIENTNT:1433;databaseName=QUANLYPHONGMACHTU";
-
+    
     public String getMonth() {
         return month;
     }
-
+    
     public void setMonth(String month) {
         this.month = month;
         thang.setText(month);
     }
-
+    
     public String getYear() {
         return year;
     }
-
+    
     public void setYear(String year) {
         this.year = year;
         nam.setText(year);
     }
-
+    
     private String month;
     private String year;
-
+    
     @Override
     public void setVisible(boolean b) {
-        super.setVisible(b); 
+        super.setVisible(b);        
         try {
             DatabaseConnection databaseConnection = new DatabaseConnection();
-            connection = databaseConnection.getConnection(Nam);
+            connection = databaseConnection.getConnection(this);
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH "
-                    + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh AND MONTH(NgayKham) = " 
+                    + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh AND MONTH(NgayKham) = "
                     + month + " AND YEAR(NgayKham) = " + year);
             int sumHoaDon = 0;
             while (rs.next()) {
                 sumHoaDon += rs.getInt("GiaTriHoaDon");
             }
             jLabel4.setText(Integer.toString(sumHoaDon) + " VND");
-
+            
             rs = statement.executeQuery("SELECT * FROM NHANVIEN");
             int sumLuong = 0;
             while (rs.next()) {
                 sumLuong += rs.getInt("LuongCB");
             }
             jLabel9.setText(Integer.toString(sumLuong) + " VND");
-
-            rs = statement.executeQuery("SELECT * FROM PHIEUNHAPTHUOC WHERE MONTH(NgayNhap) = " 
+            
+            rs = statement.executeQuery("SELECT * FROM PHIEUNHAPTHUOC WHERE MONTH(NgayNhap) = "
                     + month + " AND YEAR(NgayNhap) = " + year);
             int sumThuoc = 0;
             while (rs.next()) {
                 sumThuoc += rs.getInt("GiaTriPhieuNhap");
             }
-
+            
             JFreeChart pieChart = createPieChart(createDataset(sumLuong, sumThuoc));
             chartPanel = new ChartPanel(pieChart);
             chartPanel.setBounds(0, 0, 340, 330);
             chartPanel.setBackground(Color.white);
             jPanel3.add(chartPanel);
-
+            
             JFreeChart pieChart2 = createPieChart(createDataset(sumLuong, sumThuoc));
             chartPanel = new ChartPanel(pieChart2);
             chartPanel.setBounds(0, 0, 340, 330); //set size PieChart
             jPanel5.add(chartPanel);
-
+            
             jLabel10.setText(Integer.toString(sumThuoc) + " VND");
             jLabel11.setText(Integer.toString(sumHoaDon - sumLuong - sumThuoc) + " VND");
+            jLabel12.setText("Tổng thu: " + sumHoaDon + " VND");
+            jLabel13.setText("Tổng chi: " + (sumLuong + sumThuoc) + "0 VND");
         } catch (SQLException ex) {
             Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    
-
     public ChiTietBaoCaoThang() {
         initComponents();
         jPanel4.setVisible(false);        
     }
-
+    
     private static PieDataset createDataset(int nhanVien, int thuoc) {
         DefaultPieDataset dataset = new DefaultPieDataset();
         dataset.setValue("Nhân Viên", nhanVien);
         dataset.setValue("Thuốc", thuoc);
         return dataset;
     }
-
+    
     private static JFreeChart createPieChart(PieDataset dataset) {
         JFreeChart chart = ChartFactory.createPieChart("", dataset, true, true, false);
-
+        
         return chart;
     }
 
@@ -425,6 +425,7 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
