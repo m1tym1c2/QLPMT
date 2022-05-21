@@ -220,8 +220,6 @@
                     <Column editable="true" title="Tri&#xea;&#x323;u ch&#x1b0;&#x301;ng" type="java.lang.String"/>
                   </Table>
                 </Property>
-                <Property name="showHorizontalLines" type="boolean" value="true"/>
-                <Property name="showVerticalLines" type="boolean" value="true"/>
               </Properties>
             </Component>
           </SubComponents>

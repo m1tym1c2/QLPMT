@@ -4,6 +4,10 @@
  */
 package clinicmanagement;
 
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.ResultSet;
+
 /**
  *
  * @author Dell
@@ -15,7 +19,29 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
      */
     public ThayDoiThongTinThamSo(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        
         initComponents();
+        try
+        {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("SELECT GiaTri FROM THAMSO WHERE TenThamSo = 'SoBenhNhanToiDa'");
+            while (rs.next())
+            {
+                SoBenhNhanToiDa.setText(String.valueOf(rs.getInt("GiaTri")));
+            }
+            rs = stm.executeQuery("SELECT GiaTri FROM THAMSO WHERE TenThamSo = 'TienKham'");
+            while (rs.next())
+            {
+                TienKham.setText(String.valueOf(rs.getInt("GiaTri")));
+            }
+        }
+        catch (Exception e)
+        {
+            
+        }
+        
     }
 
     /**
@@ -29,8 +55,8 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        TienKham = new javax.swing.JTextField();
+        SoBenhNhanToiDa = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -48,12 +74,12 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
         jLabel2.setText("Tiền khám:");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(39, 115, 264, -1));
 
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jTextField1.setText("\n");
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(338, 116, 167, -1));
+        TienKham.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        TienKham.setText("\n");
+        jPanel1.add(TienKham, new org.netbeans.lib.awtextra.AbsoluteConstraints(338, 116, 167, -1));
 
-        jTextField2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jPanel1.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(338, 74, 167, -1));
+        SoBenhNhanToiDa.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jPanel1.add(SoBenhNhanToiDa, new org.netbeans.lib.awtextra.AbsoluteConstraints(338, 74, 167, -1));
 
         jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -106,11 +132,15 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DanhSachKhamBenh().setVisible(true);
-            }
-        });
+        try {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            stm.executeUpdate("UPDATE THAMSO SET GiaTri = " + SoBenhNhanToiDa.getText() + " WHERE TenThamSo = 'SoBenhNhanToiDa'");
+            stm.executeUpdate("UPDATE THAMSO SET GiaTri = " + TienKham.getText() + " WHERE TenThamSo = 'TienKham'");
+        } catch (Exception e) {
+
+        }
         this.setVisible(false);
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -157,12 +187,12 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField SoBenhNhanToiDa;
+    private javax.swing.JTextField TienKham;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,7 +5,14 @@
 package clinicmanagement;
 
 import java.awt.event.WindowListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Vector;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,9 +25,30 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     /**
      * Creates new form PhieuKhamBenh
      */
+    public static String TenBenhNhan;
+    public static String MaBenhNhan;
+    public static String MaNhanVien = "NV001";
+    private static String MaPhieuKhamBenh;
     public PhieuKhamBenh() {
         initComponents();
-        
+        try {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("SELECT TenLoaiBenh FROM LOAIBENH");
+            while (rs.next()) {
+                LoaiBenh.addItem(rs.getString(1));
+            }
+            rs = stm.executeQuery("SELECT MaPhieuKhamBenh FROM PHIEUKHAMBENH WHERE MaBenhNhan = '"+MaBenhNhan+"' AND MaNhanVien is null");
+            while (rs.next())
+            {
+                MaPhieuKhamBenh = rs.getString(0);
+            }
+        } catch (Exception e) {
+
+        }
+        textTenBenhNhan.setText(TenBenhNhan);
+        NgayKham.setText(String.valueOf(LocalDate.now().getDayOfMonth()) + "/" + String.valueOf(LocalDate.now().getMonthValue()) + "/" + String.valueOf(LocalDate.now().getYear()));        
         jPanel3.setVisible(false);
     }
 
@@ -58,11 +86,11 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         Anhdaidien = new javax.swing.JLabel();
         Nutmuiten = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        thang = new javax.swing.JLabel();
+        textTenBenhNhan = new javax.swing.JLabel();
         thang2 = new javax.swing.JLabel();
-        thang3 = new javax.swing.JLabel();
+        NgayKham = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        LoaiBenh = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -261,25 +289,24 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         jLabel5.setText("Dự đoán loại bệnh:");
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(603, 231, 183, -1));
 
-        thang.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        thang.setText("Nguyễn Đình Đức Thịnh");
-        jPanel1.add(thang, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 188, 274, -1));
+        textTenBenhNhan.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        textTenBenhNhan.setText("Nguyễn Đình Đức Thịnh");
+        jPanel1.add(textTenBenhNhan, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 188, 274, -1));
 
         thang2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         thang2.setText("Lê Phi Long");
         jPanel1.add(thang2, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 274, 274, -1));
 
-        thang3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        thang3.setText("25/4/2022");
-        jPanel1.add(thang3, new org.netbeans.lib.awtextra.AbsoluteConstraints(857, 188, 220, -1));
+        NgayKham.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        NgayKham.setText("25/4/2022");
+        jPanel1.add(NgayKham, new org.netbeans.lib.awtextra.AbsoluteConstraints(857, 188, 220, -1));
 
         jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextField1.setText("Da sưng tấy, nổi mẩn đỏ");
         jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 228, 274, -1));
 
-        jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dị ứng phấn hoa", "Viêm loét dạ dày", "Gan nhiễm mỡ", "Cao huyết áp" }));
-        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(857, 228, 220, -1));
+        LoaiBenh.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jPanel1.add(LoaiBenh, new org.netbeans.lib.awtextra.AbsoluteConstraints(857, 228, 220, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -398,6 +425,8 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Anhdaidien;
     private javax.swing.JLabel Anhdautrang;
+    private javax.swing.JComboBox<String> LoaiBenh;
+    private javax.swing.JLabel NgayKham;
     private javax.swing.JLabel Nutmuiten;
     private javax.swing.JLabel Tentaikhoan;
     private javax.swing.JLabel Tentrang;
@@ -407,7 +436,6 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -423,8 +451,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JLabel thang;
+    private javax.swing.JLabel textTenBenhNhan;
     private javax.swing.JLabel thang2;
-    private javax.swing.JLabel thang3;
     // End of variables declaration//GEN-END:variables
 }

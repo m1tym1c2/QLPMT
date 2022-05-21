@@ -140,7 +140,7 @@ public class PatientLookup extends javax.swing.JFrame {
     private void searchViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchViewActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchViewActionPerformed
-
+    
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

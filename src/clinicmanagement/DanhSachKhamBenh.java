@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
@@ -358,12 +359,33 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PhieuKhamBenh().setVisible(true);
-            }
-        });
-        this.setVisible(false);
+        DefaultTableModel model = (DefaultTableModel) Table.getModel();
+        if (Table.getSelectedRow() == -1)
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một bệnh nhân", "Cảnh báo chưa chọn bệnh nhân", 2);
+        else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    PhieuKhamBenh.TenBenhNhan = model.getValueAt(Table.getSelectedRow(), 2).toString();
+                    PhieuKhamBenh.MaBenhNhan = model.getValueAt(Table.getSelectedRow(), 1).toString();
+                    PhieuKhamBenh dialog = new PhieuKhamBenh();
+                    dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
+                    }
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            DanhSachKhamBenh frame = new DanhSachKhamBenh();
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
+        }
     }//GEN-LAST:event_jLabel2MouseClicked
 
     private void NutmuitenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NutmuitenMouseClicked
@@ -394,10 +416,11 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         dialog.dispose();
-                        MedicineUsageManagement frame = new MedicineUsageManagement();
+                        DanhSachKhamBenh frame = new DanhSachKhamBenh();
                         frame.setVisible(true);
                     }
                 });
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
             }
         });
