@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 public class ChiTietHoaDon extends javax.swing.JDialog {
 
     private Connection connection = null;
-    String maPhieuKhamBenh = "123";
+    static String maPhieuKhamBenh = "PKB3";
 
     public String getMaPhieuKhamBenh() {
         return maPhieuKhamBenh;
@@ -40,7 +40,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
             //PHIEUKHAMBENH, CT_PHIEUKHAMBENH, LOAIBENH, BENHNHAN, THUOC, DONVITINH, CACHDUNG
             ResultSet rs = statement.executeQuery("SELECT * FROM PHIEUKHAMBENH, BENHNHAN, LOAIBENH "
                     + "WHERE PHIEUKHAMBENH.MaBenhNhan = BENHNHAN.MaBenhNhan AND LOAIBENH.MaLoaiBenh = PHIEUKHAMBENH.MaLoaiBenh "
-                    + "AND PHIEUKHAMBENH.MaPhieuKhamBenh = " + maPhieuKhamBenh);
+                    + "AND PHIEUKHAMBENH.MaPhieuKhamBenh = '" + maPhieuKhamBenh +"'");
 
             rs.next();
             name.setText(rs.getString("TenBenhNhan"));
@@ -52,7 +52,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
 
             rs = statement.executeQuery("SELECT * FROM CT_PHIEUKHAMBENH, THUOC, DONVITINH "
                     + "WHERE CT_PHIEUKHAMBENH.MaThuoc = THUOC.MaThuoc AND THUOC.TenDonViTinh = DONVITINH.TenDonViTinh "
-                    + "AND CT_PHIEUKHAMBENH.MaPhieuKhamBenh = " + maPhieuKhamBenh);
+                    + "AND CT_PHIEUKHAMBENH.MaPhieuKhamBenh = '" + maPhieuKhamBenh+"'");
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
             int i = 0;

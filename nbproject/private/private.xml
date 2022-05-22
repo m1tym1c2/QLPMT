@@ -4,10 +4,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/PhieuKhamBenh.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/ChiTietHoaDon.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/KeThuoc.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DanhSachKhamBenh.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/ThemBenhNhan.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/ThayDoiThongTinThamSo.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DanhSachLoaiBenh.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/PatientLookup.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DatabaseConnection.java</file>
         </group>
     </open-files>
 </project-private>

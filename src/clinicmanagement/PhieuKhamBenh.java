@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -42,10 +43,24 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
             rs = stm.executeQuery("SELECT MaPhieuKhamBenh FROM PHIEUKHAMBENH WHERE MaBenhNhan = '"+MaBenhNhan+"' AND MaNhanVien is null");
             while (rs.next())
             {
-                MaPhieuKhamBenh = rs.getString(0);
+                MaPhieuKhamBenh = rs.getString(1);
+            }
+            rs = stm.executeQuery("SELECT TenThuoc, TenDonViTinh, SoLuongDung, TenCachDung FROM THUOC, CT_PHIEUKHAMBENH, CACHDUNG WHERE THUOC.MaThuoc = CT_PHIEUKHAMBENH.MaThuoc AND CACHDUNG.MaCachDung = THUOC.MaCachDung AND MaPhieuKhamBenh = '"+MaPhieuKhamBenh+"'");
+            DefaultTableModel model = (DefaultTableModel) Table.getModel();
+            int STT = 1;
+            while (rs.next())
+            {
+                Vector vector = new Vector();
+                vector.add(STT);
+                vector.add(rs.getString(1));
+                vector.add(rs.getString(2));
+                vector.add(rs.getString(3));
+                vector.add(rs.getString(4));
+                model.addRow(vector);
+                STT++;
             }
         } catch (Exception e) {
-
+            JOptionPane.showMessageDialog(this, e.toString());
         }
         textTenBenhNhan.setText(TenBenhNhan);
         NgayKham.setText(String.valueOf(LocalDate.now().getDayOfMonth()) + "/" + String.valueOf(LocalDate.now().getMonthValue()) + "/" + String.valueOf(LocalDate.now().getYear()));        
@@ -75,7 +90,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         Tentrang1 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        Table = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -89,8 +104,9 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         textTenBenhNhan = new javax.swing.JLabel();
         thang2 = new javax.swing.JLabel();
         NgayKham = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        TrieuChung = new javax.swing.JTextField();
         LoaiBenh = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -180,30 +196,35 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         });
         jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 590, 168, 36));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "STT", "Thuốc", "Đơn vị tính", "Số lượng", "Cách dùng"
             }
-        ));
-        jTable1.setEnabled(false);
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setMaxWidth(50);
-            jTable1.getColumnModel().getColumn(1).setMinWidth(150);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(150);
-            jTable1.getColumnModel().getColumn(1).setMaxWidth(150);
-            jTable1.getColumnModel().getColumn(2).setMinWidth(150);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(150);
-            jTable1.getColumnModel().getColumn(2).setMaxWidth(150);
-            jTable1.getColumnModel().getColumn(3).setMinWidth(100);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(100);
-            jTable1.getColumnModel().getColumn(3).setMaxWidth(100);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        Table.setEnabled(false);
+        jScrollPane1.setViewportView(Table);
+        if (Table.getColumnModel().getColumnCount() > 0) {
+            Table.getColumnModel().getColumn(0).setMaxWidth(50);
+            Table.getColumnModel().getColumn(1).setMinWidth(150);
+            Table.getColumnModel().getColumn(1).setPreferredWidth(150);
+            Table.getColumnModel().getColumn(1).setMaxWidth(150);
+            Table.getColumnModel().getColumn(2).setMinWidth(150);
+            Table.getColumnModel().getColumn(2).setPreferredWidth(150);
+            Table.getColumnModel().getColumn(2).setMaxWidth(150);
+            Table.getColumnModel().getColumn(3).setMinWidth(100);
+            Table.getColumnModel().getColumn(3).setPreferredWidth(100);
+            Table.getColumnModel().getColumn(3).setMaxWidth(100);
         }
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(96, 328, 970, 230));
@@ -301,12 +322,20 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         NgayKham.setText("25/4/2022");
         jPanel1.add(NgayKham, new org.netbeans.lib.awtextra.AbsoluteConstraints(857, 188, 220, -1));
 
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jTextField1.setText("Da sưng tấy, nổi mẩn đỏ");
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 228, 274, -1));
+        TrieuChung.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jPanel1.add(TrieuChung, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 228, 274, -1));
 
         LoaiBenh.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jPanel1.add(LoaiBenh, new org.netbeans.lib.awtextra.AbsoluteConstraints(857, 228, 220, -1));
+
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Anh/Group 32.png"))); // NOI18N
+        jLabel7.setText("jLabel3");
+        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jLabel7MousePressed(evt);
+            }
+        });
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 330, 65, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -334,19 +363,58 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                ChiTietHoaDon dialog = new ChiTietHoaDon(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+        try
+        {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            String MaLoaiBenh = "NULL";
+            ResultSet rs = stm.executeQuery("SELECT MaLoaiBenh FROM LOAIBENH WHERE TenLoaiBenh = N'"+LoaiBenh.getSelectedItem().toString()+"'");
+            while (rs.next())
+            {
+                MaLoaiBenh = rs.getString(1);
             }
-        });
-        this.setVisible(false);
+            String TrieuChungNhap = TrieuChung.getText();
+            rs = stm.executeQuery("SELECT GiaTri FROM THAMSO WHERE TenThamSo = 'TienKham'");
+            String TienKham = "NULL";
+            while (rs.next())
+            {
+                TienKham = String.valueOf(rs.getInt(1));
+            }
+            rs = stm.executeQuery("SELECT SoLuongDung*DonGiaThuoc FROM CT_PHIEUKHAMBENH WHERE MaPhieuKhamBenh = '"+MaPhieuKhamBenh+"'");
+            int TienThuoc = 0;
+            while (rs.next())
+            {
+                TienThuoc = TienThuoc + rs.getInt(1);
+            }
+            stm.executeUpdate("UPDATE PHIEUKHAMBENH SET MaLoaiBenh = '"+MaLoaiBenh+"', TrieuChung = N'"+TrieuChungNhap+"', TienKham = "+TienKham+", TienThuoc = "+String.valueOf(TienThuoc)+", MaNhanVien = '"+MaNhanVien+"' WHERE MaPhieuKhamBenh = '"+MaPhieuKhamBenh+"'");
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    
+                    ChiTietHoaDon dialog = new ChiTietHoaDon(new DanhSachKhamBenh(), true);
+                    dialog.setMaPhieuKhamBenh(MaPhieuKhamBenh);
+                    dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
+                    }
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            DanhSachKhamBenh frame = new DanhSachKhamBenh();
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
+        }
+        catch (Exception e)
+        {
+            
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
@@ -386,6 +454,34 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
             User = false;
         }           // TODO add your handling code here:
     }//GEN-LAST:event_NutmuitenMouseClicked
+
+    private void jLabel7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MousePressed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    KeThuoc dialog = new KeThuoc();
+                    KeThuoc.MaPhieuKhamBenh = MaPhieuKhamBenh;
+                    dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
+                    }
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            PhieuKhamBenh frame = new PhieuKhamBenh();
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                } catch (Exception e) {
+
+                }
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jLabel7MousePressed
 
     /**
      * @param args the command line arguments
@@ -428,9 +524,11 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> LoaiBenh;
     private javax.swing.JLabel NgayKham;
     private javax.swing.JLabel Nutmuiten;
+    private javax.swing.JTable Table;
     private javax.swing.JLabel Tentaikhoan;
     private javax.swing.JLabel Tentrang;
     private javax.swing.JLabel Tentrang1;
+    private javax.swing.JTextField TrieuChung;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -445,12 +543,11 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel textTenBenhNhan;
     private javax.swing.JLabel thang2;
     // End of variables declaration//GEN-END:variables

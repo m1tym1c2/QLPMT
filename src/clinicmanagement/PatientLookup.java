@@ -2,16 +2,35 @@ package clinicmanagement;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Vector;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author ngoctienTNT
  */
 public class PatientLookup extends javax.swing.JFrame {
-    public PatientLookup() {
+    public PatientLookup(){
         initComponents();  
         getContentPane().setBackground(Color.white);
+        try
+        {
+            DocDuLieu();
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -30,7 +49,7 @@ public class PatientLookup extends javax.swing.JFrame {
         buttonAddEmployee = new customview.MyButton();
         buttonBack = new customview.MyButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableDark1 = new customview.MyTable();
+        Table = new customview.MyTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -56,6 +75,11 @@ public class PatientLookup extends javax.swing.JFrame {
         searchView.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchViewActionPerformed(evt);
+            }
+        });
+        searchView.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                searchViewKeyPressed(evt);
             }
         });
         jPanel1.add(searchView, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 10, 310, -1));
@@ -90,14 +114,16 @@ public class PatientLookup extends javax.swing.JFrame {
         buttonBack.setText("Quay lại");
         buttonBack.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         buttonBack.setRadius(15);
+        buttonBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonBackActionPerformed(evt);
+            }
+        });
         jPanel3.add(buttonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(733, 580, 130, 30));
 
-        tableDark1.setModel(new javax.swing.table.DefaultTableModel(
+        Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "STT", "Mã bệnh nhân", "Họ tên", "Ngày khám", "Loại bệnh", "Triệu chứng"
@@ -106,14 +132,19 @@ public class PatientLookup extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        tableDark1.setShowHorizontalLines(true);
-        tableDark1.setShowVerticalLines(true);
-        jScrollPane1.setViewportView(tableDark1);
+        jScrollPane1.setViewportView(Table);
 
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 57, 956, 514));
 
@@ -137,9 +168,45 @@ public class PatientLookup extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void DocDuLieu() throws SQLException
+    {
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();
+        ResultSet rs = stm.executeQuery("SELECT BENHNHAN.MaBenhNhan, TenBenhNhan, NgayKham, TenLoaiBenh, TrieuChung FROM BENHNHAN, PHIEUKHAMBENH, LOAIBENH WHERE BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan AND PHIEUKHAMBENH.MaLoaiBenh = LOAIBENH.MaLoaiBenh");
+        int STT = 0;
+        DefaultTableModel model = (DefaultTableModel) Table.getModel();
+        while (rs.next())
+        {
+            STT++;
+            Vector vector = new Vector();
+            vector.add(STT);
+            vector.add(rs.getString("MaBenhNhan"));
+            vector.add(rs.getString("TenBenhNhan"));
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String date = sdf.format(rs.getDate("NgayKham"));
+            vector.add(date);
+            vector.add(rs.getString("TenLoaiBenh"));
+            vector.add(rs.getString("TrieuChung"));
+            model.addRow(vector);
+        }
+    }
     private void searchViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchViewActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchViewActionPerformed
+
+    private void searchViewKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchViewKeyPressed
+        DefaultTableModel model = (DefaultTableModel) Table.getModel();
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel> (model);
+        Table.setRowSorter(sorter);
+        sorter.setRowFilter(RowFilter.regexFilter(searchView.getText()));
+    }//GEN-LAST:event_searchViewKeyPressed
+
+    private void buttonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBackActionPerformed
+        DanhSachKhamBenh dialog = new DanhSachKhamBenh();
+        dialog.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_buttonBackActionPerformed
     
     public static void main(String args[]) {
         try {
@@ -159,6 +226,7 @@ public class PatientLookup extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private customview.MyTable Table;
     private javax.swing.JLabel avatar;
     private customview.MyButton buttonAddEmployee;
     private customview.MyButton buttonBack;
@@ -171,6 +239,5 @@ public class PatientLookup extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private customview.SearchView searchView;
-    private customview.MyTable tableDark1;
     // End of variables declaration//GEN-END:variables
 }
