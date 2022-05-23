@@ -106,7 +106,7 @@ public class MyTable extends JTable {
                     com.setBackground(new Color(219, 219, 219));
                 }
             }
-            com.setForeground(new Color(200, 200, 200));
+            com.setForeground(new Color(0, 0, 0));
             setBorder(new EmptyBorder(0, 5, 0, 5));
             if (alignment.containsKey(column)) {
                 setHorizontalAlignment(alignment.get(column));
