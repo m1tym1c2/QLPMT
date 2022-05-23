@@ -3,13 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/PhieuKhamBenh.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/ChiTietHoaDon.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/KeThuoc.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DanhSachKhamBenh.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DanhSachLoaiBenh.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/PatientLookup.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DatabaseConnection.java</file>
+            <file>file:/D:/IT/ClinicManagement/src/clinicmanagement/DatabaseConnection.java</file>
+            <file>file:/D:/IT/ClinicManagement/src/clinicmanagement/EmployeeManager.java</file>
+            <file>file:/D:/IT/ClinicManagement/src/customview/MyTable.java</file>
+            <file>file:/D:/IT/ClinicManagement/src/clinicmanagement/BillList.java</file>
         </group>
     </open-files>
 </project-private>

@@ -46,7 +46,7 @@
     <Container class="javax.swing.JPanel" name="jPanel1">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="e5" green="e5" red="e5" type="rgb"/>
+          <Color blue="e0" green="f2" red="d0" type="rgb"/>
         </Property>
       </Properties>
 
@@ -77,6 +77,9 @@
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="24" style="1"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="2b" green="54" red="1" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="TRA C&#x1af;&#x301;U B&#xca;&#x323;NH NH&#xc2;N"/>
           </Properties>

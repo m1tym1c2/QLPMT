@@ -48,7 +48,7 @@ public class ManagementDrugUse extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(229, 229, 229));
+        jPanel1.setBackground(new java.awt.Color(208, 242, 224));
 
         ImageIcon imageIcon = new ImageIcon(getClass().getResource("/assets/icon.png"));
         Image image = imageIcon.getImage();
@@ -179,7 +179,6 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 0, -1, -1));
 
         buttonAddEmployee.setText("Xóa thuốc");
-        buttonAddEmployee.setActionCommand("Xóa thuốc");
         buttonAddEmployee.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         buttonAddEmployee.setRadius(15);
         jPanel3.add(buttonAddEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 410, -1, -1));

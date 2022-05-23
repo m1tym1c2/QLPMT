@@ -55,7 +55,7 @@ public class PatientLookup extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(229, 229, 229));
+        jPanel1.setBackground(new java.awt.Color(208, 242, 224));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         ImageIcon imageIcon = new ImageIcon(getClass().getResource("/assets/icon.png"));
@@ -68,6 +68,7 @@ public class PatientLookup extends javax.swing.JFrame {
         jPanel1.add(icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 8, 50, 50));
 
         jLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel.setForeground(new java.awt.Color(1, 84, 43));
         jLabel.setText("TRA CỨU BỆNH NHÂN");
         jPanel1.add(jLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 0, 273, 49));
 

@@ -38,7 +38,7 @@ public class EmployeeManager extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(229, 229, 229));
+        jPanel1.setBackground(new java.awt.Color(208, 242, 224));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         ImageIcon imageIcon = new ImageIcon(getClass().getResource("/assets/icon.png"));
