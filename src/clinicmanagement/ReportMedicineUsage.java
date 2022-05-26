@@ -13,14 +13,22 @@ import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.text.DefaultCaret;
 
@@ -43,8 +51,55 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         JTableHeader header = table.getTableHeader();
         header.setDefaultRenderer(new HeaderRenderer(table));
+        
+        jComboBox2.addItem(String.valueOf(java.time.LocalDateTime.now().getYear()));
+        jComboBox1.addItem(String.valueOf(java.time.LocalDateTime.now().getMonthValue()));
+        
     }
-
+    
+    public int LoadData()throws SQLException{        
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();        
+        
+        jComboBox2.removeAll();
+        jComboBox1.removeAll();
+        jComboBox2.addItem(String.valueOf(java.time.LocalDateTime.now().getYear()));
+        ResultSet rs = stm.executeQuery("SELECT Nam FROM BAOCAOSUDUNGTHUOC ;");
+        if(!rs.next()) return 0;
+        while (rs.next()) jComboBox2.addItem(String.valueOf(rs.getInt("Nam")));
+        
+        int i=0;
+        while (i<12) {
+            i++;
+            jComboBox1.addItem(String.valueOf(i));
+        }
+        
+        String thang = jComboBox1.getSelectedItem().toString();
+        String nam = jComboBox1.getSelectedItem().toString();
+        
+        rs = stm.executeQuery("SELECT TenThuoc ,TenDonViTinh ,SoLuongDung ,SoLanDung "
+                + "                      FROM THUOC, BAOCAOSUDUNGTHUOC  "
+                + "                      WHERE THUOC.MaThuoc  = BAOCAOSUDUNGTHUOC.MaThuoc  ;");
+        
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+        while (rs.next())
+        {
+            Vector row = new Vector();          
+            row.add(model.getRowCount()+1);
+            row.add(rs.getString("TenThuoc"));
+            row.add(rs.getString("TenDonViTinh"));
+            row.add(String.valueOf(rs.getInt("SoLuongDung")));
+            row.add(String.valueOf(rs.getInt("SoLanDung")));
+            model.getRowCount();
+            model.addRow(row);            
+        }
+        rs.close(); 
+        stm.close();
+        conn.close();
+        return 1;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -73,7 +128,7 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        ThemLoaiThuocMoi = new javax.swing.JButton();
+        inbaocao = new javax.swing.JButton();
         QuayLai = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -247,23 +302,23 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 940, 380));
 
-        ThemLoaiThuocMoi.setBackground(new java.awt.Color(255, 204, 204));
-        ThemLoaiThuocMoi.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        ThemLoaiThuocMoi.setForeground(new java.awt.Color(0, 99, 28));
-        ThemLoaiThuocMoi.setText("In báo cáo");
-        ThemLoaiThuocMoi.setToolTipText("");
-        ThemLoaiThuocMoi.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        ThemLoaiThuocMoi.addMouseListener(new java.awt.event.MouseAdapter() {
+        inbaocao.setBackground(new java.awt.Color(255, 204, 204));
+        inbaocao.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        inbaocao.setForeground(new java.awt.Color(0, 99, 28));
+        inbaocao.setText("In báo cáo");
+        inbaocao.setToolTipText("");
+        inbaocao.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        inbaocao.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ThemLoaiThuocMoiMouseClicked(evt);
+                inbaocaoMouseClicked(evt);
             }
         });
-        ThemLoaiThuocMoi.addActionListener(new java.awt.event.ActionListener() {
+        inbaocao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ThemLoaiThuocMoiActionPerformed(evt);
+                inbaocaoActionPerformed(evt);
             }
         });
-        getContentPane().add(ThemLoaiThuocMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 520, 200, 40));
+        getContentPane().add(inbaocao, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 520, 200, 40));
 
         QuayLai.setBackground(new java.awt.Color(255, 204, 204));
         QuayLai.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -289,7 +344,11 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 90, -1, -1));
 
         jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", " " }));
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
         getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 90, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -298,7 +357,11 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 90, -1, -1));
 
         jComboBox2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2019", "2020", "2021", "2022", " ", " " }));
+        jComboBox2.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox2ItemStateChanged(evt);
+            }
+        });
         getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 90, -1, -1));
 
         pack();
@@ -336,15 +399,15 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jButton1MouseClicked
 
-    private void ThemLoaiThuocMoiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThemLoaiThuocMoiMouseClicked
+    private void inbaocaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inbaocaoMouseClicked
         AddNewMedicine frame = new AddNewMedicine();
         this.dispose();
         frame.setVisible(true);
-    }//GEN-LAST:event_ThemLoaiThuocMoiMouseClicked
+    }//GEN-LAST:event_inbaocaoMouseClicked
 
-    private void ThemLoaiThuocMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemLoaiThuocMoiActionPerformed
+    private void inbaocaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inbaocaoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ThemLoaiThuocMoiActionPerformed
+    }//GEN-LAST:event_inbaocaoActionPerformed
 
     private void QuayLaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_QuayLaiMouseClicked
         MedicineUsageManagement frame = new MedicineUsageManagement();
@@ -361,6 +424,30 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         form.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        try
+        {
+            if( LoadData() == 0)
+                JOptionPane.showMessageDialog(this, "Thời gian này chưa có báo cáo, vui lòng chọn thời gian khác", "Chưa có thông tin", ERROR_MESSAGE);
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void jComboBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox2ItemStateChanged
+        try
+        {
+            if( LoadData() == 0)
+                JOptionPane.showMessageDialog(this, "Thời gian này chưa có báo cáo, vui lòng chọn thời gian khác", "Chưa có thông tin", ERROR_MESSAGE);
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jComboBox2ItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -418,7 +505,7 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
     private javax.swing.JLabel Nutmuiten;
     private javax.swing.JButton QuayLai;
     private javax.swing.JLabel Tentaikhoan;
-    private javax.swing.JButton ThemLoaiThuocMoi;
+    private javax.swing.JButton inbaocao;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;

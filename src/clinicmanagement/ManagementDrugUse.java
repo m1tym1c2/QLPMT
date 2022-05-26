@@ -2,16 +2,65 @@ package clinicmanagement;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author ngoctienTNT
  */
 public class ManagementDrugUse extends javax.swing.JFrame {
+
+    public static ManagementDrugUse it;
+    public static String mathuoc = "";
+    static void SetData(String Mathuoc) {
+        mathuoc = Mathuoc;
+    }
     public ManagementDrugUse() {
         initComponents();    
         getContentPane().setBackground(Color.white);
+        it = this;
+        try
+        {
+            LoadData();           
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }
+    public void LoadData()throws SQLException{
+        
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();        
+        
+        ResultSet rs = stm.executeQuery("SELECT TenThuoc ,SoLuongTon,TenDonViTinh , LoaiThuoc, TenCachDung ,DonGiaNhap ,DonGiaBan "
+                + "                      FROM THUOC, CT_PHIEUNHAPTHUOC , CACHDUNG "
+                + "                      WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  "
+                + "                      AND  THUOC.MaCachDung  = CACHDUNG.MaCachDung "
+                + "                      AND CT_PHIEUNHAPTHUOC.MaThuoc = N'"+ mathuoc +"';");
+        
+        rs.next();
+        jTextField1.setText(rs.getString("TenThuoc"));
+        jTextField3.setText(rs.getString("LoaiThuoc"));
+        jTextArea1.setText(rs.getString("TenCachDung"));
+        jComboBox1.addItem(rs.getString("TenDonViTinh"));
+        jLabel7.setText(String.valueOf(rs.getString("SoLuongTon")));
+        jLabel11.setText(String.valueOf(rs.getString("DonGiaNhap")));
+        jLabel13.setText(String.valueOf(rs.getString("DonGiaBan")));
+        rs = stm.executeQuery("SELECT TenDonViTinh  FROM DONVITINH");
+        while(rs.next()) jComboBox1.addItem(rs.getString("TenDonViTinh"));
+        rs.close(); 
+        stm.close();
+        conn.close();
     }
 
     @SuppressWarnings("unchecked")
@@ -41,8 +90,8 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        buttonAddEmployee = new customview.MyButton();
-        buttonSalaryEmployee = new customview.MyButton();
+        XOAthuoc = new customview.MyButton();
+        SUA = new customview.MyButton();
         buttonBack = new customview.MyButton();
         jLabel14 = new javax.swing.JLabel();
 
@@ -109,43 +158,40 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setText("Tên thuốc:");
-        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 95, -1));
+        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 130, -1));
 
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
         jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextField1.setText("Penicillin");
         jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel3.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 70, 280, -1));
+        jPanel3.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 70, 280, -1));
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel5.setText("Đơn vị tính:");
-        jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 110, 95, -1));
+        jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 110, 130, -1));
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel6.setText("Số lượng tồn:");
-        jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 140, 95, -1));
+        jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 150, 130, -1));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("160");
-        jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 140, 280, -1));
+        jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 150, 280, -1));
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel8.setText("Loại thuốc:");
-        jPanel3.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 170, 95, -1));
+        jPanel3.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 190, 95, -1));
 
-        jTextField3.setBackground(new java.awt.Color(255, 255, 255));
         jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextField3.setText("Kháng sinh");
         jTextField3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel3.add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 170, 280, -1));
+        jPanel3.add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 190, 280, -1));
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel9.setText("Cách dùng:");
-        jPanel3.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 200, 95, -1));
+        jPanel3.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 230, 95, -1));
 
-        jTextArea1.setBackground(new java.awt.Color(255, 255, 255));
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
@@ -153,45 +199,60 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jTextArea1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jScrollPane1.setViewportView(jTextArea1);
 
-        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 210, 280, -1));
+        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 240, 280, 70));
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel10.setText("Đơn giá nhập:");
         jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 330, -1, -1));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel11.setText("4000$");
-        jPanel3.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 330, 280, -1));
+        jPanel3.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 330, 280, -1));
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel12.setText("Đơn giá bán:");
-        jPanel3.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 360, 95, -1));
+        jPanel3.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 370, 120, -1));
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel13.setText("4000$");
-        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 360, 280, -1));
+        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 370, 280, -1));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel3.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 110, 280, -1));
+        jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jPanel3.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 110, 280, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel2.setText("THÔNG TIN THUỐC");
         jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 0, -1, -1));
 
-        buttonAddEmployee.setText("Xóa thuốc");
-        buttonAddEmployee.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        buttonAddEmployee.setRadius(15);
-        jPanel3.add(buttonAddEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 410, -1, -1));
+        XOAthuoc.setText("Xóa thuốc");
+        XOAthuoc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        XOAthuoc.setRadius(15);
+        XOAthuoc.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                XOAthuocMouseClicked(evt);
+            }
+        });
+        jPanel3.add(XOAthuoc, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 410, 110, -1));
 
-        buttonSalaryEmployee.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        buttonSalaryEmployee.setLabel("Cập nhật thông tin");
-        buttonSalaryEmployee.setRadius(15);
-        jPanel3.add(buttonSalaryEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 410, -1, -1));
+        SUA.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        SUA.setLabel("Cập nhật thông tin");
+        SUA.setRadius(15);
+        SUA.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SUAMouseClicked(evt);
+            }
+        });
+        jPanel3.add(SUA, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 410, -1, -1));
 
         buttonBack.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         buttonBack.setLabel("Quay lại");
         buttonBack.setRadius(15);
-        jPanel3.add(buttonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 410, -1, -1));
+        buttonBack.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonBackMouseClicked(evt);
+            }
+        });
+        jPanel3.add(buttonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 410, 120, -1));
 
         jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/demo.jpg"))); // NOI18N
         jLabel14.setText("jLabel14");
@@ -217,6 +278,79 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void buttonBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonBackMouseClicked
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MedicineUsageManagement().setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_buttonBackMouseClicked
+    
+    public void DELETE()throws SQLException{        
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();       
+        
+        stm.executeUpdate("DELETE FROM THUOC WHERE MaThuoc = '"+ mathuoc +"';");
+        stm.close();
+        conn.close();
+    }
+    private void XOAthuocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XOAthuocMouseClicked
+        int reply = JOptionPane.showConfirmDialog( null,"Bạn có chắc xóa loại thuốc này?" , "!!!",JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            try
+            {
+                DELETE();
+                JOptionPane.showMessageDialog(this, "Xóa thành công!" );
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        new MedicineUsageManagement().setVisible(true);
+                    }
+                });
+            }
+            catch(SQLException e)
+            {
+                JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        } 
+    }//GEN-LAST:event_XOAthuocMouseClicked
+    public void SUA()throws SQLException{        
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();       
+        
+        stm.executeUpdate("UPDATE THUOC set TenThuoc = N'"+jTextField1.getText()+"', "
+                + "TenDonViTinh = N'"+ jComboBox1.getSelectedItem().toString() 
+                + "', LoaiThuoc= N'" + jTextField3.getText()
+                + "' WHERE MaThuoc = N' "+ mathuoc +"';");
+        
+        ResultSet rs = stm.executeQuery("SELECT MaCachDung  FROM THUOC");
+        rs.next();
+        String madung = rs.getString("MaCachDung");
+        stm.executeUpdate("UPDATE CACHDUNG set TenCachDung = N'" + jTextArea1.getText()+ "' WHERE MaCachDung = '"+ madung + "'");
+        
+        stm.close();
+        conn.close();
+    }
+    private void SUAMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SUAMouseClicked
+        try
+            {
+                SUA();
+                JOptionPane.showMessageDialog(this, "Sửa thành công!" );
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new MedicineUsageManagement().setVisible(true);
+                    }
+                });
+            }
+            catch(SQLException e)
+            {
+                JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        
+    }//GEN-LAST:event_SUAMouseClicked
+
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -235,11 +369,11 @@ public class ManagementDrugUse extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private customview.MyButton SUA;
+    private customview.MyButton XOAthuoc;
     private javax.swing.JLabel avatar;
-    private customview.MyButton buttonAddEmployee;
     private customview.MyButton buttonBack;
     private customview.MyButton buttonOption;
-    private customview.MyButton buttonSalaryEmployee;
     private javax.swing.JLabel icon;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel;

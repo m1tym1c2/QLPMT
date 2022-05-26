@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package clinicmanagement;
-
+import java.sql.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -20,6 +20,11 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.DefaultCaret;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 /**
  *
@@ -39,10 +44,10 @@ public class AddNewMedicine extends javax.swing.JFrame {
         getContentPane().setBackground(Color.white);
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         jPanel1.setVisible(false);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setWrapStyleWord(true);
-        DefaultCaret caret = (DefaultCaret)jTextArea1.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        //jTextArea1.setLineWrap(true);
+        //jTextArea1.setWrapStyleWord(true);
+        //DefaultCaret caret = (DefaultCaret)jTextArea1.getCaret();
+        //caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         jTextArea1.setColumns(100);
     }
 
@@ -259,6 +264,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
         jLabel5.setText("Tên thuốc: ");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 170, -1, -1));
 
+        jComboBox1.setEditable(true);
         jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hộp" }));
         jComboBox1.setBorder(null);
@@ -286,7 +292,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Dùng để cung cấp Vitamin. Uống mỗi ngày 1 viên");
+        jTextArea1.setText(" Uống mỗi ngày 1 viên");
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setPreferredSize(new java.awt.Dimension(200, 113));
         jScrollPane1.setViewportView(jTextArea1);
@@ -312,6 +318,11 @@ public class AddNewMedicine extends javax.swing.JFrame {
         jButton3.setText("Lưu thông tin");
         jButton3.setToolTipText("");
         jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
         getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 500, 160, 40));
 
         pack();
@@ -378,6 +389,84 @@ public class AddNewMedicine extends javax.swing.JFrame {
         form.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    public int LUU()throws SQLException{
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();
+        
+        String donvi = jComboBox1.getEditor().getItem().toString();
+        //thêm đơn vị tính
+        ResultSet rs = stm.executeQuery("SELECT TenDonViTinh  FROM DONVITINH ");
+        boolean kt =false;
+        while (rs.next())
+        {
+            if(rs.getString("TenDonViTinh").equals(donvi)) kt =true;
+        }
+        if(!kt) stm.executeUpdate("INSERT INTO DONVITINH  VALUES ( N'" + donvi + "');");
+        
+        //thêm cách dùng
+        String cachdung = jTextArea1.getText();
+        rs = stm.executeQuery("SELECT TenCachDung from CACHDUNG   ");
+        kt = false;
+        int socachdung = 0;
+        String macachdung="";
+        while(rs.next()){
+            if(rs.getString("TenCachDung").equals(cachdung)){
+                kt =true;
+                
+                //ResultSet rsu = stm.executeQuery("SELECT MaCachDung FROM CACHDUNG  WHERE  TenCachDung = N' "+cachdung +" '");
+                //macachdung = rsu.getString("MaCachDung");
+                //rsu.close();
+            }
+            socachdung++;
+        }   
+        macachdung = "CD" + String.valueOf(socachdung+1);
+        stm.executeUpdate("INSERT INTO CACHDUNG  VALUES ( '" + macachdung +"',N'" + cachdung + "');");
+        if(!kt) {            
+            
+        }
+                
+        //theem thuoc
+        String tenthuoc = jTextField2.getText();
+        rs = stm.executeQuery("SELECT TenThuoc from THUOC   ");
+        kt = false;
+        int sothuoc = 0;
+        while(rs.next()){
+            if(rs.getString("TenThuoc").equals(tenthuoc)) kt =true;
+            sothuoc++;
+        }
+        String mathuoc = "T" + String.valueOf(sothuoc+1);
+        if(!kt) stm.executeUpdate("INSERT INTO THUOC  VALUES ( N'" + mathuoc +"',N'" + tenthuoc + "',N'" + donvi + "','"+0+"',N'"+ jTextField3.getText() +"','" + macachdung + "');");
+        else {
+            JOptionPane.showMessageDialog(this, "Thuốc này đã có", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return 0;
+        }
+        rs.close(); 
+        stm.close();
+        conn.close();
+        return 1;
+    }
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        try
+        {
+            if(LUU()==1)
+            {
+                JOptionPane.showMessageDialog(this, "Bạn đã lưu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        new MedicineUsageManagement().setVisible(true);
+                    }
+                });
+                this.dispose();
+            }            
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }        
+        
+    }//GEN-LAST:event_jButton3MouseClicked
 
     /**
      * @param args the command line arguments
