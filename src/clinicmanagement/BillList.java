@@ -13,7 +13,10 @@ import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -157,6 +160,13 @@ public class BillList extends javax.swing.JFrame {
         jPanel1.add(jLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 0, 261, 49));
 
         searchView.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        searchView.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                searchViewInputMethodTextChanged(evt);
+            }
+        });
         jPanel1.add(searchView, new org.netbeans.lib.awtextra.AbsoluteConstraints(402, 10, 320, -1));
 
         avatar.setText("Avatar");
@@ -274,6 +284,13 @@ public class BillList extends javax.swing.JFrame {
     private void jDateChooser2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser2PropertyChange
         changeTableData();
     }//GEN-LAST:event_jDateChooser2PropertyChange
+
+    private void searchViewInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_searchViewInputMethodTextChanged
+        DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel> (model);
+        tableDark1.setRowSorter(sorter);
+        sorter.setRowFilter(RowFilter.regexFilter(searchView.getText()));
+    }//GEN-LAST:event_searchViewInputMethodTextChanged
 
     public static void main(String args[]) {
         try {

@@ -3,18 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/DanhSachKhamBenh.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/PhieuKhamBenh.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/ChiTietHoaDon.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/Home.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/AddNewMedicine.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/ReportMedicineUsage.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/ChiTietBaoCaoThang.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/DatabaseConnection.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/BaoCaoDoanhThuThang.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/MedicineUsageManagement.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/ThemBenhNhan.java</file>
-            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/AddMedicine.java</file>
+            <file>file:/D:/Project/ClinicManagement/src/clinicmanagement/ClinicManagement.java</file>
+            <file>file:/D:/Project/ClinicManagement/src/clinicmanagement/BaoCaoDoanhThuThang.java</file>
+            <file>file:/D:/Project/ClinicManagement/src/clinicmanagement/DatabaseConnection.java</file>
+            <file>file:/D:/Project/ClinicManagement/src/clinicmanagement/DanhSachKhamBenh.java</file>
+            <file>file:/D:/Project/ClinicManagement/src/clinicmanagement/ChiTietBaoCaoThang.java</file>
         </group>
     </open-files>
 </project-private>

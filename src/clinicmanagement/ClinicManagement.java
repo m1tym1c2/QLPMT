@@ -1,19 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package clinicmanagement;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComponent;
 
 /**
  *
@@ -280,10 +274,8 @@ public class ClinicManagement extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ClinicManagement().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new ClinicManagement().setVisible(true);
         });
     }
 

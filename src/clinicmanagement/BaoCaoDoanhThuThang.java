@@ -6,7 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -248,6 +251,11 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
 
         placeholderTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         placeholderTextField1.setPlaceholder("Tìm kiếm...");
+        placeholderTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                placeholderTextField1KeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -452,6 +460,13 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void placeholderTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_placeholderTextField1KeyPressed
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel> (model);
+        jTable1.setRowSorter(sorter);
+        sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
+    }//GEN-LAST:event_placeholderTextField1KeyPressed
 
     /**
      * @param args the command line arguments
