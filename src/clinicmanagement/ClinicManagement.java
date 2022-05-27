@@ -6,12 +6,10 @@ package clinicmanagement;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
-import java.sql.*;
-import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JComponent;
 
 /**
  *
@@ -19,111 +17,15 @@ import java.util.logging.Logger;
  */
 public class ClinicManagement extends javax.swing.JFrame {
 
-    private Connection connection = null;
-
+    /**
+     * Creates new form ClinicManagement
+     */
     public ClinicManagement() {
         initComponents();
         MatKhau.setEchoChar((char) 0);
         MatKhau.setForeground(new Color(153, 153, 153));
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
-        initBaoCaoThang();
-    }
-
-    private int maxDay(int month, int year) {
-        switch (month) {
-            case 1:
-            case 3:
-            case 5:
-            case 7:
-            case 8:
-            case 10:
-            case 12:
-                return 31;
-            case 2:
-                if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
-                    return 29;
-                } else {
-                    return 28;
-                }
-            default:
-                return 30;
-        }
-    }
-
-    private void initBaoCaoThang() {
-        LocalDate localDate = LocalDate.now();
-        int month = localDate.getMonthValue();
-        int year = localDate.getYear();
-        if (month == 1) {
-            month = 12;
-            year--;
-        } else {
-            month--;
-        }
-        try {
-            boolean check = false;
-            DatabaseConnection databaseConnection = new DatabaseConnection();
-            connection = databaseConnection.getConnection(this);
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM BAOCAOTHANG");
-            while (rs.next()) {
-                if (month == rs.getInt("Thang") && year == rs.getInt("Nam")) {
-                    check = true;
-                    break;
-                }
-            }
-
-            if (!check) {
-                PreparedStatement ps = connection.prepareStatement("SELECT GiaTriHoaDon, NgayKham FROM PHIEUKHAMBENH, HOADON "
-                        + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
-                        + "AND MONTH(NgayKham) = ? AND YEAR(NgayKham) = ?");
-                ps.setInt(1, month);
-                ps.setInt(2, year);
-                rs = ps.executeQuery();
-                int doanhThuThang = 0;
-                while (rs.next()) {
-                    doanhThuThang += rs.getInt("GiaTriHoaDon");
-                }
-                ps = connection.prepareStatement("INSERT INTO BAOCAOTHANG VALUES(?,?,?)");
-                ps.setInt(1, month);
-                ps.setInt(2, year);
-                ps.setInt(3, doanhThuThang);
-                ps.executeUpdate();
-
-                for (int i = 0; i < maxDay(month, year); i++) {
-                    ps = connection.prepareStatement("SELECT GiaTriHoaDon, NgayKham FROM PHIEUKHAMBENH, HOADON "
-                            + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
-                            + "AND MONTH(NgayKham) = ? AND YEAR(NgayKham) = ? AND DAY(NgayKham) = ?");
-                    ps.setInt(1, month);
-                    ps.setInt(2, year);
-                    ps.setInt(3, i);
-                    rs = ps.executeQuery();
-                    int soBenhNhan = 0;
-                    int doanhThuNgay = 0;
-                    while (rs.next()) {
-                        soBenhNhan++;
-                        doanhThuNgay += rs.getInt("GiaTriHoaDon");
-                    }
-                    ps = connection.prepareStatement("INSERT INTO CT_BAOCAOTHANG VALUES(?,?,?,?,?,?)");
-                    ps.setInt(1, i);
-                    ps.setInt(2, month);
-                    ps.setInt(3, year);
-                    ps.setInt(4, doanhThuNgay);
-                    ps.setInt(5, soBenhNhan);
-                    if (doanhThuThang == 0) {
-                        ps.setInt(6, 0);
-                    } else {
-                        ps.setFloat(6, (float) (doanhThuNgay * 100.0 / doanhThuThang));
-                    }
-                    ps.executeUpdate();
-                }
-                System.out.println("abc");
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     /**
@@ -243,12 +145,14 @@ public class ClinicManagement extends javax.swing.JFrame {
 
     private void MatKhauFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_MatKhauFocusLost
         String password = String.valueOf(MatKhau.getPassword());
-
-        if (password.equals("password") || password.toLowerCase().equals("")) {
-            MatKhau.setText("Mật khẩu");
-            MatKhau.setEchoChar((char) 0);
-            MatKhau.setForeground(new Color(153, 153, 153));
-        }
+    
+    
+    if(password.equals("password") || password.toLowerCase().equals("") )
+    {
+        MatKhau.setText("Mật khẩu");
+        MatKhau.setEchoChar((char)0);
+        MatKhau.setForeground(new Color(153, 153, 153));
+    }
     }//GEN-LAST:event_MatKhauFocusLost
 
     /**

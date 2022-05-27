@@ -231,7 +231,6 @@ public class BillList extends javax.swing.JFrame {
         buttonBack.setRadius(15);
         jPanel3.add(buttonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 590, -1, -1));
 
-        jDateChooser1.setDateFormatString("dd/MM/yyyy");
         jDateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jDateChooser1PropertyChange(evt);
@@ -239,7 +238,6 @@ public class BillList extends javax.swing.JFrame {
         });
         jPanel3.add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 90, 260, -1));
 
-        jDateChooser2.setDateFormatString("dd/MM/yyyy");
         jDateChooser2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jDateChooser2PropertyChange(evt);
