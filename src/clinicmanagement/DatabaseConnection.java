@@ -8,9 +8,9 @@ import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:sqlserver://DESKTOP-5N8T091\\SQLEXPRESS:1433;databaseName=QLThuoc";
+    private static final String URL = "jdbc:sqlserver://NGOCTIENTNT:1433;databaseName=QUANLYPHONGMACHTU";
     private static final String user = "sa";
-    private static final String password = "123456789";
+    private static final String password = "12345678";
     public Connection getConnection(Component c) throws SQLException
     {
         Connection conn = null;
