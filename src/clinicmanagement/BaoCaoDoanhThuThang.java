@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.RowFilter;
@@ -19,6 +21,8 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
 
     private boolean User = false;
     private Connection connection = null;
+    Locale localeVI = new Locale("vi", "VI");
+    NumberFormat vi = NumberFormat.getInstance(localeVI);
 
     public BaoCaoDoanhThuThang() {
         initComponents();
@@ -56,7 +60,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
             while (rs.next()) {
                 i++;
                 String data[] = {Integer.toString(i), rs.getString("Ngay"), rs.getString("SoBenhNhan"),
-                    rs.getString("DoanhThuThang"), rs.getString("TiLe")};
+                    vi.format(rs.getInt("DoanhThuNgay")), rs.getString("TiLe") + "%"};
                 DefaultTableModel tbModel = (DefaultTableModel) jTable1.getModel();
                 tbModel.addRow(data);
             }
@@ -420,10 +424,12 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
                         + evt.getItem().toString() + " AND BAOCAOTHANG.Thang = " + jComboBox1.getItemAt(0));
 
                 int i = 0;
+                System.out.println(vi.format(123456));
+
                 while (rs.next()) {
                     i++;
                     String data[] = {Integer.toString(i), rs.getString("Ngay"), rs.getString("SoBenhNhan"),
-                        rs.getString("DoanhThuThang"), rs.getString("TiLe")};
+                        vi.format(rs.getInt("DoanhThuNgay")), rs.getString("TiLe") + "%"};
                     DefaultTableModel tbModel = (DefaultTableModel) jTable1.getModel();
                     tbModel.addRow(data);
                 }
@@ -451,7 +457,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
                 while (rs.next()) {
                     i++;
                     String data[] = {Integer.toString(i), rs.getString("Ngay"), rs.getString("SoBenhNhan"),
-                        rs.getString("DoanhThuThang"), rs.getString("TiLe")};
+                        vi.format(rs.getInt("DoanhThuNgay")), rs.getString("TiLe") + "%"};
                     DefaultTableModel tbModel = (DefaultTableModel) jTable1.getModel();
                     tbModel.addRow(data);
                 }
@@ -463,7 +469,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
 
     private void placeholderTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_placeholderTextField1KeyPressed
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel> (model);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
         jTable1.setRowSorter(sorter);
         sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
     }//GEN-LAST:event_placeholderTextField1KeyPressed

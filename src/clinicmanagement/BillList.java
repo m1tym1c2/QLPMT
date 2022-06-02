@@ -34,11 +34,15 @@ public class BillList extends javax.swing.JFrame {
         String month = ca.get(Calendar.MONTH) + 1 + "";
         String year = ca.get(Calendar.YEAR) + "";
 
-        if (day.length() == 1) day = "0" + day;
-        if (month.length() == 1) month = "0" + month;
+        if (day.length() == 1) {
+            day = "0" + day;
+        }
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
 
         String dd = year + "-" + month + "-" + day;
-        
+
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dd);
             jDateChooser1.setDate(date);
@@ -59,7 +63,7 @@ public class BillList extends javax.swing.JFrame {
                 ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH, BENHNHAN "
                         + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
                         + "AND BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan "
-                        + "AND PHIEUKHAMBENH.NgayKham >= " + strDate1 + " AND PHIEUKHAMBENH.NgayKham <= " + strDate2);
+                        + "AND PHIEUKHAMBENH.NgayKham >= '" + strDate1 + "' AND PHIEUKHAMBENH.NgayKham <= '" + strDate2 + "'");
 
                 DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
                 model.setRowCount(0);
@@ -80,9 +84,8 @@ public class BillList extends javax.swing.JFrame {
             Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void changeTableData()
-    {
+
+    private void changeTableData() {
         if (jDateChooser1.getDate() != null && jDateChooser2.getDate() != null) {
             Date date = jDateChooser1.getDate();
             var formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -98,7 +101,7 @@ public class BillList extends javax.swing.JFrame {
                 ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH, BENHNHAN "
                         + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
                         + "AND BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan "
-                        + "AND PHIEUKHAMBENH.NgayKham >= " + strDate + " AND PHIEUKHAMBENH.NgayKham <= " + strDate2);
+                        + "AND PHIEUKHAMBENH.NgayKham >= '" + strDate + "' AND PHIEUKHAMBENH.NgayKham <= '" + strDate2 + "'");
 
                 DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
                 model.setRowCount(0);
@@ -156,6 +159,7 @@ public class BillList extends javax.swing.JFrame {
         jPanel1.add(icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 8, 50, 50));
 
         jLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel.setForeground(new java.awt.Color(0, 84, 42));
         jLabel.setText("QUẢN LÝ DOANH THU");
         jPanel1.add(jLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 0, 261, 49));
 
@@ -287,7 +291,7 @@ public class BillList extends javax.swing.JFrame {
 
     private void searchViewInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_searchViewInputMethodTextChanged
         DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
-        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel> (model);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
         tableDark1.setRowSorter(sorter);
         sorter.setRowFilter(RowFilter.regexFilter(searchView.getText()));
     }//GEN-LAST:event_searchViewInputMethodTextChanged
