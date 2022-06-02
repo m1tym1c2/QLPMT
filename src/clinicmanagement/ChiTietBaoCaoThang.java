@@ -9,6 +9,8 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import java.sql.*;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +25,8 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
     private String user = "sa";
     private String password = "12345678";
     private String url = "jdbc:sqlserver://NGOCTIENTNT:1433;databaseName=QUANLYPHONGMACHTU";
+    Locale localeVI = new Locale("vi", "VI");
+    NumberFormat vi = NumberFormat.getInstance(localeVI);
 
     public String getMonth() {
         return month;
@@ -59,14 +63,14 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
             while (rs.next()) {
                 sumHoaDon += rs.getInt("GiaTriHoaDon");
             }
-            jLabel4.setText(Integer.toString(sumHoaDon) + " VND");
+            jLabel4.setText(vi.format(sumHoaDon) + " VND");
 
             rs = statement.executeQuery("SELECT * FROM NHANVIEN");
             int sumLuong = 0;
             while (rs.next()) {
                 sumLuong += rs.getInt("LuongCB");
             }
-            jLabel9.setText(Integer.toString(sumLuong) + " VND");
+            jLabel9.setText(vi.format(sumLuong) + " VND");
 
             rs = statement.executeQuery("SELECT * FROM PHIEUNHAPTHUOC WHERE MONTH(NgayNhap) = "
                     + month + " AND YEAR(NgayNhap) = " + year);
@@ -91,18 +95,16 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
                 sumTienKham += rs.getInt("TienKham");
                 sumTienThuoc += rs.getInt("TienThuoc");
             }
-            
-            System.out.println(sumTienKham + " "+sumTienThuoc);
 
             JFreeChart pieChart2 = createPieChart(createDataset(sumTienKham, sumTienThuoc, false));
             chartPanel = new ChartPanel(pieChart2);
             chartPanel.setBounds(0, 0, 340, 330); //set size PieChart
             jPanel5.add(chartPanel);
 
-            jLabel10.setText(Integer.toString(sumThuoc) + " VND");
-            jLabel11.setText(Integer.toString(sumHoaDon - sumLuong - sumThuoc) + " VND");
-            jLabel12.setText("Tổng thu: " + sumHoaDon + " VND");
-            jLabel13.setText("Tổng chi: " + (sumLuong + sumThuoc) + "0 VND");
+            jLabel10.setText(vi.format(sumThuoc) + " VND");
+            jLabel11.setText(vi.format(sumHoaDon - sumLuong - sumThuoc) + " VND");
+            jLabel12.setText("Tổng thu: " + vi.format(sumHoaDon) + " VND");
+            jLabel13.setText("Tổng chi: " + vi.format(sumLuong + sumThuoc) + "0 VND");
         } catch (SQLException ex) {
             Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
         }

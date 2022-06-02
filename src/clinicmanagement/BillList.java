@@ -5,11 +5,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -25,6 +27,8 @@ import javax.swing.table.TableRowSorter;
 public class BillList extends javax.swing.JFrame {
 
     private Connection connection = null;
+    Locale localeVI = new Locale("vi", "VI");
+    NumberFormat vi = NumberFormat.getInstance(localeVI);
 
     public BillList() {
         initComponents();
@@ -71,8 +75,8 @@ public class BillList extends javax.swing.JFrame {
                 while (rs.next()) {
                     i++;
                     String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
-                        rs.getString("NgayKham"), rs.getString("TienKham"), rs.getString("TienThuoc"),
-                        Integer.toString(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
+                        rs.getString("NgayKham"), vi.format(rs.getInt("TienKham")), vi.format(rs.getInt("TienThuoc")),
+                        vi.format(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
                     DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
                     tbModel.addRow(data);
                 }
@@ -109,8 +113,8 @@ public class BillList extends javax.swing.JFrame {
                 while (rs.next()) {
                     i++;
                     String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
-                        rs.getString("NgayKham"), rs.getString("TienKham"), rs.getString("TienThuoc"),
-                        Integer.toString(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
+                        rs.getString("NgayKham"), vi.format(rs.getInt("TienKham")), vi.format(rs.getInt("TienThuoc")),
+                        vi.format(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
                     DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
                     tbModel.addRow(data);
                 }
