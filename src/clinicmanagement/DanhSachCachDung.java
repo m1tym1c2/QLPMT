@@ -4,6 +4,15 @@
  */
 package clinicmanagement;
 
+import java.awt.Color;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author admin
@@ -15,8 +24,37 @@ public class DanhSachCachDung extends javax.swing.JFrame {
      */
     public DanhSachCachDung() {
         initComponents();
+         getContentPane().setBackground(Color.white);
+         try
+        {
+            LoadData();           
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
     }
-
+    public void LoadData()throws SQLException{
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();        
+        
+        ResultSet rs = stm.executeQuery("SELECT TenCachDung FROM CACHDUNG;");
+        
+        DefaultTableModel model = (DefaultTableModel) Table.getModel();
+        model.setRowCount(0);
+        while (rs.next())
+        {
+            Vector row = new Vector();          
+            row.add(model.getRowCount()+1);
+            row.add(rs.getString("TenCachDung"));
+            model.getRowCount();
+            model.addRow(row);            
+        }
+        rs.close(); 
+        stm.close();
+        conn.close();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,8 +67,9 @@ public class DanhSachCachDung extends javax.swing.JFrame {
         Tentrang2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         Table = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        THEM = new javax.swing.JButton();
+        XOA = new javax.swing.JButton();
+        Quaylai = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,25 +104,36 @@ public class DanhSachCachDung extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(Table);
 
-        jButton3.setBackground(new java.awt.Color(255, 204, 204));
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 99, 28));
-        jButton3.setText("Thêm");
-        jButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+        THEM.setBackground(new java.awt.Color(255, 204, 204));
+        THEM.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        THEM.setForeground(new java.awt.Color(0, 99, 28));
+        THEM.setText("Thêm");
+        THEM.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        THEM.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                THEMMouseClicked(evt);
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(255, 204, 204));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(0, 99, 28));
-        jButton4.setText("Xóa");
-        jButton4.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+        XOA.setBackground(new java.awt.Color(255, 204, 204));
+        XOA.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        XOA.setForeground(new java.awt.Color(0, 99, 28));
+        XOA.setText("Xóa");
+        XOA.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        XOA.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                XOAMouseClicked(evt);
+            }
+        });
+
+        Quaylai.setBackground(new java.awt.Color(255, 204, 204));
+        Quaylai.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        Quaylai.setForeground(new java.awt.Color(0, 99, 28));
+        Quaylai.setText("Quay lại");
+        Quaylai.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        Quaylai.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                QuaylaiMouseClicked(evt);
             }
         });
 
@@ -92,15 +142,16 @@ public class DanhSachCachDung extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(THEM, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(XOA, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Quaylai, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(177, 177, 177)
@@ -116,21 +167,62 @@ public class DanhSachCachDung extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(THEM, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(XOA, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Quaylai, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void THEMMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_THEMMouseClicked
+       java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                ThemCD dialog = new ThemCD(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_THEMMouseClicked
+    public void DELETE()throws SQLException{        
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();  
         
-    }//GEN-LAST:event_jButton3ActionPerformed
+        int row = Table.getSelectedRow();
+        String cachdung = Table.getModel().getValueAt(row, 1).toString();
+        stm.executeUpdate("DELETE FROM CACHDUNG WHERE TenCachDung = N'"+ cachdung +"';");
+        
+        stm.close();
+        conn.close();
+    }
+    private void XOAMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XOAMouseClicked
+        try
+        {
+            DELETE();  
+            JOptionPane.showMessageDialog(this, "Đã xóa thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            LoadData();
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_XOAMouseClicked
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void QuaylaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_QuaylaiMouseClicked
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MedicineUsageManagement().setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_QuaylaiMouseClicked
 
     /**
      * @param args the command line arguments
@@ -168,10 +260,11 @@ public class DanhSachCachDung extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Quaylai;
+    private javax.swing.JButton THEM;
     private javax.swing.JTable Table;
     private javax.swing.JLabel Tentrang2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton XOA;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

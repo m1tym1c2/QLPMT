@@ -4,6 +4,15 @@
  */
 package clinicmanagement;
 
+import java.awt.Color;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author admin
@@ -15,8 +24,49 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
      */
     public DanhSachDonViTinh() {
         initComponents();
+        getContentPane().setBackground(Color.white);
+         try
+        {
+            LoadData();           
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
     }
-
+    public void LoadData()throws SQLException{
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();        
+        
+        ResultSet rs = stm.executeQuery("SELECT TenDonViTinh FROM DONVITINH;");
+        
+        DefaultTableModel model = (DefaultTableModel) Table.getModel();
+        model.setRowCount(0);
+        while (rs.next())
+        {
+            Vector row = new Vector();          
+            row.add(model.getRowCount()+1);
+            row.add(rs.getString("TenDonViTinh"));
+            model.getRowCount();
+            model.addRow(row);            
+        }
+        rs.close(); 
+        stm.close();
+        conn.close();
+    }
+    public void DELETE()throws SQLException{        
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();  
+        
+        int row = Table.getSelectedRow();
+        String donvi = Table.getModel().getValueAt(row, 1).toString();
+        stm.executeUpdate("DELETE FROM DONVITINH WHERE TenDonViTinh = N'"+ donvi +"';");
+        
+        stm.close();
+        conn.close();
+    } 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,8 +79,9 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
         Tentrang2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         Table = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        them = new javax.swing.JButton();
+        Xoa = new javax.swing.JButton();
+        Trolai = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,25 +116,36 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(Table);
 
-        jButton3.setBackground(new java.awt.Color(255, 204, 204));
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 99, 28));
-        jButton3.setText("Thêm");
-        jButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+        them.setBackground(new java.awt.Color(255, 204, 204));
+        them.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        them.setForeground(new java.awt.Color(0, 99, 28));
+        them.setText("Thêm");
+        them.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        them.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                themMouseClicked(evt);
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(255, 204, 204));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(0, 99, 28));
-        jButton4.setText("Xóa");
-        jButton4.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+        Xoa.setBackground(new java.awt.Color(255, 204, 204));
+        Xoa.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        Xoa.setForeground(new java.awt.Color(0, 99, 28));
+        Xoa.setText("Xóa");
+        Xoa.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        Xoa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                XoaMouseClicked(evt);
+            }
+        });
+
+        Trolai.setBackground(new java.awt.Color(255, 204, 204));
+        Trolai.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        Trolai.setForeground(new java.awt.Color(0, 99, 28));
+        Trolai.setText("Quay lại");
+        Trolai.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        Trolai.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TrolaiMouseClicked(evt);
             }
         });
 
@@ -102,9 +164,11 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(them, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)
+                        .addComponent(Trolai, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -116,21 +180,50 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(them, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Trolai, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void themMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_themMouseClicked
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                ThemDV dialog = new ThemDV(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_themMouseClicked
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void XoaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XoaMouseClicked
+        try
+        {
+            DELETE();  
+            JOptionPane.showMessageDialog(this, "Đã xóa thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            LoadData();
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_XoaMouseClicked
+
+    private void TrolaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TrolaiMouseClicked
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MedicineUsageManagement().setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_TrolaiMouseClicked
 
     /**
      * @param args the command line arguments
@@ -170,8 +263,9 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Table;
     private javax.swing.JLabel Tentrang2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton Trolai;
+    private javax.swing.JButton Xoa;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton them;
     // End of variables declaration//GEN-END:variables
 }

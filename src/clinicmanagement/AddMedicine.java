@@ -35,7 +35,7 @@ public class AddMedicine extends javax.swing.JDialog {
         }
         catch(SQLException e)
         {
-            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Chưa có thuốc! ", "Lỗi ", ERROR_MESSAGE);
         }
     }
     public void LoadData()throws SQLException{
@@ -79,6 +79,11 @@ public class AddMedicine extends javax.swing.JDialog {
         return true;
     }
     public int LUUDATA()throws SQLException{
+        
+        if(jTextField2.getText()==null || jTextField1.getText()==null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đủ thông tin! ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return 0;
+        }
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
         Statement stm = conn.createStatement();        
@@ -88,13 +93,25 @@ public class AddMedicine extends javax.swing.JDialog {
             return 0;
         }
         
-        String maphieunhapthuoc = java.time.LocalDate.now().toString() + java.time.LocalTime.now().toString();   
+        java.time.LocalDate Now = java.time.LocalDate.now();
+        java.time.LocalTime time = java.time.LocalTime.now();
+        String thang = String.valueOf(Now.getMonthValue()) ;
+        String ngay = String.valueOf(Now.getDayOfMonth()) ;
+        String giay = String.valueOf(time.getMinute()) ;
+        if(thang.length()==1) thang = "0"+ thang;
+        if(ngay.length()==1) ngay = "0"+ ngay;
+        if(giay.length()==1) giay = "0"+ giay;
+        String maphieunhapthuoc = String.valueOf(Now.getYear()) + thang  + ngay + 
+                String.valueOf(time.getHour())  + String.valueOf(time.getMinute()) + giay ;  
+        
+        
         double soluongthem = Double.parseDouble(jTextField1.getText());
         double gianhap = Double.parseDouble(jTextField2.getText());
         
         stm.executeUpdate("insert into CT_PHIEUNHAPTHUOC VALUES (N'"+ maphieunhapthuoc +"','"
                 + mathuoc + "',"+ soluongthem+","+gianhap+","+ gianhap*Tyle + ") ");
         
+        String strDate = java.time.LocalDate.now().getDayOfMonth() + "-"  + java.time.LocalDate.now().getMonthValue() + "-"  + java.time.LocalDate.now().getYear();
         stm.executeUpdate("insert into PHIEUNHAPTHUOC VALUES (N'"+ maphieunhapthuoc + "',"+ gianhap*soluongthem 
                 + ",'"+java.time.LocalDate.now()+"') ");  
         
@@ -287,7 +304,7 @@ public class AddMedicine extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void XACNHANMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XACNHANMouseClicked
-        try
+       try
         {
             if(LUUDATA()==1)
             {

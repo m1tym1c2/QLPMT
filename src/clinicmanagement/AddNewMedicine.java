@@ -36,6 +36,8 @@ public class AddNewMedicine extends javax.swing.JFrame {
      * Creates new form Home
      */
     private boolean User = false;
+    private String filename = "";
+    private File f;
 
     public AddNewMedicine() {
         initComponents();
@@ -44,11 +46,33 @@ public class AddNewMedicine extends javax.swing.JFrame {
         getContentPane().setBackground(Color.white);
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         jPanel1.setVisible(false);
-        //jTextArea1.setLineWrap(true);
-        //jTextArea1.setWrapStyleWord(true);
-        //DefaultCaret caret = (DefaultCaret)jTextArea1.getCaret();
-        //caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-        jTextArea1.setColumns(100);
+        
+        try
+        {
+            LoadData();           
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, "Chưa có cách dùng/ đơn vị tính, bạn vui lòng thêm cách dùng trước", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    public void LoadData()throws SQLException{
+        
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();        
+        
+        ResultSet rs = stm.executeQuery("SELECT TenCachDung FROM CACHDUNG;");
+        while(rs.next())
+            cachdung.addItem(rs.getString("TenCachDung"));
+        
+        rs = stm.executeQuery("SELECT TenDonViTinh FROM DONVITINH;");
+        while(rs.next())
+            Donvi.addItem(rs.getString("TenDonViTinh"));
+        //Donvi.setSelectedIndex(1);
+        rs.close(); 
+        stm.close();
+        conn.close();
     }
 
     public static BufferedImage scaleImage(int w, int h, BufferedImage img) throws Exception {
@@ -89,15 +113,14 @@ public class AddNewMedicine extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        Luu = new javax.swing.JButton();
+        cachdung = new javax.swing.JComboBox<>();
+        Donvi = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -216,8 +239,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
                             .addComponent(jLabel11)
                             .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 80, 280, 180));
@@ -264,19 +286,12 @@ public class AddNewMedicine extends javax.swing.JFrame {
         jLabel5.setText("Tên thuốc: ");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 170, -1, -1));
 
-        jComboBox1.setEditable(true);
-        jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hộp" }));
-        jComboBox1.setBorder(null);
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 220, 320, 40));
-
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(1, 84, 43));
         jLabel6.setText("Đơn vị tính: ");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 230, -1, -1));
 
         jTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jTextField2.setText("Sủi C Beroca");
         getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 165, 320, 40));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -285,19 +300,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
         getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 290, -1, -1));
 
         jTextField3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jTextField3.setText("Thực phẩm chức năng");
         getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 285, 320, 40));
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setText(" Uống mỗi ngày 1 viên");
-        jTextArea1.setWrapStyleWord(true);
-        jTextArea1.setPreferredSize(new java.awt.Dimension(200, 113));
-        jScrollPane1.setViewportView(jTextArea1);
-
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 350, 320, 100));
 
         jButton2.setBackground(new java.awt.Color(255, 204, 204));
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -312,18 +315,27 @@ public class AddNewMedicine extends javax.swing.JFrame {
         });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 500, 160, 40));
 
-        jButton3.setBackground(new java.awt.Color(255, 204, 204));
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 99, 28));
-        jButton3.setText("Lưu thông tin");
-        jButton3.setToolTipText("");
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+        Luu.setBackground(new java.awt.Color(255, 204, 204));
+        Luu.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        Luu.setForeground(new java.awt.Color(0, 99, 28));
+        Luu.setText("Lưu thông tin");
+        Luu.setToolTipText("");
+        Luu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Luu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
+                LuuMouseClicked(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 500, 160, 40));
+        getContentPane().add(Luu, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 500, 160, 40));
+
+        cachdung.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        cachdung.setMaximumRowCount(20);
+        cachdung.setBorder(null);
+        getContentPane().add(cachdung, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 340, 320, 40));
+
+        Donvi.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        Donvi.setBorder(null);
+        getContentPane().add(Donvi, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 220, 320, 40));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -360,15 +372,21 @@ public class AddNewMedicine extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jButton1MouseClicked
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        ClinicManagement form = new ClinicManagement();
+        form.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         chooser.setMultiSelectionEnabled(false);
         FileFilter imageFilter = new FileNameExtensionFilter(
-                "Image files", ImageIO.getReaderFileSuffixes());
+            "Image files", ImageIO.getReaderFileSuffixes());
         chooser.setFileFilter(imageFilter);
         int option = chooser.showOpenDialog(this);
-        File f = chooser.getSelectedFile();
-        // String filename = f.getAbsolutePath();
+        f = chooser.getSelectedFile();
+        filename = f.getAbsolutePath();
         //jTextField1.setText(filename);
         try {
             ImageIcon ii = new ImageIcon(scaleImage(400, 400, ImageIO.read(new File(f.getAbsolutePath()))));//get the image from file chooser and scale it to match JLabel size
@@ -376,6 +394,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
@@ -383,61 +402,47 @@ public class AddNewMedicine extends javax.swing.JFrame {
         this.dispose();
         frame.setVisible(true);
     }//GEN-LAST:event_jButton2MouseClicked
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        ClinicManagement form = new ClinicManagement();
-        form.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton5ActionPerformed
-
     public int LUU()throws SQLException{
+        if(jTextField2.getText()==null || jTextField3.getText()==null || filename == "") {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đủ thông tin! ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return 0;
+        }
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
         Statement stm = conn.createStatement();
         
-        String donvi = jComboBox1.getEditor().getItem().toString();
+        String donvi = Donvi.getSelectedItem().toString();
         //thêm đơn vị tính
-        ResultSet rs = stm.executeQuery("SELECT TenDonViTinh  FROM DONVITINH ");
-        boolean kt =false;
-        while (rs.next())
-        {
-            if(rs.getString("TenDonViTinh").equals(donvi)) kt =true;
-        }
-        if(!kt) stm.executeUpdate("INSERT INTO DONVITINH  VALUES ( N'" + donvi + "');");
+        ResultSet rs;
         
         //thêm cách dùng
-        String cachdung = jTextArea1.getText();
-        rs = stm.executeQuery("SELECT TenCachDung from CACHDUNG   ");
-        kt = false;
-        int socachdung = 0;
-        String macachdung="";
+        String cd = cachdung.getSelectedItem().toString();
+        rs = stm.executeQuery("SELECT MaCachDung, TenCachDung from CACHDUNG   ");       
+        String macachdung ="";
         while(rs.next()){
-            if(rs.getString("TenCachDung").equals(cachdung)){
-                kt =true;
-                
-                //ResultSet rsu = stm.executeQuery("SELECT MaCachDung FROM CACHDUNG  WHERE  TenCachDung = N' "+cachdung +" '");
-                //macachdung = rsu.getString("MaCachDung");
-                //rsu.close();
+            if(rs.getString("TenCachDung").equals(cd)){
+                macachdung = rs.getString("MaCachDung");
             }
-            socachdung++;
-        }   
-        macachdung = "CD" + String.valueOf(socachdung+1);
-        stm.executeUpdate("INSERT INTO CACHDUNG  VALUES ( '" + macachdung +"',N'" + cachdung + "');");
-        if(!kt) {            
-            
-        }
-                
+        }  
         //theem thuoc
         String tenthuoc = jTextField2.getText();
         rs = stm.executeQuery("SELECT TenThuoc from THUOC   ");
-        kt = false;
+        boolean kt = false;
         int sothuoc = 0;
         while(rs.next()){
             if(rs.getString("TenThuoc").equals(tenthuoc)) kt =true;
             sothuoc++;
         }
         String mathuoc = "T" + String.valueOf(sothuoc+1);
-        if(!kt) stm.executeUpdate("INSERT INTO THUOC  VALUES ( N'" + mathuoc +"',N'" + tenthuoc + "',N'" + donvi + "','"+0+"',N'"+ jTextField3.getText() +"','" + macachdung + "');");
+        
+        rs = stm.executeQuery("SELECT MaCachDung from CACHDUNG   ");
+        while(rs.next()){
+            if(rs.getString("MaCachDung").equals(mathuoc)) {
+                sothuoc++;
+                mathuoc = "CD" + String.valueOf(sothuoc+1);
+            }            
+        }
+        if(!kt) stm.executeUpdate("INSERT INTO THUOC  VALUES ( N'" + mathuoc +"',N'" + tenthuoc + "',N'" + donvi + "','"+0+"',N'"+ jTextField3.getText() +"',N'" + macachdung + "',N'" + f.getAbsolutePath() +"');");
         else {
             JOptionPane.showMessageDialog(this, "Thuốc này đã có", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             return 0;
@@ -447,7 +452,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
         conn.close();
         return 1;
     }
-    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+    private void LuuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LuuMouseClicked
         try
         {
             if(LUU()==1)
@@ -464,10 +469,11 @@ public class AddNewMedicine extends javax.swing.JFrame {
         catch(SQLException e)
         {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
-        }        
-        
-    }//GEN-LAST:event_jButton3MouseClicked
+        }    
 
+    }//GEN-LAST:event_LuuMouseClicked
+
+    
     /**
      * @param args the command line arguments
      */
@@ -509,14 +515,15 @@ public class AddNewMedicine extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Anhdaidien;
+    private javax.swing.JComboBox<String> Donvi;
+    private javax.swing.JButton Luu;
     private javax.swing.JLabel Nutmuiten;
     private javax.swing.JLabel Tentaikhoan;
+    private javax.swing.JComboBox<String> cachdung;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -531,8 +538,6 @@ public class AddNewMedicine extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables

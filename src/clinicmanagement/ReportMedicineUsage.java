@@ -24,12 +24,15 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.text.DefaultCaret;
 
 /**
@@ -52,9 +55,10 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         JTableHeader header = table.getTableHeader();
         header.setDefaultRenderer(new HeaderRenderer(table));
         
-        jComboBox2.addItem(String.valueOf(java.time.LocalDateTime.now().getYear()));
-        jComboBox1.addItem(String.valueOf(java.time.LocalDateTime.now().getMonthValue()));
-        
+        jComboBox2.addItem(" ");
+        jComboBox1.addItem(" ");
+        jComboBox1.setSelectedIndex(0);
+        jComboBox2.setSelectedIndex(0);
     }
     
     public int LoadData()throws SQLException{        
@@ -64,16 +68,23 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         
         jComboBox2.removeAll();
         jComboBox1.removeAll();
-        jComboBox2.addItem(String.valueOf(java.time.LocalDateTime.now().getYear()));
+        jComboBox2.addItem(" ");
+        jComboBox1.addItem(" ");
+        jComboBox1.setSelectedIndex(0);
+        jComboBox2.setSelectedIndex(0);
+        
+        if( jComboBox1.getSelectedItem().toString() == " ") return 1;
+        if( jComboBox2.getSelectedItem().toString() == " ") return 1;
+        
         ResultSet rs = stm.executeQuery("SELECT Nam FROM BAOCAOSUDUNGTHUOC ;");
         if(!rs.next()) return 0;
         while (rs.next()) jComboBox2.addItem(String.valueOf(rs.getInt("Nam")));
         
-        int i=0;
-        while (i<12) {
-            i++;
-            jComboBox1.addItem(String.valueOf(i));
-        }
+        rs = stm.executeQuery("SELECT DISTINCT Thang FROM BAOCAOSUDUNGTHUOC ;");
+        if(!rs.next()) return 0;
+        while (rs.next()) jComboBox1.addItem(String.valueOf(rs.getInt("Thang")));
+        
+        
         
         String thang = jComboBox1.getSelectedItem().toString();
         String nam = jComboBox1.getSelectedItem().toString();
@@ -173,6 +184,11 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
 
         placeholderTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         placeholderTextField1.setPlaceholder("Tìm kiếm...");
+        placeholderTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                placeholderTextField1KeyPressed(evt);
+            }
+        });
         jPanel2.add(placeholderTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 22, 410, 40));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, -10, 1000, 80));
@@ -448,6 +464,13 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jComboBox2ItemStateChanged
+
+    private void placeholderTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_placeholderTextField1KeyPressed
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel> (model);
+        table.setRowSorter(sorter);
+        sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
+    }//GEN-LAST:event_placeholderTextField1KeyPressed
 
     /**
      * @param args the command line arguments

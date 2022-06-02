@@ -20,7 +20,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -64,16 +67,20 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }
-    public void LoadData()throws SQLException{
+     public void LoadData()throws SQLException{
         
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
         Statement stm = conn.createStatement();        
         
-        ResultSet rs = stm.executeQuery("SELECT CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap ,SoLuongNhap,TenDonViTinh ,DonGiaNhap ,DonGiaBan "
-                + "                      FROM THUOC, CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC "
-                + "                      WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  "
-                + "                      AND CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc ;");
+        ResultSet rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc,CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n" +
+                                        ",SoLuongTon,TenDonViTinh ,DonGiaNhap ,DonGiaBan \n" +
+                                        "FROM THUOC, CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC , (SELECT   max(ct1.MaPhieuNhapThuoc) MaPhieuNhapThuoc\n" +
+                                        "                                                   FROM CT_PHIEUNHAPTHUOC ct1													\n" +
+                                        "                                                   GROUP BY MaThuoc) CTNHAPTHUOC \n" +
+                                        "WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  \n" +
+                                        "AND CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc\n" +
+                                        "AND CTNHAPTHUOC.MaPhieuNhapThuoc = CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc");
         
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
@@ -83,11 +90,12 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
             row.add(model.getRowCount()+1);
             row.add(rs.getString("MaThuoc"));
             row.add(rs.getString("TenThuoc"));
-            row.add(rs.getString("NgayNhap"));
-            //if(rs.getInt("SoLuongDung")>0)
-                //row.add(String.valueOf(rs.getInt("SoLuongNhap") - rs.getInt("SoLuongDung")));
-            //else
-                row.add(String.valueOf(rs.getInt("SoLuongNhap")));
+            
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");        
+            String strDate = formatter.format(rs.getDate("NgayNhap"));
+            row.add(strDate);
+            
+            row.add(String.valueOf(rs.getInt("SoLuongTon")));
             row.add(rs.getString("TenDonViTinh"));
             row.add(String.valueOf(rs.getInt("DonGiaNhap")));
             row.add(String.valueOf(rs.getInt("DonGiaBan")));
@@ -133,6 +141,8 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         ThemThuoc = new javax.swing.JButton();
         QuayLai = new javax.swing.JButton();
         ThemLoaiThuocMoi = new javax.swing.JButton();
+        Themdv = new javax.swing.JButton();
+        themcd = new javax.swing.JButton();
 
         placeholderTextField2.setText("placeholderTextField2");
 
@@ -288,10 +298,8 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                 "STT", "Mã thuốc", "Tên thuốc", "Ngày nhập", "Lượng tồn", "ĐVT", "Giá nhập", "Giá bán", ""
             }
         ));
-        table.setCellSelectionEnabled(false);
         table.setEditingColumn(0);
         table.setEditingRow(0);
-        table.setRowSelectionAllowed(true);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableMouseClicked(evt);
@@ -374,12 +382,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                 ThemThuocMouseClicked(evt);
             }
         });
-        ThemThuoc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ThemThuocActionPerformed(evt);
-            }
-        });
-        getContentPane().add(ThemThuoc, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 80, 200, 40));
+        getContentPane().add(ThemThuoc, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 70, 200, 40));
 
         QuayLai.setBackground(new java.awt.Color(255, 204, 204));
         QuayLai.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -390,11 +393,6 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         QuayLai.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 QuayLaiMouseClicked(evt);
-            }
-        });
-        QuayLai.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                QuayLaiActionPerformed(evt);
             }
         });
         getContentPane().add(QuayLai, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 520, 160, 40));
@@ -410,12 +408,33 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                 ThemLoaiThuocMoiMouseClicked(evt);
             }
         });
-        ThemLoaiThuocMoi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ThemLoaiThuocMoiActionPerformed(evt);
+        getContentPane().add(ThemLoaiThuocMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 520, 200, 40));
+
+        Themdv.setBackground(new java.awt.Color(255, 204, 204));
+        Themdv.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        Themdv.setForeground(new java.awt.Color(0, 99, 28));
+        Themdv.setText("Thêm đơn vị");
+        Themdv.setToolTipText("");
+        Themdv.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Themdv.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ThemdvMouseClicked(evt);
             }
         });
-        getContentPane().add(ThemLoaiThuocMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 520, 200, 40));
+        getContentPane().add(Themdv, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 520, 200, 40));
+
+        themcd.setBackground(new java.awt.Color(255, 204, 204));
+        themcd.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        themcd.setForeground(new java.awt.Color(0, 99, 28));
+        themcd.setText("Thêm cách dùng\n");
+        themcd.setToolTipText("");
+        themcd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        themcd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                themcdMouseClicked(evt);
+            }
+        });
+        getContentPane().add(themcd, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 520, 200, 40));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -462,20 +481,47 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private void TyGiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TyGiaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TyGiaActionPerformed
-
-    private void LuuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LuuMouseClicked
+    public void LUU()throws SQLException{
         tyle = Integer.valueOf(TyGia.getText());
+        
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();  
+        
+        stm.executeUpdate("UPDATE CT_PHIEUNHAPTHUOC set DonGiaBan = DonGiaNhap*" + tyle/100 );
+         
+        stm.close();
+        conn.close();
+        TyGia.setText(String.valueOf(tyle));
+    }
+    private void LuuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LuuMouseClicked
+        JOptionPane.showMessageDialog(this, "Bạn có chắc đổi tỷ lệ giá bán hay không?", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        try
+        {
+            LUU();
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+        try
+        {
+            LoadData();
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_LuuMouseClicked
 
     private void ThemThuocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThemThuocMouseClicked
-        AddNewMedicine frame = new AddNewMedicine();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new AddNewMedicine().setVisible(true);
+            }
+        });
         this.dispose();
-        frame.setVisible(true);
     }//GEN-LAST:event_ThemThuocMouseClicked
-
-    private void ThemThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemThuocActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ThemThuocActionPerformed
 
     private void QuayLaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_QuayLaiMouseClicked
         Home frame = new Home();
@@ -486,12 +532,6 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private void LuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LuuActionPerformed
         tyle = Integer.valueOf(TyGia.getText());
     }//GEN-LAST:event_LuuActionPerformed
-
-    private void QuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QuayLaiActionPerformed
-        Home frame = new Home();
-        this.dispose();
-        frame.setVisible(true);
-    }//GEN-LAST:event_QuayLaiActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         ClinicManagement form = new ClinicManagement();
@@ -515,19 +555,35 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_ThemLoaiThuocMoiMouseClicked
 
-    private void ThemLoaiThuocMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemLoaiThuocMoiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ThemLoaiThuocMoiActionPerformed
-
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         int row = table.getSelectedRow();
         String mathuoc = table.getModel().getValueAt(row, 1).toString();
         ManagementDrugUse.SetData(mathuoc);
         java.awt.EventQueue.invokeLater(() -> {
-            new ManagementDrugUse().setVisible(true);
+            try {
+                new ManagementDrugUse().setVisible(true);
+            } catch (Exception ex) {
+                Logger.getLogger(MedicineUsageManagement.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         this.dispose();
     }//GEN-LAST:event_tableMouseClicked
+
+    private void ThemdvMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThemdvMouseClicked
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new DanhSachDonViTinh().setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_ThemdvMouseClicked
+
+    private void themcdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_themcdMouseClicked
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new DanhSachCachDung().setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_themcdMouseClicked
 
     /**
      * @param args the command line arguments
@@ -581,6 +637,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private javax.swing.JLabel Tentaikhoan;
     private javax.swing.JButton ThemLoaiThuocMoi;
     private javax.swing.JButton ThemThuoc;
+    private javax.swing.JButton Themdv;
     private javax.swing.JTextField TyGia;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
@@ -599,5 +656,6 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private customview.PlaceholderTextField placeholderTextField1;
     private customview.PlaceholderTextField placeholderTextField2;
     private javax.swing.JTable table;
+    private javax.swing.JButton themcd;
     // End of variables declaration//GEN-END:variables
 }

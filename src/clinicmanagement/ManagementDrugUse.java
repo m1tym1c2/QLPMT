@@ -1,12 +1,20 @@
 package clinicmanagement;
 
+import static clinicmanagement.AddNewMedicine.scaleImage;
 import java.awt.Color;
 import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -23,8 +31,8 @@ public class ManagementDrugUse extends javax.swing.JFrame {
     static void SetData(String Mathuoc) {
         mathuoc = Mathuoc;
     }
-    public ManagementDrugUse() {
-        initComponents();    
+    public ManagementDrugUse() throws Exception {
+         initComponents();    
         getContentPane().setBackground(Color.white);
         it = this;
         try
@@ -36,28 +44,52 @@ public class ManagementDrugUse extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }
-    public void LoadData()throws SQLException{
+    public void LoadData()throws SQLException, MalformedURLException, IOException, Exception{
         
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
         Statement stm = conn.createStatement();        
         
-        ResultSet rs = stm.executeQuery("SELECT TenThuoc ,SoLuongTon,TenDonViTinh , LoaiThuoc, TenCachDung ,DonGiaNhap ,DonGiaBan "
-                + "                      FROM THUOC, CT_PHIEUNHAPTHUOC , CACHDUNG "
-                + "                      WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  "
-                + "                      AND  THUOC.MaCachDung  = CACHDUNG.MaCachDung "
-                + "                      AND CT_PHIEUNHAPTHUOC.MaThuoc = N'"+ mathuoc +"';");
+        ResultSet rs = stm.executeQuery("SELECT TenThuoc ,SoLuongTon, TenDonViTinh , LoaiThuoc, TenCachDung, FileAnhThuoc  "
+                + "                      FROM THUOC  , CACHDUNG "
+                + "                      WHERE THUOC.MaCachDung  = CACHDUNG.MaCachDung "
+                + "                      AND MaThuoc = N'"+ mathuoc +"';");
         
         rs.next();
         jTextField1.setText(rs.getString("TenThuoc"));
         jTextField3.setText(rs.getString("LoaiThuoc"));
         jTextArea1.setText(rs.getString("TenCachDung"));
         jComboBox1.addItem(rs.getString("TenDonViTinh"));
-        jLabel7.setText(String.valueOf(rs.getString("SoLuongTon")));
-        jLabel11.setText(String.valueOf(rs.getString("DonGiaNhap")));
-        jLabel13.setText(String.valueOf(rs.getString("DonGiaBan")));
+        jLabel7.setText(String.valueOf(rs.getInt("SoLuongTon")));        
+        // load ảnh                
+        ImageIcon ii = new ImageIcon(scaleImage(310, 320, ImageIO.read(new File(rs.getString("FileAnhThuoc")))));//get the image from file chooser and scale it to match JLabel size
+        Anh.setIcon(ii);        
+        
         rs = stm.executeQuery("SELECT TenDonViTinh  FROM DONVITINH");
         while(rs.next()) jComboBox1.addItem(rs.getString("TenDonViTinh"));
+        
+        rs = stm.executeQuery("SELECT NgayNhap ,SoLuongNhap ,DonGiaNhap ,DonGiaBan "
+                + "                      FROM  CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC "
+                + "                      WHERE CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc "
+                + "                      AND CT_PHIEUNHAPTHUOC.MaThuoc = N'"+ mathuoc +"';");
+        
+        //load bảng
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+        while (rs.next())
+        {
+            Vector row = new Vector();          
+            row.add(model.getRowCount()+1);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");        
+            String strDate = formatter.format(rs.getDate("NgayNhap"));
+            row.add(strDate);
+            row.add(String.valueOf(rs.getInt("SoLuongNhap")));
+            row.add(String.valueOf(rs.getInt("DonGiaNhap")));
+            row.add(String.valueOf(rs.getInt("DonGiaBan")));
+            model.getRowCount();
+            model.addRow(row);            
+        }
+        
         rs.close(); 
         stm.close();
         conn.close();
@@ -84,16 +116,14 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         XOAthuoc = new customview.MyButton();
         SUA = new customview.MyButton();
         buttonBack = new customview.MyButton();
-        jLabel14 = new javax.swing.JLabel();
+        Anh = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -163,7 +193,6 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 130, -1));
 
         jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField1.setText("Penicillin");
         jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel3.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 70, 280, -1));
 
@@ -176,15 +205,13 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 150, 130, -1));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setText("160");
-        jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 150, 280, -1));
+        jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 150, 280, 20));
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel8.setText("Loại thuốc:");
         jPanel3.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 190, 95, -1));
 
         jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField3.setText("Kháng sinh");
         jTextField3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel3.add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 190, 280, -1));
 
@@ -195,27 +222,10 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("Sử dụng 500mg, uống 2 - 3 lần mỗi ngày.  Tối đa 2g/ngày. Liệu trình tối đa 10 ngày. ");
         jTextArea1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jScrollPane1.setViewportView(jTextArea1);
 
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 240, 280, 70));
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel10.setText("Đơn giá nhập:");
-        jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 330, -1, -1));
-
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel11.setText("4000$");
-        jPanel3.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 330, 280, -1));
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel12.setText("Đơn giá bán:");
-        jPanel3.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 370, 120, -1));
-
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel13.setText("4000$");
-        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 370, 280, -1));
 
         jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jPanel3.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 110, 280, -1));
@@ -254,9 +264,24 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         });
         jPanel3.add(buttonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 410, 120, -1));
 
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/demo.jpg"))); // NOI18N
-        jLabel14.setText("jLabel14");
-        jPanel3.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 310, 320));
+        Anh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/demo.jpg"))); // NOI18N
+        Anh.setText("jLabel14");
+        jPanel3.add(Anh, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 310, 320));
+
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "STT", "Ngày nhập", "SL", "Giá nhập", "Giá bán"
+            }
+        ));
+        jScrollPane2.setViewportView(table);
+
+        jPanel3.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 320, -1, 80));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -277,16 +302,6 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void buttonBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonBackMouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MedicineUsageManagement().setVisible(true);
-            }
-        });
-        this.dispose();
-    }//GEN-LAST:event_buttonBackMouseClicked
-    
     public void DELETE()throws SQLException{        
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
@@ -348,9 +363,19 @@ public class ManagementDrugUse extends javax.swing.JFrame {
             {
                 JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
             }
-        
+
     }//GEN-LAST:event_SUAMouseClicked
 
+    private void buttonBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonBackMouseClicked
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MedicineUsageManagement().setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_buttonBackMouseClicked
+    
+    
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -364,11 +389,16 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         }
         
         java.awt.EventQueue.invokeLater(() -> {
-            new ManagementDrugUse().setVisible(true);
+            try {
+                new ManagementDrugUse().setVisible(true);
+            } catch (Exception ex) {
+                Logger.getLogger(ManagementDrugUse.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Anh;
     private customview.MyButton SUA;
     private customview.MyButton XOAthuoc;
     private javax.swing.JLabel avatar;
@@ -378,11 +408,6 @@ public class ManagementDrugUse extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -393,8 +418,10 @@ public class ManagementDrugUse extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }
