@@ -4,10 +4,34 @@
  */
 package clinicmanagement;
 
+import static clinicmanagement.AddNewMedicine.scaleImage;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.WindowConstants;
 
 /**
@@ -20,14 +44,100 @@ public class Home extends javax.swing.JFrame {
      * Creates new form Home
      */
     private boolean User = false;
+    private String CMND = "";
+    private String MaChucNang = "";
 
     public Home() {
         initComponents();
-
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         getContentPane().setBackground(Color.white);
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         jPanel1.setVisible(false);
+    }
+
+    public Home(String s) {
+        initComponents();
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        getContentPane().setBackground(Color.white);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        jPanel1.setVisible(false);
+        CMND = s;
+        if (CMND == "admin") {
+            MaChucNang = "000";
+        }
+        RetriveData();
+    }
+
+    public void setAccount(String s) {
+        CMND = s;
+    }
+
+    private void RetriveData() {
+        if ("admin".equals(CMND)) {
+            ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+            Anhdaidien.setIcon(iconnull);
+            Tentaikhoan.setText("admin");
+        } else {
+            try {
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT TenNhanVien, HinhAnh, NHANVIEN.MaNhanVien, CHUCNANG.MaChucNang, TenChucNang FROM NHANVIEN, CHUCNANG, PHANQUYEN "
+                        + "WHERE CMND = '" + CMND + "' AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang");
+                if (rs.next()) {
+                    Tentaikhoan.setText(rs.getString("TenNhanVien"));
+                    MaChucNang = rs.getString("TenChucNang");
+                    try {
+
+                        URL url = getClass().getResource(rs.getString("HinhAnh"));
+                        File file = new File(url.getPath());
+                        BufferedImage master = ImageIO.read(file);
+                        try {
+                            master = scaleImage(64, 64, master);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        int diameter = Math.min(master.getWidth(), master.getHeight());
+                        BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D g2d = mask.createGraphics();
+                        g2d.fillOval(0, 0, diameter - 1, diameter - 1);
+                        g2d.dispose();
+
+                        BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
+                        g2d = masked.createGraphics();
+                        int x = (diameter - master.getWidth()) / 2;
+                        int y = (diameter - master.getHeight()) / 2;
+                        g2d.drawImage(master, x, y, null);
+                        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+                        g2d.drawImage(mask, 0, 0, null);
+                        g2d.dispose();
+                        ImageIcon icon = new ImageIcon(masked);
+                        Anhdaidien.setIcon(icon);
+                    } catch (InvalidPathException | NullPointerException | IOException ex) {
+                        ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+                        Anhdaidien.setIcon(iconnull);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra", "Đăng nhập thất bại", 2);
+                }
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public static BufferedImage scaleImage(int w, int h, BufferedImage img) throws Exception {
+        BufferedImage bi;
+        bi = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
+        Graphics2D g2d = (Graphics2D) bi.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+        g2d.drawImage(img, 0, 0, w, h, null);
+        g2d.dispose();
+        return bi;
     }
 
     /**
@@ -262,7 +372,7 @@ public class Home extends javax.swing.JFrame {
     private void ThongTinCaNhanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThongTinCaNhanMouseClicked
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true);
+                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true, CMND);
                 dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 for (WindowListener wl : dialog.getWindowListeners()) {
                     dialog.removeWindowListener(wl);
@@ -271,7 +381,7 @@ public class Home extends javax.swing.JFrame {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         dialog.dispose();
-                        Home frame = new Home();
+                        Home frame = new Home(CMND);
                         frame.setVisible(true);
                     }
                 });
@@ -282,15 +392,26 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_ThongTinCaNhanMouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
-        MedicineUsageManagement form = new MedicineUsageManagement();
-        form.setVisible(true);
-        this.dispose();
+        if (MaChucNang == "000" || MaChucNang == "003") {
+            MedicineUsageManagement form = new MedicineUsageManagement();
+            form.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền vào chức năng này", "Lỗi", 2);
+        }
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void DangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DangXuatActionPerformed
-        ClinicManagement form = new ClinicManagement();
+        try{
+        Writer output = new BufferedWriter(new FileWriter("temp.log", false));
+        ClinicManagement form;
+        form = new ClinicManagement();
         form.setVisible(true);
         this.dispose();
+        }
+        catch (Exception e){
+            
+        }
     }//GEN-LAST:event_DangXuatActionPerformed
 
     /**

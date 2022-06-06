@@ -4,11 +4,29 @@
  */
 package clinicmanagement;
 
+import static clinicmanagement.Home.scaleImage;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.WindowConstants;
 
 /**
@@ -20,11 +38,86 @@ public class UserInformation extends javax.swing.JDialog {
     /**
      * Creates new form UserInformation
      */
+    static String CMND = "";
+
     public UserInformation(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+    }
+
+    public UserInformation(java.awt.Frame parent, boolean modal, String CMND) {
+        super(parent, modal);
+        initComponents();
+        this.CMND = CMND;
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        RetriveData();
+    }
+
+    private void RetriveData() {
+        if ("admin".equals(CMND)) {
+            jLabel3.setText("admin");
+            jLabel5.setText(CMND);
+            jLabel7.setText("1/1/2000");
+            jLabel9.setText("admin");
+            jLabel11.setText("admin");
+            jLabel13.setText("admin");
+            jLabel15.setText("admin");
+            ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+            jLabel1.setIcon(iconnull);
+        } else {
+            try {
+                SimpleDateFormat simpDate = new SimpleDateFormat("dd/MM/yyyy");
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT NHANVIEN.MaNhanVien, NgaySinh, DiaChi, Email, TenNhanVien, HinhAnh, CHUCNANG.MaChucNang, TenChucNang FROM NHANVIEN , PHANQUYEN, CHUCNANG "
+                        + "WHERE CMND = '" + CMND + "' AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang");
+                if (rs.next()) {
+                    jLabel3.setText(rs.getString("TenNhanVien"));
+                    jLabel5.setText(CMND);
+                    Date date = rs.getDate("NgaySinh");
+                    jLabel7.setText(simpDate.format(date));
+                    jLabel9.setText("<html>" + rs.getString("DiaChi") + "</html>");
+                    jLabel11.setText(rs.getString("TenChucNang"));
+                    jLabel13.setText(rs.getString("Email"));
+                    jLabel15.setText(rs.getString("MaNhanVien"));
+                    try {
+                        URL url = getClass().getResource(rs.getString("HinhAnh"));
+                        File file = new File(url.getPath());
+                        BufferedImage master = ImageIO.read(file);
+                        try {
+                            master = scaleImage(144, 176, master);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        ImageIcon icon = new ImageIcon(master);
+                        jLabel1.setIcon(icon);
+                    } catch (InvalidPathException | NullPointerException | IOException ex) {
+                        ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+                        jLabel1.setIcon(iconnull);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Sai mã nhân viên", "Đăng nhập thất bại", 2);
+                }
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public static BufferedImage scaleImage(int w, int h, BufferedImage img) throws Exception {
+        BufferedImage bi;
+        bi = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
+        Graphics2D g2d = (Graphics2D) bi.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+        g2d.drawImage(img, 0, 0, w, h, null);
+        g2d.dispose();
+        return bi;
     }
 
     /**
@@ -120,7 +213,7 @@ public class UserInformation extends javax.swing.JDialog {
         jLabel12.setForeground(new java.awt.Color(0, 166, 84));
         jLabel12.setText("Email: ");
         jLabel12.setAlignmentY(5.0F);
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 190, -1, -1));
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(206, 190, -1, -1));
 
         jLabel13.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(0, 94, 105));
