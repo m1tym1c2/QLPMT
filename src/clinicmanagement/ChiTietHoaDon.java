@@ -1,6 +1,12 @@
 package clinicmanagement;
 
+import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,7 +15,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.table.DefaultTableModel;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -18,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
 public class ChiTietHoaDon extends javax.swing.JDialog {
 
     private Connection connection = null;
-    static String maPhieuKhamBenh = "PKB3";
+    static String maPhieuKhamBenh = "";
 
     public String getMaPhieuKhamBenh() {
         return maPhieuKhamBenh;
@@ -28,11 +36,8 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
         this.maPhieuKhamBenh = maPhieuKhamBenh;
     }
 
-    public ChiTietHoaDon(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
-        getContentPane().setBackground(Color.white);
-
+    @Override
+    public void setVisible(boolean b) {
         try {
             DatabaseConnection databaseConnection = new DatabaseConnection();
             connection = databaseConnection.getConnection(this);
@@ -40,7 +45,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
             //PHIEUKHAMBENH, CT_PHIEUKHAMBENH, LOAIBENH, BENHNHAN, THUOC, DONVITINH, CACHDUNG
             ResultSet rs = statement.executeQuery("SELECT * FROM PHIEUKHAMBENH, BENHNHAN, LOAIBENH "
                     + "WHERE PHIEUKHAMBENH.MaBenhNhan = BENHNHAN.MaBenhNhan AND LOAIBENH.MaLoaiBenh = PHIEUKHAMBENH.MaLoaiBenh "
-                    + "AND PHIEUKHAMBENH.MaPhieuKhamBenh = '" + maPhieuKhamBenh +"'");
+                    + "AND PHIEUKHAMBENH.MaPhieuKhamBenh = '" + maPhieuKhamBenh + "'");
 
             rs.next();
             name.setText(rs.getString("TenBenhNhan"));
@@ -52,7 +57,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
 
             rs = statement.executeQuery("SELECT * FROM CT_PHIEUKHAMBENH, THUOC, DONVITINH "
                     + "WHERE CT_PHIEUKHAMBENH.MaThuoc = THUOC.MaThuoc AND THUOC.TenDonViTinh = DONVITINH.TenDonViTinh "
-                    + "AND CT_PHIEUKHAMBENH.MaPhieuKhamBenh = '" + maPhieuKhamBenh+"'");
+                    + "AND CT_PHIEUKHAMBENH.MaPhieuKhamBenh = '" + maPhieuKhamBenh + "'");
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
             int i = 0;
@@ -67,10 +72,20 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
                 DefaultTableModel tbModel = (DefaultTableModel) jTable1.getModel();
                 tbModel.addRow(data);
             }
-            tongTien.setText((sum + money) + " VND");
+            tongTien.setText((sum + money) + " VND");            
         } catch (SQLException ex) {
             Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
         }
+        finally
+        {
+            super.setVisible(b);
+        }
+    }
+
+    public ChiTietHoaDon(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+        getContentPane().setBackground(Color.white);
     }
 
     @SuppressWarnings("unchecked")
@@ -159,6 +174,11 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 99, 28));
         jButton1.setText("In hóa đơn");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -330,7 +350,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
                 ps.setString(1, maPhieuKhamBenh);
                 ps.executeUpdate();
             }
-            
+
             try ( PreparedStatement ps = connection.prepareStatement("DELETE FROM PHIEUKHAMBENH WHERE MaPhieuKhamBenh = ?")) {
                 ps.setString(1, maPhieuKhamBenh);
                 ps.executeUpdate();
@@ -351,6 +371,17 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
         });
         this.setVisible(false);
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+            var capture = new Robot().createScreenCapture(screenRect);
+            DateTime time = DateTime.now();
+            ImageIO.write(capture, "png", new File("D:\\" + time.toString("yyyy_MM_dd_HH_mm_ss") + ".png"));
+        } catch (AWTException | IOException ex) {
+            Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

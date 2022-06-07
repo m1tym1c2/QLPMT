@@ -1,6 +1,13 @@
 package clinicmanagement;
 
+import java.awt.AWTException;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,17 +15,20 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -32,7 +42,7 @@ public class BillList extends javax.swing.JFrame {
 
     public BillList() {
         initComponents();
-
+        btnInvoiceDetails.setEnabled(false);
         Calendar ca = new GregorianCalendar();
         String day = ca.get(Calendar.DAY_OF_MONTH) + "";
         String month = ca.get(Calendar.MONTH) + 1 + "";
@@ -142,10 +152,11 @@ public class BillList extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         buttonAddEmployee = new customview.MyButton();
-        buttonSalaryEmployee = new customview.MyButton();
+        btnInvoiceDetails = new customview.MyButton();
         buttonBack = new customview.MyButton();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        buttonSalaryEmployee = new customview.MyButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -196,17 +207,17 @@ public class BillList extends javax.swing.JFrame {
 
         tableDark1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Mã hóa đơn", "Tên khách hàng", "Ngày khám", "Tiền khám", "Tiền thuốc", "Tổng", ""
+                "STT", "Mã hóa đơn", "Tên khách hàng", "Ngày khám", "Tiền khám", "Tiền thuốc", "Tổng"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -215,6 +226,11 @@ public class BillList extends javax.swing.JFrame {
         });
         tableDark1.setShowHorizontalLines(true);
         tableDark1.setShowVerticalLines(true);
+        tableDark1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDark1MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tableDark1);
 
         jPanel3.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 134, 970, -1));
@@ -237,12 +253,22 @@ public class BillList extends javax.swing.JFrame {
         buttonAddEmployee.setText("In danh sách hóa đơn");
         buttonAddEmployee.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         buttonAddEmployee.setRadius(15);
+        buttonAddEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAddEmployeeActionPerformed(evt);
+            }
+        });
         jPanel3.add(buttonAddEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 590, -1, -1));
 
-        buttonSalaryEmployee.setText("Lập bảng báo cáo tháng");
-        buttonSalaryEmployee.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        buttonSalaryEmployee.setRadius(15);
-        jPanel3.add(buttonSalaryEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 590, -1, -1));
+        btnInvoiceDetails.setText("Chi tiết hóa đơn");
+        btnInvoiceDetails.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnInvoiceDetails.setRadius(15);
+        btnInvoiceDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInvoiceDetailsActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnInvoiceDetails, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 590, -1, -1));
 
         buttonBack.setText("Quay lại");
         buttonBack.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -264,6 +290,16 @@ public class BillList extends javax.swing.JFrame {
             }
         });
         jPanel3.add(jDateChooser2, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 90, 280, -1));
+
+        buttonSalaryEmployee.setText("Lập bảng báo cáo tháng");
+        buttonSalaryEmployee.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buttonSalaryEmployee.setRadius(15);
+        buttonSalaryEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSalaryEmployeeActionPerformed(evt);
+            }
+        });
+        jPanel3.add(buttonSalaryEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 590, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -300,6 +336,45 @@ public class BillList extends javax.swing.JFrame {
         sorter.setRowFilter(RowFilter.regexFilter(searchView.getText()));
     }//GEN-LAST:event_searchViewInputMethodTextChanged
 
+    private void tableDark1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDark1MouseClicked
+        if (tableDark1.getSelectedRow() >= 0)
+            btnInvoiceDetails.setEnabled(true);
+        else
+            btnInvoiceDetails.setEnabled(false);
+    }//GEN-LAST:event_tableDark1MouseClicked
+
+    private void buttonSalaryEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSalaryEmployeeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonSalaryEmployeeActionPerformed
+
+    private void btnInvoiceDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInvoiceDetailsActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
+        try {
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            connection = databaseConnection.getConnection(jLabel);
+            Statement statement = connection.createStatement();
+
+            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON WHERE HOADON.MaHoaDon = " + model.getValueAt(tableDark1.getSelectedRow(), 1).toString());
+            ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(this, rootPaneCheckingEnabled);
+            rs.next();
+            chiTietHoaDon.setMaPhieuKhamBenh(rs.getString("MaPhieuKhamBenh"));
+            chiTietHoaDon.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnInvoiceDetailsActionPerformed
+
+    private void buttonAddEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddEmployeeActionPerformed
+        try {
+            Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+            var capture = new Robot().createScreenCapture(screenRect);
+            DateTime time = DateTime.now();
+            ImageIO.write(capture, "png", new File("D:\\" + time.toString("yyyy_MM_dd_HH_mm_ss") + ".png"));
+        } catch (AWTException | IOException ex) {
+            Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_buttonAddEmployeeActionPerformed
+
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -319,6 +394,7 @@ public class BillList extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel avatar;
+    private customview.MyButton btnInvoiceDetails;
     private customview.MyButton buttonAddEmployee;
     private customview.MyButton buttonBack;
     private customview.MyButton buttonOption;
