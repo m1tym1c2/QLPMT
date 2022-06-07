@@ -154,12 +154,15 @@ public class LuongNhanVien extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(208, 242, 224));
         jPanel2.setPreferredSize(new java.awt.Dimension(973, 87));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Anhdaidien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Anh/image 6.png"))); // NOI18N
+        jPanel2.add(Anhdaidien, new org.netbeans.lib.awtextra.AbsoluteConstraints(716, 0, -1, -1));
 
         Tentaikhoan.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         Tentaikhoan.setForeground(new java.awt.Color(0, 84, 42));
         Tentaikhoan.setText("Lê Phi Long\n");
+        jPanel2.add(Tentaikhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 26, -1, -1));
 
         Nutmuiten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Anh/Screenshot 2022-04-26 103146.png"))); // NOI18N
         Nutmuiten.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -167,69 +170,23 @@ public class LuongNhanVien extends javax.swing.JFrame {
                 NutmuitenMouseClicked(evt);
             }
         });
+        jPanel2.add(Nutmuiten, new org.netbeans.lib.awtextra.AbsoluteConstraints(936, 26, 44, -1));
 
         Anhdautrang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Anh/Untitled-2.png"))); // NOI18N
+        jPanel2.add(Anhdautrang, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, -1));
 
         Tentrang.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         Tentrang.setForeground(new java.awt.Color(0, 84, 42));
         Tentrang.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         Tentrang.setText("QUẢN LÝ NHÂN VIÊN\n");
+        jPanel2.add(Tentrang, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 19, -1, 36));
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/277027184_555937372561581_5654092174016176725_n.png"))); // NOI18N
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 20, -1, -1));
 
         placeholderTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         placeholderTextField1.setPlaceholder("Tìm kiếm...");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(Anhdautrang)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Tentrang)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 325, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addGap(28, 28, 28)
-                .addComponent(Anhdaidien, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Tentaikhoan)
-                .addGap(14, 14, 14)
-                .addComponent(Nutmuiten, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap(354, Short.MAX_VALUE)
-                    .addComponent(placeholderTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 290, Short.MAX_VALUE)))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Nutmuiten)
-                    .addComponent(Tentaikhoan))
-                .addGap(23, 23, 23))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Anhdaidien)
-                    .addComponent(Anhdautrang)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(Tentrang, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                            .addGap(27, 27, 27)
-                            .addComponent(jLabel4))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(placeholderTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
+        jPanel2.add(placeholderTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 10, 346, 40));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 990, 70));
 

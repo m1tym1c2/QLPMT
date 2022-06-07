@@ -4,16 +4,36 @@
  */
 package clinicmanagement;
 
+import static clinicmanagement.Home.scaleImage;
+import static clinicmanagement.UserInformation.scaleImage;
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -27,6 +47,9 @@ public class StaffInformation extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
+    private static String CMND = "";
+    private static String MANV = "";
+
     public StaffInformation(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -55,6 +78,125 @@ public class StaffInformation extends javax.swing.JDialog {
         }
     }
 
+    public StaffInformation(java.awt.Frame parent, boolean modal, String MANV, String CMND) {
+        super(parent, modal);
+        initComponents();
+        getContentPane().setBackground(Color.white);
+        Calendar ca = new GregorianCalendar();
+        String day = ca.get(Calendar.DAY_OF_MONTH) + "";
+        String month = ca.get(Calendar.MONTH) + 1 + "";
+        String year = ca.get(Calendar.YEAR) + "";
+        this.CMND = CMND;
+        this.MANV = MANV;
+        if (day.length() == 1) {
+            day = "0" + day;
+        }
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
+
+        String dd = year + "-" + month + "-" + day;
+        String ddd = "2022-01-01";
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dd);
+            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(ddd);
+            jDateChooser1.setDate(date1);
+            jDateChooser2.setDate(date);
+            jDateChooser1.setMaxSelectableDate(date);
+            jDateChooser2.setMaxSelectableDate(date);
+        } catch (ParseException ex) {
+            Logger.getLogger(StaffInformation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        JTableHeader header = table.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer(table));
+        RetriveData();
+        InitData();
+    }
+
+    private void RetriveData() {
+        try {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            SimpleDateFormat simpDate = new SimpleDateFormat("dd/MM/yyyy");
+            ResultSet rs = stm.executeQuery("SELECT * FROM CHUCNANG WHERE MaChucNang <> '000'");
+            while (rs.next()) {
+                cbb.addItem(rs.getString("TenChucNang"));
+            }
+            rs = stm.executeQuery("SELECT * FROM NHANVIEN, CHUCNANG, PHANQUYEN WHERE NhanVien.MaNhanVien = '" + MANV + "' AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang"
+                    + " AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien");
+            if (rs.next()) {
+
+                FTen.setText(rs.getString("TenNhanVien"));
+                MaNV.setText(rs.getString("MaNhanVien"));
+                FCMND.setText(rs.getString("CMND"));
+                Date date = rs.getDate("NgaySinh");
+                FNgaySinh.setText(simpDate.format(date));
+                FDiaChi.setText(rs.getString("DiaChi"));
+                cbb.setSelectedItem(rs.getString("TenChucNang"));
+                FEmail.setText(rs.getString("Email"));
+                FLuong.setText(rs.getString("LuongCB"));
+                try {
+
+                    URL url = getClass().getResource(rs.getString("HinhAnh"));
+                    File file = new File(url.getPath());
+                    BufferedImage master = ImageIO.read(file);
+                    try {
+                        master = scaleImage(310, 320, master);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    ImageIcon icon = new ImageIcon(master);
+                    Anhdaidien.setIcon(icon);
+                } catch (InvalidPathException | NullPointerException | IOException ex) {
+                    ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+                    Anhdaidien.setIcon(iconnull);
+                }
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }
+
+    private void InitData() {
+        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+        dtm.setRowCount(0);
+        try {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            SimpleDateFormat si = new SimpleDateFormat("yyyy-MM-dd");
+
+            ResultSet rs = stm.executeQuery("SELECT * FROM HOADON, BENHNHAN, phieukhambenh Where benhnhan.Mabenhnhan = phieukhambenh.mabenhnhan AND hoadon.maphieukhambenh = phieukhambenh.maphieukhambenh AND hoadon.manhanvien = '" + MANV + "'"
+                    + " AND phieukhambenh.ngaykham >= '" + si.format(jDateChooser1.getDate()) + "' AND phieukhambenh.ngaykham <= '" + si.format(jDateChooser2.getDate()) + "'");
+            SimpleDateFormat simpDate = new SimpleDateFormat("dd/MM/yyyy");
+            while (rs.next()) {
+                Vector row = new Vector();
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                row.add(rs.getString("MaHoaDon"));
+                row.add(rs.getString("TenBenhnhan"));
+                Date date = rs.getDate("NgayKham");
+                row.add(simpDate.format(date));
+                row.add(rs.getString("GiaTriHoaDon"));
+                model.getRowCount();
+                model.addRow(row);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }
+
+    public static BufferedImage scaleImage(int w, int h, BufferedImage img) throws Exception {
+        BufferedImage bi;
+        bi = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
+        Graphics2D g2d = (Graphics2D) bi.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+        g2d.drawImage(img, 0, 0, w, h, null);
+        g2d.dispose();
+        return bi;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -66,32 +208,33 @@ public class StaffInformation extends javax.swing.JDialog {
 
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        FTen = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        MaNV = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        FCMND = new javax.swing.JTextField();
+        FNgaySinh = new javax.swing.JTextField();
+        FEmail = new javax.swing.JTextField();
+        FLuong = new javax.swing.JTextField();
+        cbb = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         myButton1 = new customview.MyButton();
         myButton2 = new customview.MyButton();
         myButton3 = new customview.MyButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tableDark1 = new customview.MyTable();
-        avatar = new javax.swing.JLabel();
+        Anhdaidien = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        FDiaChi = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thong tin nhan vien");
@@ -108,11 +251,10 @@ public class StaffInformation extends javax.swing.JDialog {
         jLabel3.setText("CMND:");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 120, -1, -1));
 
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField1.setText("Trần Ngọc Tiến");
-        jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 80, 226, -1));
+        FTen.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        FTen.setText("Trần Ngọc Tiến");
+        FTen.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        getContentPane().add(FTen, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 80, 226, -1));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(1, 84, 43));
@@ -132,62 +274,50 @@ public class StaffInformation extends javax.swing.JDialog {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 166, 84));
         jLabel7.setText("Chức vụ:");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 240, -1, -1));
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 300, -1, -1));
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 166, 84));
         jLabel8.setText("Email:");
-        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 280, -1, -1));
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 350, -1, -1));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 166, 84));
         jLabel9.setText("Mã NV:");
         getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 400, -1, -1));
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setText("PMT001");
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 400, -1, -1));
+        MaNV.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        MaNV.setText("PMT001");
+        getContentPane().add(MaNV, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 400, -1, -1));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 166, 84));
         jLabel11.setText("Lương CB:");
-        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 330, -1, -1));
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 390, -1, -1));
 
-        jTextField2.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField2.setText("1234567");
-        jTextField2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 120, 226, -1));
+        FCMND.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        FCMND.setText("1234567");
+        FCMND.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        getContentPane().add(FCMND, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 120, 226, -1));
 
-        jTextField3.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField3.setText("11/02/2002");
-        jTextField3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 160, 226, -1));
+        FNgaySinh.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        FNgaySinh.setText("11/02/2002");
+        FNgaySinh.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        getContentPane().add(FNgaySinh, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 160, 226, -1));
 
-        jTextField4.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField4.setText("HCM");
-        jTextField4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 200, 226, -1));
+        FEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        FEmail.setText("ngoctien@gmail.com");
+        FEmail.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        getContentPane().add(FEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 350, 226, -1));
 
-        jTextField5.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField5.setText("ngoctien@gmail.com");
-        jTextField5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        getContentPane().add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 280, 226, -1));
+        FLuong.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        FLuong.setText("2000$");
+        FLuong.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        getContentPane().add(FLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 390, 226, -1));
 
-        jTextField6.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField6.setText("2000$");
-        jTextField6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        getContentPane().add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 330, 226, -1));
-
-        jComboBox1.setBackground(new java.awt.Color(255, 255, 255));
-        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.setBorder(null);
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 240, 226, -1));
+        cbb.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbb.setBorder(null);
+        getContentPane().add(cbb, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 300, 226, -1));
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(1, 84, 43));
@@ -221,40 +351,74 @@ public class StaffInformation extends javax.swing.JDialog {
         myButton3.setRadius(15);
         getContentPane().add(myButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 686, -1, 30));
 
-        tableDark1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "STT", "Mã hóa đơn", "Tên khách hàng", "Ngày khám", "Giá trị"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
-            };
+        Anhdaidien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/demo.jpg"))); // NOI18N
+        getContentPane().add(Anhdaidien, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 310, 320));
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        jDateChooser1.setDateFormatString("dd-MM-yyyy");
+        jDateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooser1PropertyChange(evt);
             }
         });
-        tableDark1.setShowHorizontalLines(true);
-        tableDark1.setShowVerticalLines(true);
-        jScrollPane2.setViewportView(tableDark1);
-
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 520, 671, 152));
-
-        avatar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/demo.jpg"))); // NOI18N
-        avatar.setText("jLabel14");
-        getContentPane().add(avatar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 310, 320));
         getContentPane().add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 490, 180, -1));
+
+        jDateChooser2.setDateFormatString("dd-MM-yyyy");
+        jDateChooser2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooser2PropertyChange(evt);
+            }
+        });
         getContentPane().add(jDateChooser2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 490, 180, -1));
+
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Mã hóa đơn", "Tên khách hàng", "Ngày khám", "Giá trị"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(table);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 520, 660, 160));
+
+        FDiaChi.setColumns(20);
+        FDiaChi.setLineWrap(true);
+        FDiaChi.setRows(5);
+        FDiaChi.setWrapStyleWord(true);
+        jScrollPane2.setViewportView(FDiaChi);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 190, 230, -1));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
+        if (jDateChooser2.getDate() != null) {
+            InitData();
+
+        }
+    }//GEN-LAST:event_jDateChooser1PropertyChange
+
+    private void jDateChooser2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser2PropertyChange
+        if (jDateChooser2.getDate() != null) {
+            InitData();
+            try {
+                jDateChooser1.setMaxSelectableDate(jDateChooser2.getDate());
+            } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Ngày bắt đầu không thể trước ngày kết thúc", "Lỗi", ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jDateChooser2PropertyChange
 
     /**
      * @param args the command line arguments
@@ -297,11 +461,17 @@ public class StaffInformation extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel avatar;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel Anhdaidien;
+    private javax.swing.JTextField FCMND;
+    private javax.swing.JTextArea FDiaChi;
+    private javax.swing.JTextField FEmail;
+    private javax.swing.JTextField FLuong;
+    private javax.swing.JTextField FNgaySinh;
+    private javax.swing.JTextField FTen;
+    private javax.swing.JLabel MaNV;
+    private javax.swing.JComboBox<String> cbb;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -314,16 +484,11 @@ public class StaffInformation extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
     private customview.MyButton myButton1;
     private customview.MyButton myButton2;
     private customview.MyButton myButton3;
-    private customview.MyTable tableDark1;
+    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }

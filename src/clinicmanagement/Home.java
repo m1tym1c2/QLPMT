@@ -86,7 +86,7 @@ public class Home extends javax.swing.JFrame {
                         + "WHERE CMND = '" + CMND + "' AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang");
                 if (rs.next()) {
                     Tentaikhoan.setText(rs.getString("TenNhanVien"));
-                    MaChucNang = rs.getString("TenChucNang");
+                    MaChucNang = rs.getString("MaChucNang");
                     try {
 
                         URL url = getClass().getResource(rs.getString("HinhAnh"));
@@ -287,6 +287,11 @@ public class Home extends javax.swing.JFrame {
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/278267157_513258687113783_4908014745777811944_n.png"))); // NOI18N
         jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel5MouseClicked(evt);
+            }
+        });
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 100, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -296,6 +301,11 @@ public class Home extends javax.swing.JFrame {
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/278600074_664320058001641_213263200731748919_n.png"))); // NOI18N
         jLabel7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel7MouseClicked(evt);
+            }
+        });
         getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 360, -1, -1));
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -305,6 +315,11 @@ public class Home extends javax.swing.JFrame {
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/278667619_5305088552848969_3883622606543918055_n.png"))); // NOI18N
         jLabel9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel9MouseClicked(evt);
+            }
+        });
         getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 360, -1, -1));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -392,7 +407,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_ThongTinCaNhanMouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
-        if (MaChucNang == "000" || MaChucNang == "003") {
+        if ("000".equals(MaChucNang) || "001".equals(MaChucNang)) {
             MedicineUsageManagement form = new MedicineUsageManagement();
             form.setVisible(true);
             this.dispose();
@@ -402,17 +417,41 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void DangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DangXuatActionPerformed
-        try{
-        Writer output = new BufferedWriter(new FileWriter("temp.log", false));
-        ClinicManagement form;
-        form = new ClinicManagement();
-        form.setVisible(true);
-        this.dispose();
-        }
-        catch (Exception e){
-            
+        try {
+            Writer output = new BufferedWriter(new FileWriter("temp.log", false));
+            ClinicManagement form;
+            form = new ClinicManagement();
+            form.setVisible(true);
+            this.dispose();
+        } catch (Exception e) {
+
         }
     }//GEN-LAST:event_DangXuatActionPerformed
+
+    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+        if ("000".equals(MaChucNang) || "002".equals(MaChucNang)) {
+            BillList form = new BillList();
+            form.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền vào chức năng này", "Lỗi", 2);
+        }
+    }//GEN-LAST:event_jLabel5MouseClicked
+
+    private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
+        if ("000".equals(MaChucNang) || "003".equals(MaChucNang)) {
+            EmployeeManager form = new EmployeeManager(CMND);
+            form.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền vào chức năng này", "Lỗi", 2);
+
+        }
+    }//GEN-LAST:event_jLabel7MouseClicked
+
+    private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel9MouseClicked
 
     /**
      * @param args the command line arguments
