@@ -324,13 +324,17 @@ public class EmployeeManager extends javax.swing.JFrame {
         jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton3.setForeground(new java.awt.Color(0, 99, 28));
         jButton3.setText("Thêm nhân viên mới");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 490, 200, 40));
 
         jButton6.setBackground(new java.awt.Color(255, 204, 204));
         jButton6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton6.setForeground(new java.awt.Color(0, 99, 28));
         jButton6.setText("Lập bảng tính lương nhân viên");
-        jButton6.setActionCommand("Lập bảng tính lương nhân viên");
         jPanel3.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 490, 280, 40));
 
         jButton7.setBackground(new java.awt.Color(255, 204, 204));
@@ -428,6 +432,26 @@ public class EmployeeManager extends javax.swing.JFrame {
         this.dispose();
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        java.awt.EventQueue.invokeLater(() -> {
+            AddStaff dialog = new AddStaff(new javax.swing.JFrame(), true, CMND);
+            dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+            for (WindowListener wl : dialog.getWindowListeners()) {
+                dialog.removeWindowListener(wl);
+            }
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                    dialog.dispose();
+                    EmployeeManager frame = new EmployeeManager(CMND);
+                    frame.setVisible(true);
+                }
+            });
+            dialog.setVisible(true);
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     public static void main(String args[]) {
         try {

@@ -49,6 +49,7 @@ public class StaffInformation extends javax.swing.JDialog {
      */
     private static String CMND = "";
     private static String MANV = "";
+    private static boolean flag = false;
 
     public StaffInformation(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -76,6 +77,7 @@ public class StaffInformation extends javax.swing.JDialog {
         } catch (ParseException ex) {
             Logger.getLogger(StaffInformation.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     public StaffInformation(java.awt.Frame parent, boolean modal, String MANV, String CMND) {
@@ -104,6 +106,7 @@ public class StaffInformation extends javax.swing.JDialog {
             jDateChooser2.setDate(date);
             jDateChooser1.setMaxSelectableDate(date);
             jDateChooser2.setMaxSelectableDate(date);
+            FNgaySinh.setMaxSelectableDate(date);
         } catch (ParseException ex) {
             Logger.getLogger(StaffInformation.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -111,6 +114,7 @@ public class StaffInformation extends javax.swing.JDialog {
         header.setDefaultRenderer(new HeaderRenderer(table));
         RetriveData();
         InitData();
+        flag = true;
     }
 
     private void RetriveData() {
@@ -130,14 +134,12 @@ public class StaffInformation extends javax.swing.JDialog {
                 FTen.setText(rs.getString("TenNhanVien"));
                 MaNV.setText(rs.getString("MaNhanVien"));
                 FCMND.setText(rs.getString("CMND"));
-                Date date = rs.getDate("NgaySinh");
-                FNgaySinh.setText(simpDate.format(date));
+                FNgaySinh.setDate(rs.getDate("NgaySinh"));
                 FDiaChi.setText(rs.getString("DiaChi"));
                 cbb.setSelectedItem(rs.getString("TenChucNang"));
                 FEmail.setText(rs.getString("Email"));
                 FLuong.setText(rs.getString("LuongCB"));
                 try {
-
                     URL url = getClass().getResource(rs.getString("HinhAnh"));
                     File file = new File(url.getPath());
                     BufferedImage master = ImageIO.read(file);
@@ -218,16 +220,12 @@ public class StaffInformation extends javax.swing.JDialog {
         MaNV = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         FCMND = new javax.swing.JTextField();
-        FNgaySinh = new javax.swing.JTextField();
         FEmail = new javax.swing.JTextField();
         FLuong = new javax.swing.JTextField();
         cbb = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        myButton1 = new customview.MyButton();
-        myButton2 = new customview.MyButton();
-        myButton3 = new customview.MyButton();
         Anhdaidien = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
@@ -235,6 +233,10 @@ public class StaffInformation extends javax.swing.JDialog {
         table = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         FDiaChi = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        FNgaySinh = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thong tin nhan vien");
@@ -281,29 +283,26 @@ public class StaffInformation extends javax.swing.JDialog {
         jLabel8.setText("Email:");
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 350, -1, -1));
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 166, 84));
         jLabel9.setText("Mã NV:");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 400, -1, -1));
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 400, -1, -1));
 
-        MaNV.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        MaNV.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        MaNV.setForeground(new java.awt.Color(0, 51, 153));
         MaNV.setText("PMT001");
-        getContentPane().add(MaNV, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 400, -1, -1));
+        getContentPane().add(MaNV, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 400, -1, -1));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 166, 84));
         jLabel11.setText("Lương CB:");
         getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 390, -1, -1));
 
+        FCMND.setEditable(false);
         FCMND.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         FCMND.setText("1234567");
         FCMND.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         getContentPane().add(FCMND, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 120, 226, -1));
-
-        FNgaySinh.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        FNgaySinh.setText("11/02/2002");
-        FNgaySinh.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        getContentPane().add(FNgaySinh, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 160, 226, -1));
 
         FEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         FEmail.setText("ngoctien@gmail.com");
@@ -317,6 +316,11 @@ public class StaffInformation extends javax.swing.JDialog {
 
         cbb.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbb.setBorder(null);
+        cbb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbbActionPerformed(evt);
+            }
+        });
         getContentPane().add(cbb, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 300, 226, -1));
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -333,23 +337,6 @@ public class StaffInformation extends javax.swing.JDialog {
         jLabel14.setForeground(new java.awt.Color(1, 84, 43));
         jLabel14.setText("Đến ngày:");
         getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 490, -1, -1));
-
-        myButton1.setText("Xóa nhân viên");
-        myButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        myButton1.setRadius(15);
-        getContentPane().add(myButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 686, -1, 30));
-
-        myButton2.setActionCommand("Cập nhật thông tin");
-        myButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        myButton2.setLabel("Cập nhật thông tin");
-        myButton2.setRadius(15);
-        getContentPane().add(myButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 686, 170, 30));
-
-        myButton3.setActionCommand("Chỉ định làm người quản trị");
-        myButton3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        myButton3.setLabel("Chỉ định làm người quản trị");
-        myButton3.setRadius(15);
-        getContentPane().add(myButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 686, -1, 30));
 
         Anhdaidien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/demo.jpg"))); // NOI18N
         getContentPane().add(Anhdaidien, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 310, 320));
@@ -368,7 +355,7 @@ public class StaffInformation extends javax.swing.JDialog {
                 jDateChooser2PropertyChange(evt);
             }
         });
-        getContentPane().add(jDateChooser2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 490, 180, -1));
+        getContentPane().add(jDateChooser2, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 490, 180, -1));
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -398,6 +385,47 @@ public class StaffInformation extends javax.swing.JDialog {
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 190, 230, -1));
 
+        jButton1.setBackground(new java.awt.Color(255, 204, 204));
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(0, 99, 28));
+        jButton1.setText("Xóa nhân viên");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 690, -1, -1));
+
+        jButton2.setBackground(new java.awt.Color(255, 204, 204));
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(0, 99, 28));
+        jButton2.setText("Cập nhật thông tin");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 690, -1, -1));
+
+        jButton3.setBackground(new java.awt.Color(255, 204, 204));
+        jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(0, 99, 28));
+        jButton3.setText("Chỉ định làm người quản trị");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 690, -1, -1));
+
+        FNgaySinh.setDateFormatString("dd-MM-yyyy");
+        FNgaySinh.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                FNgaySinhPropertyChange(evt);
+            }
+        });
+        getContentPane().add(FNgaySinh, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 160, 180, -1));
+
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
@@ -415,10 +443,111 @@ public class StaffInformation extends javax.swing.JDialog {
             try {
                 jDateChooser1.setMaxSelectableDate(jDateChooser2.getDate());
             } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Ngày bắt đầu không thể trước ngày kết thúc", "Lỗi", ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Ngày bắt đầu không thể trước ngày kết thúc", "Lỗi", ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_jDateChooser2PropertyChange
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        try {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            SimpleDateFormat si = new SimpleDateFormat("YYYY-MM-dd HH:mm:SS");
+            stm.execute("Update nhanvien set TenNhanVien = N'" + FTen.getText() + "' where manhanvien = '" + MANV + "'");
+            stm.execute("Update nhanvien set LuongCB = N'" + FLuong.getText() + "' where manhanvien = '" + MANV + "'");
+            stm.execute("Update nhanvien set Email = N'" + FEmail.getText() + "' where manhanvien = '" + MANV + "'");
+            stm.execute("Update nhanvien set DiaChi = N'" + FDiaChi.getText() + "' where manhanvien = '" + MANV + "'");
+            stm.execute("Update nhanvien set NgaySinh = '" + si.format(FNgaySinh.getDate()) + "' where manhanvien = '" + MANV + "'");
+            String MaChucNang = "";
+            switch (cbb.getSelectedIndex()) {
+                case 0:
+                    MaChucNang = "001";
+                    break;
+                case 1:
+                    MaChucNang = "002";
+                    break;
+                case 2:
+                    MaChucNang = "003";
+                    break;
+                case 4:
+                    MaChucNang = "004";
+                    break;
+                default:
+                    break;
+            }
+            stm.execute("Update phanquyen set machucnang = '" + MaChucNang + "' where manhanvien = '" + MANV + "'");
+
+            JOptionPane.showMessageDialog(this, "Cập nhật thành công");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void FNgaySinhPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_FNgaySinhPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_FNgaySinhPropertyChange
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        try {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("Select manhanvien from nhanvien where cmnd = '" + CMND + "'");
+            String MANVCM = "";
+            if (rs.next()) {
+                MANVCM = rs.getString("manhanvien");
+            }
+            if (MANVCM == null ? MANV == null : MANVCM.equals(MANV)) {
+                JOptionPane.showMessageDialog(this, "Bạn không thể xóa bản thân", "Lỗi", ERROR_MESSAGE);
+            } else {
+                int reply = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn xóa tài khoản này không", "Cảnh báo", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.NO_OPTION) {
+                    JOptionPane.showMessageDialog(null, "Lệnh đã không được thực hiện");
+                } else {
+                    stm.execute("delete from phanquyen where manhanvien = '" + MANV + "'");
+                    stm.execute("delete from phieukhambenh where manhanvien = '" + MANV + "'");
+                    stm.execute("delete from nhanvien where manhanvien = '" + MANV + "'");
+                    JOptionPane.showMessageDialog(this, "Đã xóa tài khoản thành công");
+                    this.dispose();
+                    EmployeeManager em = new EmployeeManager(CMND);
+                    em.setVisible(true);
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cbbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbActionPerformed
+        if (FNgaySinh.getDate() == null || flag == false) {
+
+        } else {
+            try {
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("Select nhanvien.manhanvien, TenChucnang from nhanvien, phanquyen, chucnang where cmnd = '" + CMND + "' and nhanvien.manhanvien = phanquyen.manhanvien and chucnang.machucnang = phanquyen.machucnang");
+                String MANVCM = "";
+                if (rs.next()) {
+                    MANVCM = rs.getString("manhanvien");
+                }
+                if (MANVCM == null ? MANV == null : MANVCM.equals(MANV)) {
+                    JOptionPane.showMessageDialog(this, "Bạn không thể thay đổi chức năng của bản thân", "Lỗi", ERROR_MESSAGE);
+                    cbb.setSelectedItem(rs.getString("TenChucNang"));
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_cbbActionPerformed
 
     /**
      * @param args the command line arguments
@@ -466,10 +595,13 @@ public class StaffInformation extends javax.swing.JDialog {
     private javax.swing.JTextArea FDiaChi;
     private javax.swing.JTextField FEmail;
     private javax.swing.JTextField FLuong;
-    private javax.swing.JTextField FNgaySinh;
+    private com.toedter.calendar.JDateChooser FNgaySinh;
     private javax.swing.JTextField FTen;
     private javax.swing.JLabel MaNV;
     private javax.swing.JComboBox<String> cbb;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel11;
@@ -486,9 +618,6 @@ public class StaffInformation extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private customview.MyButton myButton1;
-    private customview.MyButton myButton2;
-    private customview.MyButton myButton3;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }
