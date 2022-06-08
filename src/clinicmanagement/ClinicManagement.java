@@ -373,6 +373,9 @@ public class ClinicManagement extends javax.swing.JFrame {
                     });
                     this.dispose();
                 }
+                else {
+                    JOptionPane.showMessageDialog(this, "Không có tài khoản tương tự", "Lỗi", ERROR_MESSAGE);
+                }
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
             }

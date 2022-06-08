@@ -190,11 +190,12 @@ public class ForgotPassword extends javax.swing.JDialog {
     }//GEN-LAST:event_NhapLaiMatKhauFocusGained
 
     private void NhapLaiMatKhauFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_NhapLaiMatKhauFocusLost
-        String password = String.valueOf(MatKhau.getPassword());
+        String password = String.valueOf(NhapLaiMatKhau.getPassword());
 
         if (password.equals("password") || password.toLowerCase().equals("")) {
             NhapLaiMatKhau.setText("Nhập lại mật khẩu");
             NhapLaiMatKhau.setEchoChar((char) 0);
+            NhapLaiMatKhau.setForeground(new Color(153, 153, 153));
         }
 
     }//GEN-LAST:event_NhapLaiMatKhauFocusLost
@@ -224,7 +225,10 @@ public class ForgotPassword extends javax.swing.JDialog {
                         } catch (Exception ex) {
                             JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
                         }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Bạn cần nhập lại mật khẩu cũ đúng", "Lỗi", ERROR_MESSAGE);
                     }
+
                 } else {
                     JOptionPane.showMessageDialog(this, "Sai Email", "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
                 }

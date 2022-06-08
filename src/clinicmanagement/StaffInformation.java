@@ -99,14 +99,20 @@ public class StaffInformation extends javax.swing.JDialog {
 
         String dd = year + "-" + month + "-" + day;
         String ddd = "2022-01-01";
+        String dddd = "2002-12-31";
+        String ddddd = "2002-01-01";
+
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dd);
-            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(ddd);
+            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(ddd);            
+            Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse(dddd);
+            Date date3 = new SimpleDateFormat("yyyy-MM-dd").parse(ddddd);
             jDateChooser1.setDate(date1);
             jDateChooser2.setDate(date);
+            FNgaySinh.setDate(date3);
             jDateChooser1.setMaxSelectableDate(date);
             jDateChooser2.setMaxSelectableDate(date);
-            FNgaySinh.setMaxSelectableDate(date);
+            FNgaySinh.setMaxSelectableDate(date2);
         } catch (ParseException ex) {
             Logger.getLogger(StaffInformation.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -235,7 +241,6 @@ public class StaffInformation extends javax.swing.JDialog {
         FDiaChi = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         FNgaySinh = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -394,7 +399,7 @@ public class StaffInformation extends javax.swing.JDialog {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 690, -1, -1));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 690, -1, -1));
 
         jButton2.setBackground(new java.awt.Color(255, 204, 204));
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -405,18 +410,7 @@ public class StaffInformation extends javax.swing.JDialog {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 690, -1, -1));
-
-        jButton3.setBackground(new java.awt.Color(255, 204, 204));
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 99, 28));
-        jButton3.setText("Chỉ định làm người quản trị");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 690, -1, -1));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 690, -1, -1));
 
         FNgaySinh.setDateFormatString("dd-MM-yyyy");
         FNgaySinh.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -488,10 +482,6 @@ public class StaffInformation extends javax.swing.JDialog {
     private void FNgaySinhPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_FNgaySinhPropertyChange
         // TODO add your handling code here:
     }//GEN-LAST:event_FNgaySinhPropertyChange
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
@@ -601,7 +591,6 @@ public class StaffInformation extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> cbb;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel11;

@@ -69,24 +69,13 @@ public class AddStaff extends javax.swing.JDialog {
         initComponents();
         getContentPane().setBackground(new Color(235, 235, 235));
         this.CMND = CMND;
-        Calendar ca = new GregorianCalendar();
-        String day = ca.get(Calendar.DAY_OF_MONTH) + "";
-        String month = ca.get(Calendar.MONTH) + 1 + "";
-        String year = ca.get(Calendar.YEAR) + "";
-        if (day.length() == 1) {
-            day = "0" + day;
-        }
-        if (month.length() == 1) {
-            month = "0" + month;
-        }
-
-        String dd = year + "-" + month + "-" + day;
-        String ddd = "2022-01-01";
+        String dd = "2002-01-01";
+        String ddd = "2002-12-31";
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dd);
             Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(ddd);
-            FNgaySinh.setDate(date1);
-            FNgaySinh.setMaxSelectableDate(date);
+            FNgaySinh.setDate(date);
+            FNgaySinh.setMaxSelectableDate(date1);
         } catch (ParseException ex) {
             Logger.getLogger(AddStaff.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -115,9 +104,10 @@ public class AddStaff extends javax.swing.JDialog {
             DatabaseConnection DTBC = new DatabaseConnection();
             Connection conn = DTBC.getConnection(this);
             Statement stm = conn.createStatement();
-            ResultSet rs = stm.executeQuery("select count(*) from nhanvien");
-            if (rs.next()) {
-                int num = rs.getInt(1) + 1;
+            boolean flag = true;
+            int num = 1;
+            ResultSet rs;
+            while (flag) {
                 if (num < 10) {
                     MaNV.setText("PMT00" + num);
                 } else if (num < 100) {
@@ -125,6 +115,11 @@ public class AddStaff extends javax.swing.JDialog {
                 } else {
                     MaNV.setText("PMT" + num);
                 }
+                rs = stm.executeQuery("select manhanvien from nhanvien where exists (select manhanvien from nhanvien where manhanvien='" + MaNV.getText()+"')");
+                if (rs.next() == false)
+                    flag=false;
+                else
+                    num++;
             }
             rs = stm.executeQuery("SELECT * FROM CHUCNANG WHERE MaChucNang <> '000'");
             while (rs.next()) {
@@ -348,22 +343,16 @@ public class AddStaff extends javax.swing.JDialog {
             Graphics2D g2d = bi.createGraphics();
             icon.paintIcon(jLabel4, g2d, 0, 0);
             g2d.dispose();
-            
-            if (icon == null){
+            ResultSet rs;
+            if (icon == null) {
                 JOptionPane.showMessageDialog(this, "", "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
             }
 
-            File file = new File("src\\assets\\"+MaNV.getText().trim() + ".png");
+            File file = new File("src\\assets\\" + MaNV.getText().trim() + ".png");
             try {
                 ImageIO.write(bi, "png", file);
             } catch (Exception ex) {
 
-            }
-            if (file.exists()){
-                JOptionPane.showMessageDialog(this, "1");
-            }
-            else{
-                JOptionPane.showMessageDialog(this, "2");
             }
             String ep = "";
             try {
@@ -388,6 +377,11 @@ public class AddStaff extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Không được để trống lương!!!", "Lỗi", ERROR_MESSAGE);
                 return;
             }
+            rs = stm.executeQuery("select CMND from nhanvien where exists (select CMND from nhanvien where CMND='" + FCMND.getText()+"')");
+            if (rs.next() == true) {
+                JOptionPane.showMessageDialog(this, "Trùng CMND!!!", "Lỗi", ERROR_MESSAGE);
+                return;
+            }
             String MaChucNang = "";
             switch (Combobox.getSelectedIndex()) {
                 case 0:
@@ -406,13 +400,13 @@ public class AddStaff extends javax.swing.JDialog {
                     break;
             }
             stm.execute("insert into nhanvien values('" + MaNV.getText() + "','" + FCMND.getText() + "','" + si.format(FNgaySinh.getDate()) + "',N'"
-                    + jTextArea1.getText() + "','" + Email.getText() + "'," + Luong.getText() + "," + HeSo.getText() + ",N'/assets/"+MaNV.getText().trim()+".png" + "','"
-                    + ep + "',N'" + HoTen.getText()+ "')");
-            stm.execute("insert into phanquyen values('" + MaNV.getText() + "','"+MaChucNang+"')");
-            JOptionPane.showMessageDialog(this, "Đã tạo tài khoảng thành công");
-                    this.dispose();
-                    EmployeeManager em = new EmployeeManager(CMND);
-                    em.setVisible(true);
+                    + jTextArea1.getText() + "','" + Email.getText() + "'," + Luong.getText() + "," + HeSo.getText() + ",N'/assets/" + MaNV.getText().trim() + ".png" + "','"
+                    + ep + "',N'" + HoTen.getText() + "',0)");
+            stm.execute("insert into phanquyen values('" + MaNV.getText() + "','" + MaChucNang + "')");
+            JOptionPane.showMessageDialog(this, "Đã tạo tài khoản thành công");
+            this.dispose();
+            EmployeeManager em = new EmployeeManager(CMND);
+            em.setVisible(true);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);

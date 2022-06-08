@@ -134,7 +134,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Anhdaidien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Anh/image 6.png"))); // NOI18N
-        jPanel2.add(Anhdaidien, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 12, -1, -1));
+        jPanel2.add(Anhdaidien, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 10, -1, -1));
 
         Tentaikhoan.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         Tentaikhoan.setForeground(new java.awt.Color(0, 84, 42));

@@ -335,6 +335,11 @@ public class EmployeeManager extends javax.swing.JFrame {
         jButton6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton6.setForeground(new java.awt.Color(0, 99, 28));
         jButton6.setText("Lập bảng tính lương nhân viên");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 490, 280, 40));
 
         jButton7.setBackground(new java.awt.Color(255, 204, 204));
@@ -452,6 +457,12 @@ public class EmployeeManager extends javax.swing.JFrame {
         });
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        LuongNhanVien home = new LuongNhanVien(CMND);
+        home.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     public static void main(String args[]) {
         try {

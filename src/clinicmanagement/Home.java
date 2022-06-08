@@ -199,6 +199,11 @@ public class Home extends javax.swing.JFrame {
         DoiMatKhau.setForeground(new java.awt.Color(255, 255, 255));
         DoiMatKhau.setText("Đổi mật khẩu");
         DoiMatKhau.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        DoiMatKhau.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DoiMatKhauActionPerformed(evt);
+            }
+        });
 
         DangXuat.setBackground(new java.awt.Color(242, 111, 51));
         DangXuat.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -452,6 +457,28 @@ public class Home extends javax.swing.JFrame {
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jLabel9MouseClicked
+
+    private void DoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoiMatKhauActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                ChangePassword dialog = new ChangePassword(new javax.swing.JFrame(), true, CMND);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        dialog.dispose();
+                        Home frame = new Home(CMND);
+                        frame.setVisible(true);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_DoiMatKhauActionPerformed
 
     /**
      * @param args the command line arguments
