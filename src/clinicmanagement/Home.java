@@ -455,7 +455,45 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel7MouseClicked
 
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
-        // TODO add your handling code here:
+        if ("000".equals(MaChucNang) || "004".equals(MaChucNang)) {
+            String[] options = new String[]{"Danh sách loại bệnh", "Danh sách khám bệnh", "Thay đổi tham số"};
+            int response = JOptionPane.showOptionDialog(this, "Chọn trang bạn muốn tới", "Chọn",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                    null, options, options[0]);
+            switch (response) {
+                case 0:
+                    try {
+                    DanhSachLoaiBenh form = new DanhSachLoaiBenh();
+                    form.setVisible(true);
+                    this.dispose();
+                } catch (Exception e) {
+
+                }
+                    case 1:
+                    try {
+                    DanhSachKhamBenh form = new DanhSachKhamBenh();
+                    form.setVisible(true);
+                    this.dispose();
+                } catch (Exception e) {
+
+                }
+                    case 2:
+                    try {
+                    ThayDoiThongTinThamSo form = new ThayDoiThongTinThamSo(new javax.swing.JFrame(), true);
+                    form.setVisible(true);
+                    this.dispose();
+                } catch (Exception e) {
+
+                }
+
+            }
+            EmployeeManager form = new EmployeeManager(CMND);
+            form.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền vào chức năng này", "Lỗi", 2);
+
+        }
     }//GEN-LAST:event_jLabel9MouseClicked
 
     private void DoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoiMatKhauActionPerformed

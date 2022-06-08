@@ -214,6 +214,11 @@ public class ClinicManagement extends javax.swing.JFrame {
                 ThoatMouseClicked(evt);
             }
         });
+        Thoat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThoatActionPerformed(evt);
+            }
+        });
         getContentPane().add(Thoat, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 350, 120, 40));
 
         QuenMatKhau.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -253,6 +258,11 @@ public class ClinicManagement extends javax.swing.JFrame {
                 DangNhapMouseClicked(evt);
             }
         });
+        DangNhap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DangNhapActionPerformed(evt);
+            }
+        });
         getContentPane().add(DangNhap, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 350, 120, 40));
 
         TaiKhoan.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -270,55 +280,15 @@ public class ClinicManagement extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyTyped
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_formKeyTyped
 
     private void DangNhapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DangNhapMouseClicked
-        if ("admin".equals(TaiKhoan.getText()) && "123".equals(String.valueOf(MatKhau.getPassword()))) {
-            Home mf = new Home("admin");
-            mf.setVisible(true);
-            this.dispose();
-        } else {
-            try {
-                DatabaseConnection DTBC = new DatabaseConnection();
-                Connection conn = DTBC.getConnection(this);
-                Statement stm = conn.createStatement();
-                ResultSet rs = stm.executeQuery("SELECT CMND, MatKhau FROM NHANVIEN "
-                        + "WHERE CMND = '" + TaiKhoan.getText() + "'");
-                if (rs.next()) {
-                    String password = rs.getString("MatKhau");
-
-                    try {
-                        String decryptedText = DecryptPassword(password);
-                        if (String.valueOf(MatKhau.getPassword()) == null ? decryptedText == null : String.valueOf(MatKhau.getPassword()).equals(decryptedText)) {
-                            if (NhoMatKhau.isSelected()) {
-                                Writer output = new BufferedWriter(new FileWriter("temp.log", false));
-                                output.append("true\r\n");
-                                output.append(TaiKhoan.getText() + "\r\n");
-                                output.append(String.valueOf(MatKhau.getPassword()));
-                                output.close();
-                            }
-                            Home mf = new Home(TaiKhoan.getText());
-                            mf.setVisible(true);
-                            this.dispose();
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Sai mật khẩu", "Sai mật khẩu", ERROR_MESSAGE);
-                        }
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi mật khẩu", ERROR_MESSAGE);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Sai tên đăng nhập", "Đăng nhập thất bại", 2);
-                }
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
-            }
-        }
-
+       
     }//GEN-LAST:event_DangNhapMouseClicked
 
     private void ThoatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThoatMouseClicked
-        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        
     }//GEN-LAST:event_ThoatMouseClicked
 
     private void MatKhauFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_MatKhauFocusGained
@@ -381,6 +351,53 @@ public class ClinicManagement extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_QuenMatKhauMouseClicked
+
+    private void DangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DangNhapActionPerformed
+        if ("admin".equals(TaiKhoan.getText()) && "123".equals(String.valueOf(MatKhau.getPassword()))) {
+            Home mf = new Home("admin");
+            mf.setVisible(true);
+            this.dispose();
+        } else {
+            try {
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT CMND, MatKhau FROM NHANVIEN "
+                        + "WHERE CMND = '" + TaiKhoan.getText() + "'");
+                if (rs.next()) {
+                    String password = rs.getString("MatKhau");
+
+                    try {
+                        String decryptedText = DecryptPassword(password);
+                        if (String.valueOf(MatKhau.getPassword()) == null ? decryptedText == null : String.valueOf(MatKhau.getPassword()).equals(decryptedText)) {
+                            if (NhoMatKhau.isSelected()) {
+                                Writer output = new BufferedWriter(new FileWriter("temp.log", false));
+                                output.append("true\r\n");
+                                output.append(TaiKhoan.getText() + "\r\n");
+                                output.append(String.valueOf(MatKhau.getPassword()));
+                                output.close();
+                            }
+                            Home mf = new Home(TaiKhoan.getText());
+                            mf.setVisible(true);
+                            this.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Sai mật khẩu", "Sai mật khẩu", ERROR_MESSAGE);
+                        }
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi mật khẩu", ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Sai tên đăng nhập", "Đăng nhập thất bại", 2);
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_DangNhapActionPerformed
+
+    private void ThoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThoatActionPerformed
+        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+    }//GEN-LAST:event_ThoatActionPerformed
 
     /**
      * @param args the command line arguments
