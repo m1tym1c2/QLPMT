@@ -393,7 +393,7 @@ public class AddStaff extends javax.swing.JDialog {
                 case 2:
                     MaChucNang = "003";
                     break;
-                case 4:
+                case 3:
                     MaChucNang = "004";
                     break;
                 default:

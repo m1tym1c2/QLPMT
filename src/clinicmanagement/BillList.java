@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.RowFilter;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -74,7 +76,7 @@ public class BillList extends javax.swing.JFrame {
                 String strDate1 = formatter.format(date1);
                 Date date2 = jDateChooser2.getDate();
                 String strDate2 = formatter.format(date2);
-
+                statement.execute("SET DATEFORMAT DMY");
                 ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH, BENHNHAN "
                         + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
                         + "AND BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan "
@@ -85,8 +87,9 @@ public class BillList extends javax.swing.JFrame {
                 int i = 0;
                 while (rs.next()) {
                     i++;
+                    SimpleDateFormat simp = new SimpleDateFormat("dd/MM/yyyy");
                     String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
-                        rs.getString("NgayKham"), vi.format(rs.getInt("TienKham")), vi.format(rs.getInt("TienThuoc")),
+                        simp.format(rs.getDate("NgayKham")), vi.format(rs.getInt("TienKham")), vi.format(rs.getInt("TienThuoc")),
                         vi.format(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
                     DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
                     tbModel.addRow(data);
@@ -170,7 +173,7 @@ public class BillList extends javax.swing.JFrame {
                 DatabaseConnection databaseConnection = new DatabaseConnection();
                 connection = databaseConnection.getConnection(jLabel);
                 Statement statement = connection.createStatement();
-
+                statement.execute("SET DATEFORMAT DMY");
                 ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH, BENHNHAN "
                         + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
                         + "AND BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan "
@@ -181,8 +184,9 @@ public class BillList extends javax.swing.JFrame {
                 int i = 0;
                 while (rs.next()) {
                     i++;
+                    SimpleDateFormat simp = new SimpleDateFormat("dd/MM/yyyy");
                     String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
-                        rs.getString("NgayKham"), vi.format(rs.getInt("TienKham")), vi.format(rs.getInt("TienThuoc")),
+                        simp.format(rs.getDate("NgayKham")), vi.format(rs.getInt("TienKham")), vi.format(rs.getInt("TienThuoc")),
                         vi.format(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
                     DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
                     tbModel.addRow(data);
@@ -283,8 +287,6 @@ public class BillList extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        tableDark1.setShowHorizontalLines(true);
-        tableDark1.setShowVerticalLines(true);
         tableDark1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableDark1MouseClicked(evt);
@@ -332,6 +334,11 @@ public class BillList extends javax.swing.JFrame {
         buttonBack.setText("Quay lại");
         buttonBack.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         buttonBack.setRadius(15);
+        buttonBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonBackActionPerformed(evt);
+            }
+        });
         jPanel3.add(buttonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 590, -1, -1));
 
         jDateChooser1.setDateFormatString("dd/MM/yyyy");
@@ -403,7 +410,26 @@ public class BillList extends javax.swing.JFrame {
     }//GEN-LAST:event_tableDark1MouseClicked
 
     private void buttonSalaryEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSalaryEmployeeActionPerformed
-        // TODO add your handling code here:
+        java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    BaoCaoDoanhThuThang dialog = new BaoCaoDoanhThuThang();
+                    dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
+                    }
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            BillList frame = new BillList();
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
     }//GEN-LAST:event_buttonSalaryEmployeeActionPerformed
 
     private void btnInvoiceDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInvoiceDetailsActionPerformed
@@ -413,7 +439,7 @@ public class BillList extends javax.swing.JFrame {
             connection = databaseConnection.getConnection(jLabel);
             Statement statement = connection.createStatement();
 
-            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON WHERE HOADON.MaHoaDon = " + model.getValueAt(tableDark1.getSelectedRow(), 1).toString());
+            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON WHERE HOADON.MaHoaDon = '" + model.getValueAt(tableDark1.getSelectedRow(), 1).toString() + "'");
             ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(this, rootPaneCheckingEnabled);
             rs.next();
             chiTietHoaDon.setMaPhieuKhamBenh(rs.getString("MaPhieuKhamBenh"));
@@ -433,6 +459,15 @@ public class BillList extends javax.swing.JFrame {
             Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_buttonAddEmployeeActionPerformed
+
+    private void buttonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBackActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Home(CMND).setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_buttonBackActionPerformed
 
     public static void main(String args[]) {
         try {

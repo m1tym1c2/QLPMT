@@ -68,7 +68,7 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
             rs = statement.executeQuery("SELECT * FROM NHANVIEN");
             int sumLuong = 0;
             while (rs.next()) {
-                sumLuong += rs.getInt("LuongCB");
+                sumLuong += (int) rs.getInt("LuongCB") * rs.getFloat("HeSo") + rs.getInt("TienThuong");
             }
             jLabel9.setText(vi.format(sumLuong) + " VND");
 

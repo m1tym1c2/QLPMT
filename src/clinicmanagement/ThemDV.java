@@ -21,6 +21,7 @@ public class ThemDV extends javax.swing.JDialog {
     public ThemDV(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(null);
         getContentPane().setBackground(Color.white);
     }
     public int LUU()throws SQLException{

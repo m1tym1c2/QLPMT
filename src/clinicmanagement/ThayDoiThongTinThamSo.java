@@ -23,6 +23,7 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
         super(parent, modal);
         
         initComponents();
+        this.setLocationRelativeTo(null);
         try
         {
             DatabaseConnection DTBC = new DatabaseConnection();

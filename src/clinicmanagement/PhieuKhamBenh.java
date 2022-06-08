@@ -33,6 +33,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     private static String CMND = "";
     public PhieuKhamBenh() {
         initComponents();
+        this.setLocationRelativeTo(null);
         try {
             DatabaseConnection DTBC = new DatabaseConnection();
             Connection conn = DTBC.getConnection(this);
@@ -75,7 +76,13 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
             DatabaseConnection DTBC = new DatabaseConnection();
             Connection conn = DTBC.getConnection(this);
             Statement stm = conn.createStatement();
-            ResultSet rs = stm.executeQuery("SELECT TenLoaiBenh FROM LOAIBENH");
+            ResultSet rs = stm.executeQuery("SELECT MaNhanVien, TenNhanVien FROM NHANVIEN WHERE CMND = '"+CMND+"'");
+            while (rs.next())
+            {
+                MaNhanVien = rs.getString(1);
+                NguoiKham.setText(rs.getString(2));
+            }
+            rs = stm.executeQuery("SELECT TenLoaiBenh FROM LOAIBENH");
             while (rs.next()) {
                 LoaiBenh.addItem(rs.getString(1));
             }
@@ -141,7 +148,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         Nutmuiten = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         textTenBenhNhan = new javax.swing.JLabel();
-        thang2 = new javax.swing.JLabel();
+        NguoiKham = new javax.swing.JLabel();
         NgayKham = new javax.swing.JLabel();
         TrieuChung = new javax.swing.JTextField();
         LoaiBenh = new javax.swing.JComboBox<>();
@@ -353,9 +360,9 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         textTenBenhNhan.setText("Nguyễn Đình Đức Thịnh");
         jPanel1.add(textTenBenhNhan, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 188, 274, -1));
 
-        thang2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        thang2.setText("Lê Phi Long");
-        jPanel1.add(thang2, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 274, 274, -1));
+        NguoiKham.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        NguoiKham.setText("Lê Phi Long");
+        jPanel1.add(NguoiKham, new org.netbeans.lib.awtextra.AbsoluteConstraints(248, 274, 274, -1));
 
         NgayKham.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         NgayKham.setText("25/4/2022");
@@ -452,7 +459,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         }
         catch (Exception e)
         {
-            
+            JOptionPane.showMessageDialog(this, e.toString());
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -562,6 +569,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     private javax.swing.JLabel Anhdautrang;
     private javax.swing.JComboBox<String> LoaiBenh;
     private javax.swing.JLabel NgayKham;
+    private javax.swing.JLabel NguoiKham;
     private javax.swing.JLabel Nutmuiten;
     private javax.swing.JTable Table;
     private javax.swing.JLabel Tentaikhoan;
@@ -588,6 +596,5 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel textTenBenhNhan;
-    private javax.swing.JLabel thang2;
     // End of variables declaration//GEN-END:variables
 }

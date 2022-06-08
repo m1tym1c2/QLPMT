@@ -55,10 +55,6 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         JTableHeader header = table.getTableHeader();
         header.setDefaultRenderer(new HeaderRenderer(table));
         
-        jComboBox2.addItem(" ");
-        jComboBox1.addItem(" ");
-        jComboBox1.setSelectedIndex(0);
-        jComboBox2.setSelectedIndex(0);
     }
     
     public int LoadData()throws SQLException{        
@@ -66,33 +62,9 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         Connection conn = DTBC.getConnection(this);
         Statement stm = conn.createStatement();        
         
-        jComboBox2.removeAll();
-        jComboBox1.removeAll();
-        jComboBox2.addItem(" ");
-        jComboBox1.addItem(" ");
-        jComboBox1.setSelectedIndex(0);
-        jComboBox2.setSelectedIndex(0);
-        
-        if( jComboBox1.getSelectedItem().toString() == " ") return 1;
-        if( jComboBox2.getSelectedItem().toString() == " ") return 1;
-        
-        ResultSet rs = stm.executeQuery("SELECT Nam FROM BAOCAOSUDUNGTHUOC ;");
-        if(!rs.next()) return 0;
-        while (rs.next()) jComboBox2.addItem(String.valueOf(rs.getInt("Nam")));
-        
-        rs = stm.executeQuery("SELECT DISTINCT Thang FROM BAOCAOSUDUNGTHUOC ;");
-        if(!rs.next()) return 0;
-        while (rs.next()) jComboBox1.addItem(String.valueOf(rs.getInt("Thang")));
-        
-        
-        
-        String thang = jComboBox1.getSelectedItem().toString();
-        String nam = jComboBox1.getSelectedItem().toString();
-        
-        rs = stm.executeQuery("SELECT TenThuoc ,TenDonViTinh ,SoLuongDung ,SoLanDung "
+        ResultSet rs = stm.executeQuery("SELECT TenThuoc ,TenDonViTinh ,SoLuongDung ,SoLanDung "
                 + "                      FROM THUOC, BAOCAOSUDUNGTHUOC  "
-                + "                      WHERE THUOC.MaThuoc  = BAOCAOSUDUNGTHUOC.MaThuoc  ;");
-        
+                + "                      WHERE THUOC.MaThuoc  = BAOCAOSUDUNGTHUOC.MaThuoc AND Thang = " + Thang.getSelectedItem().toString() + " AND NAM = " + Nam.getSelectedItem().toString());
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         while (rs.next())
@@ -142,9 +114,9 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         inbaocao = new javax.swing.JButton();
         QuayLai = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        Thang = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        Nam = new javax.swing.JComboBox<>();
 
         placeholderTextField2.setText("placeholderTextField2");
 
@@ -359,26 +331,28 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         jLabel5.setText("Tháng:");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 90, -1, -1));
 
-        jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+        Thang.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        Thang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "1", "2", "3", "4", "5", "6" }));
+        Thang.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox1ItemStateChanged(evt);
+                ThangItemStateChanged(evt);
             }
         });
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 90, -1, -1));
+        getContentPane().add(Thang, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 90, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(1, 84, 43));
         jLabel6.setText("Năm:");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 90, -1, -1));
 
-        jComboBox2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jComboBox2.addItemListener(new java.awt.event.ItemListener() {
+        Nam.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        Nam.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2022" }));
+        Nam.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox2ItemStateChanged(evt);
+                NamItemStateChanged(evt);
             }
         });
-        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 90, -1, -1));
+        getContentPane().add(Nam, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 90, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -440,8 +414,51 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         form.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
+    private void LapBaoCao() throws SQLException
+    {
+        DatabaseConnection dtc = new DatabaseConnection();
+        Connection conn = dtc.getConnection(this);
+        Statement statement = conn.createStatement();
+        Statement stm = conn.createStatement();
+        ResultSet rs = statement.executeQuery("SELECT THUOC.MaThuoc, SUM(SoLuongDung), COUNT(*) FROM THUOC, CT_PHIEUKHAMBENH, PHIEUKHAMBENH WHERE THUOC.MaThuoc = CT_PHIEUKHAMBENH.MaThuoc AND CT_PHIEUKHAMBENH.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh AND MONTH(NgayKham) = "+Thang.getSelectedItem().toString()+" AND YEAR(NgayKham) = "+Nam.getSelectedItem().toString() + " GROUP BY THUOC.MaThuoc");
+        while (rs.next())
+        {
+            stm.executeUpdate("INSERT INTO BAOCAOSUDUNGTHUOC VALUES ("+Thang.getSelectedItem().toString()+","+Nam.getSelectedItem().toString()+",'"+rs.getString(1)+"',"+rs.getInt(2)+","+rs.getInt(3)+")");
+        }
+        rs.close();
+        statement.close();
+        conn.close();
+    }
+    private void ThangItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ThangItemStateChanged
+            try
+            {
+                DatabaseConnection dtc = new DatabaseConnection();
+                Connection conn = dtc.getConnection(this);
+                Statement statement = conn.createStatement();
+                boolean flag = false;
+                ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM BAOCAOSUDUNGTHUOC WHERE Thang = "+Thang.getSelectedItem().toString()+" AND NAM = " + Nam.getSelectedItem().toString());
+                if (rs.next())
+                {
+                    if (rs.getInt(1)==0) flag = false;
+                    else flag = true;
+                }
+                if (flag)
+                {
+                    LoadData();
+                }
+                else
+                {
+                    LapBaoCao();
+                    LoadData();
+                }
+            }
+            catch (Exception e)
+            {
+                JOptionPane.showMessageDialog(this, e.toString());
+            }
+    }//GEN-LAST:event_ThangItemStateChanged
 
-    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+    private void NamItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_NamItemStateChanged
         try
         {
             if( LoadData() == 0)
@@ -451,19 +468,7 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jComboBox1ItemStateChanged
-
-    private void jComboBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox2ItemStateChanged
-        try
-        {
-            if( LoadData() == 0)
-                JOptionPane.showMessageDialog(this, "Thời gian này chưa có báo cáo, vui lòng chọn thời gian khác", "Chưa có thông tin", ERROR_MESSAGE);
-        }
-        catch(SQLException e)
-        {
-            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_jComboBox2ItemStateChanged
+    }//GEN-LAST:event_NamItemStateChanged
 
     private void placeholderTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_placeholderTextField1KeyPressed
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -525,15 +530,15 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Anhdaidien;
+    private javax.swing.JComboBox<String> Nam;
     private javax.swing.JLabel Nutmuiten;
     private javax.swing.JButton QuayLai;
     private javax.swing.JLabel Tentaikhoan;
+    private javax.swing.JComboBox<String> Thang;
     private javax.swing.JButton inbaocao;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;

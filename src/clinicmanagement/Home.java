@@ -463,12 +463,38 @@ public class Home extends javax.swing.JFrame {
             switch (response) {
                 case 0:
                     try {
-                    DanhSachLoaiBenh form = new DanhSachLoaiBenh(CMND);
-                    form.setVisible(true);
+                    java.awt.EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            try
+                            {
+                                DanhSachLoaiBenh dialog = new DanhSachLoaiBenh();
+                            dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                            for (WindowListener wl : dialog.getWindowListeners()) {
+                                dialog.removeWindowListener(wl);
+                            }
+                            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                                @Override
+                                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                    dialog.dispose();
+                                    Home frame = new Home(CMND);
+                                    frame.setVisible(true);
+                                }
+                            });
+                            dialog.setVisible(true);
+                            }
+                            catch (Exception e)
+                                    {
+                                    
+                                    }
+                        }
+                    });
                     this.dispose();
                 } catch (Exception e) {
 
-                }
+                } finally
+                    {
+                        break;
+                    }
                 case 1:
                     try {
                     DanhSachKhamBenh form = new DanhSachKhamBenh(CMND);
@@ -476,7 +502,10 @@ public class Home extends javax.swing.JFrame {
                     this.dispose();
                 } catch (Exception e) {
 
-                }
+                } finally
+                    {
+                        break;
+                    }
                 case 2:
                     try {
                     java.awt.EventQueue.invokeLater(new Runnable() {
@@ -501,7 +530,10 @@ public class Home extends javax.swing.JFrame {
                 } catch (Exception e) {
 
                 }
-
+                    finally
+                    {
+                        break;
+                    }
             }
 
         } else {

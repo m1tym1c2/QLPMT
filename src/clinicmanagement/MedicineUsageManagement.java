@@ -92,8 +92,9 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
         Statement stm = conn.createStatement();        
-        
-        ResultSet rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc,CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n" +
+        ResultSet rs = stm.executeQuery("SELECT GiaTri FROM THAMSO WHERE TenThamSo = 'TiGiaNhapBan'");
+        if (rs.next()) TyGia.setText(String.valueOf(rs.getInt(1)));
+        rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc,CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n" +
                                         ",SoLuongTon,TenDonViTinh ,DonGiaNhap ,DonGiaBan \n" +
                                         "FROM THUOC, CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC , (SELECT   max(ct1.MaPhieuNhapThuoc) MaPhieuNhapThuoc\n" +
                                         "                                                   FROM CT_PHIEUNHAPTHUOC ct1													\n" +
@@ -344,7 +345,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(1, 84, 43));
         jLabel4.setText("%");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 90, -1, -1));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 90, -1, -1));
 
         BaoCaoSD.setBackground(new java.awt.Color(255, 204, 204));
         BaoCaoSD.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -366,7 +367,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                 TyGiaActionPerformed(evt);
             }
         });
-        getContentPane().add(TyGia, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 85, 50, -1));
+        getContentPane().add(TyGia, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 85, 70, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(1, 84, 43));
@@ -519,29 +520,13 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         Statement stm = conn.createStatement();  
         
         stm.executeUpdate("UPDATE CT_PHIEUNHAPTHUOC set DonGiaBan = DonGiaNhap*" + tyle/100 );
-         
+        stm.executeUpdate("UPDATE THAMSO SET GiaTri = "+TyGia.getText()+" WHERE TenThamSo = 'TiGiaNhapBan'"); 
         stm.close();
         conn.close();
         TyGia.setText(String.valueOf(tyle));
     }
     private void LuuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LuuMouseClicked
-        JOptionPane.showMessageDialog(this, "Bạn có chắc đổi tỷ lệ giá bán hay không?", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        try
-        {
-            LUU();
-        }
-        catch(SQLException e)
-        {
-            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
-        }
-        try
-        {
-            LoadData();
-        }
-        catch(SQLException e)
-        {
-            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
-        }
+        
     }//GEN-LAST:event_LuuMouseClicked
 
     private void ThemThuocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThemThuocMouseClicked
@@ -561,6 +546,23 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
 
     private void LuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LuuActionPerformed
         tyle = Integer.valueOf(TyGia.getText());
+        JOptionPane.showMessageDialog(this, "Bạn có chắc đổi tỷ lệ giá bán hay không?", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        try
+        {
+            LUU();
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+        try
+        {
+            LoadData();
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_LuuActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -614,17 +616,45 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private void themcdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themcdActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DanhSachCachDung(CMND).setVisible(true);
+                DanhSachCachDung dialog = new DanhSachCachDung();
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        dialog.dispose();
+                        MedicineUsageManagement frame = new MedicineUsageManagement();
+                        frame.setVisible(true);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
+        this.dispose();
     }//GEN-LAST:event_themcdActionPerformed
 
     private void ThemdvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemdvActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DanhSachDonViTinh(CMND).setVisible(true);
+                DanhSachDonViTinh dialog = new DanhSachDonViTinh();
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        dialog.dispose();
+                        MedicineUsageManagement frame = new MedicineUsageManagement();
+                        frame.setVisible(true);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
+        this.dispose();
     }//GEN-LAST:event_ThemdvActionPerformed
 
     /**

@@ -21,6 +21,7 @@ public class KeThuoc extends javax.swing.JFrame {
     private static String CMND = "";
     public KeThuoc() throws SQLException {
         initComponents();
+        this.setLocationRelativeTo(null);
         DocDuLieu();
     }
     
@@ -28,6 +29,7 @@ public class KeThuoc extends javax.swing.JFrame {
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        this.setLocationRelativeTo(null);
         this.CMND = CMND;
         DocDuLieu();
     }
@@ -214,7 +216,7 @@ public class KeThuoc extends javax.swing.JFrame {
                     DonGiaBan = String.valueOf(rs.getInt(1));
                 }
                 stm.executeUpdate("INSERT INTO CT_PHIEUKHAMBENH VALUES ('" + MaPhieuKhamBenh + "','" + MaThuoc + "'," + SoLuong.getText() + "," + DonGiaBan + ")");
-                stm.executeUpdate("UPDATE THUOC SET SoLuongTon = SoLuongTon - " + SoLuong.getText());
+                stm.executeUpdate("UPDATE THUOC SET SoLuongTon = SoLuongTon - " + SoLuong.getText() + "WHERE MaThuoc = '"+MaThuoc+"'");
                 PhieuKhamBenh frame = new PhieuKhamBenh();
                 frame.setVisible(true);
                 this.setVisible(false);

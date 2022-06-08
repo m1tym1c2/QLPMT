@@ -62,8 +62,8 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jComboBox1.addItem(rs.getString("TenDonViTinh"));
         jLabel7.setText(String.valueOf(rs.getInt("SoLuongTon")));        
         // load ảnh                
-        ImageIcon ii = new ImageIcon(scaleImage(310, 320, ImageIO.read(new File(rs.getString("FileAnhThuoc")))));//get the image from file chooser and scale it to match JLabel size
-        Anh.setIcon(ii);        
+        //ImageIcon ii = new ImageIcon(scaleImage(310, 320, ImageIO.read(new File(rs.getString("FileAnhThuoc")))));//get the image from file chooser and scale it to match JLabel size
+        //Anh.setIcon(ii);        
         
         rs = stm.executeQuery("SELECT TenDonViTinh  FROM DONVITINH");
         while(rs.next()) jComboBox1.addItem(rs.getString("TenDonViTinh"));

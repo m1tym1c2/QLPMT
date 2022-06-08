@@ -25,6 +25,7 @@ public class DanhSachCachDung extends javax.swing.JFrame {
     public DanhSachCachDung() {
         initComponents();
         getContentPane().setBackground(Color.white);
+        this.setLocationRelativeTo(null);
         try {
             LoadData();
         } catch (SQLException e) {
@@ -78,7 +79,6 @@ public class DanhSachCachDung extends javax.swing.JFrame {
         Table = new javax.swing.JTable();
         THEM = new javax.swing.JButton();
         XOA = new javax.swing.JButton();
-        Quaylai = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -135,17 +135,6 @@ public class DanhSachCachDung extends javax.swing.JFrame {
             }
         });
 
-        Quaylai.setBackground(new java.awt.Color(255, 204, 204));
-        Quaylai.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        Quaylai.setForeground(new java.awt.Color(0, 99, 28));
-        Quaylai.setText("Quay lại");
-        Quaylai.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        Quaylai.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                QuaylaiMouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -157,10 +146,8 @@ public class DanhSachCachDung extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(THEM, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(XOA, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(Quaylai, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(XOA, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(177, 177, 177)
@@ -177,8 +164,7 @@ public class DanhSachCachDung extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(THEM, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(XOA, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Quaylai, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(XOA, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -222,14 +208,6 @@ public class DanhSachCachDung extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_XOAMouseClicked
 
-    private void QuaylaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_QuaylaiMouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MedicineUsageManagement(CMND).setVisible(true);
-            }
-        });
-    }//GEN-LAST:event_QuaylaiMouseClicked
-
     /**
      * @param args the command line arguments
      */
@@ -266,7 +244,6 @@ public class DanhSachCachDung extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Quaylai;
     private javax.swing.JButton THEM;
     private javax.swing.JTable Table;
     private javax.swing.JLabel Tentrang2;

@@ -25,6 +25,7 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
     public DanhSachDonViTinh() {
         initComponents();
         getContentPane().setBackground(Color.white);
+        this.setLocationRelativeTo(null);
          try
         {
             LoadData();           
@@ -97,7 +98,6 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
         Table = new javax.swing.JTable();
         them = new javax.swing.JButton();
         Xoa = new javax.swing.JButton();
-        Trolai = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -154,17 +154,6 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
             }
         });
 
-        Trolai.setBackground(new java.awt.Color(255, 204, 204));
-        Trolai.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        Trolai.setForeground(new java.awt.Color(0, 99, 28));
-        Trolai.setText("Quay lại");
-        Trolai.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        Trolai.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TrolaiMouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -181,10 +170,8 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(them, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(Trolai, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(Xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -197,8 +184,7 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(them, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Trolai, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -232,14 +218,6 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_XoaMouseClicked
-
-    private void TrolaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TrolaiMouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MedicineUsageManagement(CMND).setVisible(true);
-            }
-        });
-    }//GEN-LAST:event_TrolaiMouseClicked
 
     /**
      * @param args the command line arguments
@@ -279,7 +257,6 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Table;
     private javax.swing.JLabel Tentrang2;
-    private javax.swing.JButton Trolai;
     private javax.swing.JButton Xoa;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton them;

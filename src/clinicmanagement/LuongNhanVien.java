@@ -137,18 +137,18 @@ public class LuongNhanVien extends javax.swing.JFrame {
                 row.add(rs.getString("MaNhanVien"));
                 row.add(rs.getString("TenNhanVien"));
                 row.add(String.valueOf(rs.getInt("LuongCB")));
-                row.add(String.valueOf(rs.getInt("HeSo")));
+                row.add(String.valueOf(rs.getFloat("HeSo")));
                 row.add(String.valueOf(rs.getInt("TienThuong")));
-                row.add(String.valueOf(rs.getInt("LuongCB") * rs.getInt("HeSo") + rs.getInt("TienThuong")));
+                row.add(String.valueOf((int) (rs.getInt("LuongCB") * rs.getFloat("HeSo") + rs.getInt("TienThuong"))));
                 model.getRowCount();
                 model.addRow(row);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
         int sum =0;
         for (int i = 0; i < table.getRowCount(); i++) {
-            int Amount = Integer.parseInt(table.getValueAt(i, 6)+"");
+            int Amount = (int) Double.parseDouble(table.getValueAt(i, 6)+"");
             sum+=Amount;
         }
         jLabel6.setText(String.valueOf(sum) + "VNĐ");

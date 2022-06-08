@@ -108,12 +108,13 @@ public class AddMedicine extends javax.swing.JDialog {
         double soluongthem = Double.parseDouble(jTextField1.getText());
         double gianhap = Double.parseDouble(jTextField2.getText());
         
+        String strDate = java.time.LocalDate.now().getDayOfMonth() + "-"  + java.time.LocalDate.now().getMonthValue() + "-"  + java.time.LocalDate.now().getYear();
+        stm.executeUpdate("insert into PHIEUNHAPTHUOC VALUES (N'"+ maphieunhapthuoc + "',"+ gianhap*soluongthem 
+                + ",'"+java.time.LocalDate.now()+"') "); 
         stm.executeUpdate("insert into CT_PHIEUNHAPTHUOC VALUES (N'"+ maphieunhapthuoc +"','"
                 + mathuoc + "',"+ soluongthem+","+gianhap+","+ gianhap*Tyle + ") ");
         
-        String strDate = java.time.LocalDate.now().getDayOfMonth() + "-"  + java.time.LocalDate.now().getMonthValue() + "-"  + java.time.LocalDate.now().getYear();
-        stm.executeUpdate("insert into PHIEUNHAPTHUOC VALUES (N'"+ maphieunhapthuoc + "',"+ gianhap*soluongthem 
-                + ",'"+java.time.LocalDate.now()+"') ");  
+         
         
         
         double soluongton = Double.parseDouble(soluong);

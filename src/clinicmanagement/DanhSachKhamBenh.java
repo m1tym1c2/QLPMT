@@ -70,7 +70,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         String Ngay = String.valueOf(LocalDate.now().getDayOfMonth());
         String Thang = String.valueOf(LocalDate.now().getMonthValue());
         String Nam = String.valueOf(LocalDate.now().getYear());
-        ResultSet rs = stm.executeQuery("SELECT BENHNHAN.MaBenhNhan, TenBenhNhan, GioiTinh, NamSinh, DiaChi "
+        ResultSet rs = stm.executeQuery("SELECT BENHNHAN.MaBenhNhan, TenBenhNhan, GioiTinh, NamSinh, DiaChi, MaNhanVien "
                 + "                      FROM BENHNHAN, PHIEUKHAMBENH "
                 + "                      WHERE BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan "
                 + "                      AND DAY(NgayKham) = " + Ngay  
@@ -87,6 +87,8 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
             row.add(rs.getString("GioiTinh"));
             row.add(String.valueOf(rs.getInt("NamSinh")));
             row.add(rs.getString("DiaChi"));
+            if (rs.getObject("MaNhanVien")==null) row.add("Chưa khám");
+            else row.add("Đã khám");
             model.getRowCount();
             model.addRow(row);
         }
@@ -186,14 +188,14 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
 
             },
             new String [] {
-                "STT", "Mã bệnh nhân", "Họ tên", "Giới tính", "Năm sinh", "Địa chỉ"
+                "STT", "Mã bệnh nhân", "Họ tên", "Giới tính", "Năm sinh", "Địa chỉ", "Trạng thái"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -208,14 +210,16 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         if (Table.getColumnModel().getColumnCount() > 0) {
             Table.getColumnModel().getColumn(0).setPreferredWidth(50);
             Table.getColumnModel().getColumn(0).setMaxWidth(50);
-            Table.getColumnModel().getColumn(1).setPreferredWidth(150);
+            Table.getColumnModel().getColumn(1).setPreferredWidth(100);
             Table.getColumnModel().getColumn(1).setMaxWidth(150);
             Table.getColumnModel().getColumn(2).setPreferredWidth(200);
             Table.getColumnModel().getColumn(2).setMaxWidth(200);
             Table.getColumnModel().getColumn(3).setPreferredWidth(100);
             Table.getColumnModel().getColumn(3).setMaxWidth(100);
-            Table.getColumnModel().getColumn(4).setPreferredWidth(150);
+            Table.getColumnModel().getColumn(4).setPreferredWidth(100);
             Table.getColumnModel().getColumn(4).setMaxWidth(150);
+            Table.getColumnModel().getColumn(5).setPreferredWidth(250);
+            Table.getColumnModel().getColumn(6).setPreferredWidth(100);
         }
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 214, 969, 325));
@@ -336,6 +340,11 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         jButton2.setForeground(new java.awt.Color(0, 99, 28));
         jButton2.setText("Quay lại");
         jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 580, 216, 36));
 
         Tentrang2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
@@ -386,7 +395,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                 public void run() {
                     PhieuKhamBenh.TenBenhNhan = model.getValueAt(Table.getSelectedRow(), 2).toString();
                     PhieuKhamBenh.MaBenhNhan = model.getValueAt(Table.getSelectedRow(), 1).toString();
-                    PhieuKhamBenh dialog = new PhieuKhamBenh();
+                    PhieuKhamBenh dialog = new PhieuKhamBenh(CMND);
                     dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
                     for (WindowListener wl : dialog.getWindowListeners()) {
                         dialog.removeWindowListener(wl);
@@ -447,6 +456,25 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jLabel3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MousePressed
+        int SoBenhNhanToiDa = 0;
+        try
+        {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("SELECT GiaTri FROM THAMSO WHERE TenThamSo = 'SoBenhNhanToiDa'");
+            if (rs.next()) SoBenhNhanToiDa = rs.getInt(1);
+        }
+        catch (Exception e)
+        {
+            
+        }
+        DefaultTableModel model = (DefaultTableModel) Table.getModel();
+        if (SoBenhNhanToiDa<=model.getRowCount())
+        {
+            JOptionPane.showMessageDialog(this, "Số lượng bệnh nhân đã đạt tối đa trong ngày", "Lỗi thêm bệnh nhân", 0);
+            return;
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -482,6 +510,15 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         Table.setRowSorter(sorter);
         sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
     }//GEN-LAST:event_placeholderTextField1KeyPressed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Home().setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
