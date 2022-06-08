@@ -1,7 +1,9 @@
 package clinicmanagement;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -20,9 +22,27 @@ import javax.swing.table.TableRowSorter;
  * @author ngoctienTNT
  */
 public class PatientLookup extends javax.swing.JFrame {
+    private static String CMND = "";
+    
     public PatientLookup(){
         initComponents();  
         getContentPane().setBackground(Color.white);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        try
+        {
+            DocDuLieu();
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString());
+        }
+    }
+    
+    public PatientLookup(String CMND){
+        initComponents();  
+        getContentPane().setBackground(Color.white);
+        this.CMND = CMND;
         try
         {
             DocDuLieu();

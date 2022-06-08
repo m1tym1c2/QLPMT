@@ -177,8 +177,6 @@
                     <Column editable="true" title="T&#xf4;&#x309;ng" type="java.lang.Integer"/>
                   </Table>
                 </Property>
-                <Property name="showHorizontalLines" type="boolean" value="true"/>
-                <Property name="showVerticalLines" type="boolean" value="true"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tableDark1MouseClicked"/>

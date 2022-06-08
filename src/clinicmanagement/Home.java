@@ -463,33 +463,47 @@ public class Home extends javax.swing.JFrame {
             switch (response) {
                 case 0:
                     try {
-                    DanhSachLoaiBenh form = new DanhSachLoaiBenh();
+                    DanhSachLoaiBenh form = new DanhSachLoaiBenh(CMND);
                     form.setVisible(true);
                     this.dispose();
                 } catch (Exception e) {
 
                 }
-                    case 1:
+                case 1:
                     try {
-                    DanhSachKhamBenh form = new DanhSachKhamBenh();
+                    DanhSachKhamBenh form = new DanhSachKhamBenh(CMND);
                     form.setVisible(true);
                     this.dispose();
                 } catch (Exception e) {
 
                 }
-                    case 2:
+                case 2:
                     try {
-                    ThayDoiThongTinThamSo form = new ThayDoiThongTinThamSo(new javax.swing.JFrame(), true);
-                    form.setVisible(true);
+                    java.awt.EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            ThayDoiThongTinThamSo dialog = new ThayDoiThongTinThamSo(new javax.swing.JFrame(), true);
+                            dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                            for (WindowListener wl : dialog.getWindowListeners()) {
+                                dialog.removeWindowListener(wl);
+                            }
+                            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                                @Override
+                                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                    dialog.dispose();
+                                    Home frame = new Home(CMND);
+                                    frame.setVisible(true);
+                                }
+                            });
+                            dialog.setVisible(true);
+                        }
+                    });
                     this.dispose();
                 } catch (Exception e) {
 
                 }
 
             }
-            EmployeeManager form = new EmployeeManager(CMND);
-            form.setVisible(true);
-            this.dispose();
+
         } else {
             JOptionPane.showMessageDialog(this, "Bạn không có quyền vào chức năng này", "Lỗi", 2);
 

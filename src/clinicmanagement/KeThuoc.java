@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package clinicmanagement;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.sql.*;
 import javax.swing.JOptionPane;
 /**
@@ -16,8 +18,17 @@ public class KeThuoc extends javax.swing.JFrame {
      */
     public static String MaPhieuKhamBenh;
     public static String MaThuoc;
+    private static String CMND = "";
     public KeThuoc() throws SQLException {
         initComponents();
+        DocDuLieu();
+    }
+    
+    public KeThuoc(String CMND) throws SQLException {
+        initComponents();
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        this.CMND = CMND;
         DocDuLieu();
     }
     private void DocDuLieu() throws SQLException

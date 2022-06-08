@@ -21,6 +21,7 @@ public class ThemBenhNhan extends javax.swing.JFrame {
      * Creates new form ThemBenhNhan
      */
     private static int SoBenhNhan;
+    private static String CMND = "";
     public ThemBenhNhan() throws SQLException {
         initComponents();
         SoBenhNhan = 0;
@@ -28,6 +29,24 @@ public class ThemBenhNhan extends javax.swing.JFrame {
         Connection conn = DTBC.getConnection(this);
         Statement stm = conn.createStatement();
         ResultSet rs = stm.executeQuery("SELECT MaBenhNhan FROM BenhNhan");
+        while (rs.next())
+        {
+            MaBenhNhan.addItem(rs.getString("MaBenhNhan"));
+            SoBenhNhan++;
+        }
+        rs.close();
+        stm.close();
+        conn.close();
+    }
+    
+    public ThemBenhNhan(String CMND) throws SQLException {
+        initComponents();
+        SoBenhNhan = 0;
+        DatabaseConnection DTBC = new DatabaseConnection();
+        Connection conn = DTBC.getConnection(this);
+        Statement stm = conn.createStatement();
+        ResultSet rs = stm.executeQuery("SELECT MaBenhNhan FROM BenhNhan");
+        this.CMND = CMND;
         while (rs.next())
         {
             MaBenhNhan.addItem(rs.getString("MaBenhNhan"));

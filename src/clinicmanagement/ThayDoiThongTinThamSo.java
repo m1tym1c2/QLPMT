@@ -4,9 +4,11 @@
  */
 package clinicmanagement;
 
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -57,7 +59,6 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         TienKham = new javax.swing.JTextField();
         SoBenhNhanToiDa = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
@@ -81,17 +82,6 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
         SoBenhNhanToiDa.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jPanel1.add(SoBenhNhanToiDa, new org.netbeans.lib.awtextra.AbsoluteConstraints(338, 74, 167, -1));
 
-        jButton3.setBackground(new java.awt.Color(255, 255, 255));
-        jButton3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/anh/Dấu X.png"))); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 10, 50, 40));
-
         jButton4.setBackground(new java.awt.Color(255, 204, 204));
         jButton4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton4.setForeground(new java.awt.Color(0, 99, 28));
@@ -101,7 +91,7 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
                 jButton4ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 176, 174, -1));
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 220, 174, -1));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 84, 42));
@@ -122,15 +112,6 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DanhSachKhamBenh().setVisible(true);
-            }
-        });
-        this.setVisible(false);
-    }//GEN-LAST:event_jButton3ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         try {
             DatabaseConnection DTBC = new DatabaseConnection();
@@ -138,10 +119,11 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
             Statement stm = conn.createStatement();
             stm.executeUpdate("UPDATE THAMSO SET GiaTri = " + SoBenhNhanToiDa.getText() + " WHERE TenThamSo = 'SoBenhNhanToiDa'");
             stm.executeUpdate("UPDATE THAMSO SET GiaTri = " + TienKham.getText() + " WHERE TenThamSo = 'TienKham'");
+            JOptionPane.showMessageDialog(this, "Đã thay đổi thông tin thành công !!!");
         } catch (Exception e) {
 
         }
-        this.setVisible(false);
+        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
@@ -189,7 +171,6 @@ public class ThayDoiThongTinThamSo extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField SoBenhNhanToiDa;
     private javax.swing.JTextField TienKham;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

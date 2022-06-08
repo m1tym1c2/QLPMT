@@ -4,6 +4,8 @@
  */
 package clinicmanagement;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -19,11 +21,18 @@ import javax.swing.table.DefaultTableModel;
  */
 public class DanhSachLoaiBenh extends javax.swing.JFrame {
 
-    /**
-     * Creates new form DanhSachLoaiBenh
-     */
+    private static String CMND = "";
     public DanhSachLoaiBenh() throws SQLException {
         initComponents();
+        HienThi();
+        
+    }
+    
+    public DanhSachLoaiBenh(String CMND) throws SQLException {
+        initComponents();
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        this.CMND = CMND;
         HienThi();
         
     }

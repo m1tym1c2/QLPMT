@@ -5,6 +5,8 @@
 package clinicmanagement;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,13 +21,27 @@ import javax.swing.table.DefaultTableModel;
  */
 public class DanhSachDonViTinh extends javax.swing.JFrame {
 
-    /**
-     * Creates new form DanhSachDonViTinh
-     */
+    private static String CMND = "";
     public DanhSachDonViTinh() {
         initComponents();
         getContentPane().setBackground(Color.white);
          try
+        {
+            LoadData();           
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }
+    
+    public DanhSachDonViTinh(String CMND) {
+        initComponents();
+        getContentPane().setBackground(Color.white);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        this.CMND = CMND;
+        try
         {
             LoadData();           
         }
@@ -220,7 +236,7 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
     private void TrolaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TrolaiMouseClicked
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MedicineUsageManagement().setVisible(true);
+                new MedicineUsageManagement(CMND).setVisible(true);
             }
         });
     }//GEN-LAST:event_TrolaiMouseClicked

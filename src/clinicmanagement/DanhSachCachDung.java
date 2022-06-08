@@ -13,48 +13,57 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author admin
  */
 public class DanhSachCachDung extends javax.swing.JFrame {
 
-    /**
-     * Creates new form DanhSachCachDung
-     */
+    private static String CMND = "";
+    
     public DanhSachCachDung() {
         initComponents();
-         getContentPane().setBackground(Color.white);
-         try
-        {
-            LoadData();           
-        }
-        catch(SQLException e)
-        {
+        getContentPane().setBackground(Color.white);
+        try {
+            LoadData();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }
-    public void LoadData()throws SQLException{
+
+    public DanhSachCachDung(String CMND) {
+        initComponents();
+        getContentPane().setBackground(Color.white);
+        this.CMND = CMND;
+        try {
+            LoadData();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }
+
+    public void LoadData() throws SQLException {
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();        
-        
+        Statement stm = conn.createStatement();
+
         ResultSet rs = stm.executeQuery("SELECT TenCachDung FROM CACHDUNG;");
-        
+
         DefaultTableModel model = (DefaultTableModel) Table.getModel();
         model.setRowCount(0);
-        while (rs.next())
-        {
-            Vector row = new Vector();          
-            row.add(model.getRowCount()+1);
+        while (rs.next()) {
+            Vector row = new Vector();
+            row.add(model.getRowCount() + 1);
             row.add(rs.getString("TenCachDung"));
             model.getRowCount();
-            model.addRow(row);            
+            model.addRow(row);
         }
-        rs.close(); 
+        rs.close();
         stm.close();
         conn.close();
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -177,7 +186,7 @@ public class DanhSachCachDung extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void THEMMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_THEMMouseClicked
-       java.awt.EventQueue.invokeLater(new Runnable() {
+        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 ThemCD dialog = new ThemCD(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -191,27 +200,24 @@ public class DanhSachCachDung extends javax.swing.JFrame {
         });
         this.dispose();
     }//GEN-LAST:event_THEMMouseClicked
-    public void DELETE()throws SQLException{        
+    public void DELETE() throws SQLException {
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();  
-        
+        Statement stm = conn.createStatement();
+
         int row = Table.getSelectedRow();
         String cachdung = Table.getModel().getValueAt(row, 1).toString();
-        stm.executeUpdate("DELETE FROM CACHDUNG WHERE TenCachDung = N'"+ cachdung +"';");
-        
+        stm.executeUpdate("DELETE FROM CACHDUNG WHERE TenCachDung = N'" + cachdung + "';");
+
         stm.close();
         conn.close();
     }
     private void XOAMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XOAMouseClicked
-        try
-        {
-            DELETE();  
+        try {
+            DELETE();
             JOptionPane.showMessageDialog(this, "Đã xóa thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             LoadData();
-        }
-        catch(SQLException e)
-        {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_XOAMouseClicked
@@ -219,7 +225,7 @@ public class DanhSachCachDung extends javax.swing.JFrame {
     private void QuaylaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_QuaylaiMouseClicked
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MedicineUsageManagement().setVisible(true);
+                new MedicineUsageManagement(CMND).setVisible(true);
             }
         });
     }//GEN-LAST:event_QuaylaiMouseClicked

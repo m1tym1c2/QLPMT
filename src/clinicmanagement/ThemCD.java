@@ -5,6 +5,8 @@
 package clinicmanagement;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,15 +20,20 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
  */
 public class ThemCD extends javax.swing.JDialog {
 
-    /**
-     * Creates new form ThemCD
-     */
+    private static String CMND = "";
     public ThemCD(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         getContentPane().setBackground(Color.white);
     }
-
+    public ThemCD(java.awt.Frame parent, boolean modal, String CMND) {
+        super(parent, modal);
+        initComponents();
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        this.CMND = CMND;
+        getContentPane().setBackground(Color.white);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -133,7 +140,7 @@ public class ThemCD extends javax.swing.JDialog {
             if(LUU()==1) JOptionPane.showMessageDialog(this, "bạn đã lưu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    new DanhSachCachDung().setVisible(true);
+                    new DanhSachCachDung(CMND).setVisible(true);
                 }
             });
             this.dispose();
@@ -147,7 +154,7 @@ public class ThemCD extends javax.swing.JDialog {
     private void TROLAIMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TROLAIMouseClicked
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DanhSachCachDung().setVisible(true);
+                new DanhSachCachDung(CMND).setVisible(true);
             }
         });
         this.dispose();

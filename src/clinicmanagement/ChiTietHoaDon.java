@@ -27,6 +27,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
 
     private Connection connection = null;
     static String maPhieuKhamBenh = "";
+    private static String CMND = "";
 
     public String getMaPhieuKhamBenh() {
         return maPhieuKhamBenh;
@@ -72,12 +73,10 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
                 DefaultTableModel tbModel = (DefaultTableModel) jTable1.getModel();
                 tbModel.addRow(data);
             }
-            tongTien.setText((sum + money) + " VND");            
+            tongTien.setText((sum + money) + " VND");
         } catch (SQLException ex) {
             Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally
-        {
+        } finally {
             super.setVisible(b);
         }
     }
@@ -85,6 +84,13 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
     public ChiTietHoaDon(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        getContentPane().setBackground(Color.white);
+    }
+
+    public ChiTietHoaDon(java.awt.Frame parent, boolean modal, String CMND) {
+        super(parent, modal);
+        initComponents();
+        this.CMND = CMND;
         getContentPane().setBackground(Color.white);
     }
 
@@ -113,7 +119,6 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
         date = new javax.swing.JLabel();
         thang1 = new javax.swing.JLabel();
         thang2 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -222,16 +227,6 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
         thang2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         thang2.setText("250,000");
 
-        jButton3.setBackground(new java.awt.Color(255, 255, 255));
-        jButton3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/anh/Dấu X.png"))); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setText("jLabel3");
 
@@ -281,18 +276,14 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(167, 167, 167)
                         .addComponent(Tentrang1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(Tentrang1)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19)
+                .addComponent(Tentrang1)
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -365,13 +356,6 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
         });
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        java.awt.EventQueue.invokeLater(() -> {
-            new DanhSachKhamBenh().setVisible(true);
-        });
-        this.setVisible(false);
-    }//GEN-LAST:event_jButton3ActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
@@ -428,7 +412,6 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
     private javax.swing.JLabel date;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;

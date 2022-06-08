@@ -49,6 +49,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
      */
     private boolean User = false;
     private double tyle = 1;
+    private static String CMND = "";
     
     public MedicineUsageManagement() {
         initComponents();
@@ -57,6 +58,25 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         getContentPane().setBackground(Color.white);
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         JTableHeader header = table.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer(table));
+        try
+        {
+            LoadData();           
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }
+    }
+    
+    public MedicineUsageManagement( String CMND) {
+        initComponents();
+        jPanel1.setVisible(false);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        getContentPane().setBackground(Color.white);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        JTableHeader header = table.getTableHeader();
+        this.CMND = CMND;
         header.setDefaultRenderer(new HeaderRenderer(table));
         try
         {
@@ -421,6 +441,11 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                 ThemdvMouseClicked(evt);
             }
         });
+        Themdv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThemdvActionPerformed(evt);
+            }
+        });
         getContentPane().add(Themdv, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 520, 200, 40));
 
         themcd.setBackground(new java.awt.Color(255, 204, 204));
@@ -432,6 +457,11 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         themcd.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 themcdMouseClicked(evt);
+            }
+        });
+        themcd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                themcdActionPerformed(evt);
             }
         });
         getContentPane().add(themcd, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 520, 200, 40));
@@ -578,12 +608,24 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_ThemdvMouseClicked
 
     private void themcdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_themcdMouseClicked
+        
+    }//GEN-LAST:event_themcdMouseClicked
+
+    private void themcdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themcdActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DanhSachCachDung().setVisible(true);
+                new DanhSachCachDung(CMND).setVisible(true);
             }
         });
-    }//GEN-LAST:event_themcdMouseClicked
+    }//GEN-LAST:event_themcdActionPerformed
+
+    private void ThemdvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemdvActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new DanhSachDonViTinh(CMND).setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_ThemdvActionPerformed
 
     /**
      * @param args the command line arguments

@@ -30,9 +30,48 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     public static String MaBenhNhan;
     public static String MaNhanVien = "NV001";
     private static String MaPhieuKhamBenh;
+    private static String CMND = "";
     public PhieuKhamBenh() {
         initComponents();
         try {
+            DatabaseConnection DTBC = new DatabaseConnection();
+            Connection conn = DTBC.getConnection(this);
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("SELECT TenLoaiBenh FROM LOAIBENH");
+            while (rs.next()) {
+                LoaiBenh.addItem(rs.getString(1));
+            }
+            rs = stm.executeQuery("SELECT MaPhieuKhamBenh FROM PHIEUKHAMBENH WHERE MaBenhNhan = '"+MaBenhNhan+"' AND MaNhanVien is null");
+            while (rs.next())
+            {
+                MaPhieuKhamBenh = rs.getString(1);
+            }
+            rs = stm.executeQuery("SELECT TenThuoc, TenDonViTinh, SoLuongDung, TenCachDung FROM THUOC, CT_PHIEUKHAMBENH, CACHDUNG WHERE THUOC.MaThuoc = CT_PHIEUKHAMBENH.MaThuoc AND CACHDUNG.MaCachDung = THUOC.MaCachDung AND MaPhieuKhamBenh = '"+MaPhieuKhamBenh+"'");
+            DefaultTableModel model = (DefaultTableModel) Table.getModel();
+            int STT = 1;
+            while (rs.next())
+            {
+                Vector vector = new Vector();
+                vector.add(STT);
+                vector.add(rs.getString(1));
+                vector.add(rs.getString(2));
+                vector.add(rs.getString(3));
+                vector.add(rs.getString(4));
+                model.addRow(vector);
+                STT++;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.toString());
+        }
+        textTenBenhNhan.setText(TenBenhNhan);
+        NgayKham.setText(String.valueOf(LocalDate.now().getDayOfMonth()) + "/" + String.valueOf(LocalDate.now().getMonthValue()) + "/" + String.valueOf(LocalDate.now().getYear()));        
+        jPanel3.setVisible(false);
+    }
+    
+    public PhieuKhamBenh(String CMND) {
+        initComponents();
+        try {
+            this.CMND = CMND;
             DatabaseConnection DTBC = new DatabaseConnection();
             Connection conn = DTBC.getConnection(this);
             Statement stm = conn.createStatement();
@@ -391,7 +430,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     
-                    ChiTietHoaDon dialog = new ChiTietHoaDon(new DanhSachKhamBenh(), true);
+                    ChiTietHoaDon dialog = new ChiTietHoaDon(new DanhSachKhamBenh(), true, CMND);
                     dialog.setMaPhieuKhamBenh(MaPhieuKhamBenh);
                     dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
                     for (WindowListener wl : dialog.getWindowListeners()) {
@@ -401,7 +440,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                             dialog.dispose();
-                            DanhSachKhamBenh frame = new DanhSachKhamBenh();
+                            DanhSachKhamBenh frame = new DanhSachKhamBenh(CMND);
                             frame.setVisible(true);
                         }
                     });

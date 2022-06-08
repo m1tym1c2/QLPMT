@@ -27,7 +27,7 @@ import javax.swing.table.TableRowSorter;
  */
 public class DanhSachKhamBenh extends javax.swing.JFrame {
 
-    
+    private static String CMND = "";
     private boolean User = false;
     /**
      * Creates new form DanhSachKhamBenh
@@ -35,6 +35,22 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
     public DanhSachKhamBenh() {
         initComponents();
         this.setLocationRelativeTo(null);
+        try
+        {
+            HienThi();
+        }
+        catch (Exception e)
+                {
+                    
+                }
+        NgayThangNam.setText("Ngày "+LocalDate.now().getDayOfMonth() + " Tháng "+LocalDate.now().getMonthValue() + " Năm " + LocalDate.now().getYear());
+        jPanel4.setVisible(false);
+    }
+    
+    public DanhSachKhamBenh(String CMND) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.CMND = CMND;
         try
         {
             HienThi();
@@ -356,26 +372,9 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    PatientLookup dialog = new PatientLookup();
-                    dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-                    for (WindowListener wl : dialog.getWindowListeners()) {
-                        dialog.removeWindowListener(wl);
-                    }
-                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                        @Override
-                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                            dialog.dispose();
-                            DanhSachKhamBenh frame = new DanhSachKhamBenh();
-                            frame.setVisible(true);
-                        }
-                    });
-                    dialog.setLocationRelativeTo(null);
-                    dialog.setVisible(true);
-                }
-            });
-            this.dispose();
+        PatientLookup dialog = new PatientLookup(CMND);
+        dialog.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked

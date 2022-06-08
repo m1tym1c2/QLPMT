@@ -39,6 +39,7 @@ public class BillList extends javax.swing.JFrame {
     private Connection connection = null;
     Locale localeVI = new Locale("vi", "VI");
     NumberFormat vi = NumberFormat.getInstance(localeVI);
+    private static String CMND = "";
 
     public BillList() {
         initComponents();
@@ -48,6 +49,64 @@ public class BillList extends javax.swing.JFrame {
         String month = ca.get(Calendar.MONTH) + 1 + "";
         String year = ca.get(Calendar.YEAR) + "";
 
+        if (day.length() == 1) {
+            day = "0" + day;
+        }
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
+
+        String dd = year + "-" + month + "-" + day;
+
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dd);
+            jDateChooser1.setDate(date);
+            jDateChooser2.setDate(date);
+            jDateChooser1.setMaxSelectableDate(date);
+            jDateChooser2.setMaxSelectableDate(date);
+            try {
+                DatabaseConnection databaseConnection = new DatabaseConnection();
+                connection = databaseConnection.getConnection(jLabel);
+                Statement statement = connection.createStatement();
+                var formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+                Date date1 = jDateChooser1.getDate();
+                String strDate1 = formatter.format(date1);
+                Date date2 = jDateChooser2.getDate();
+                String strDate2 = formatter.format(date2);
+
+                ResultSet rs = statement.executeQuery("SELECT * FROM HOADON, PHIEUKHAMBENH, BENHNHAN "
+                        + "WHERE HOADON.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh "
+                        + "AND BENHNHAN.MaBenhNhan = PHIEUKHAMBENH.MaBenhNhan "
+                        + "AND PHIEUKHAMBENH.NgayKham >= '" + strDate1 + "' AND PHIEUKHAMBENH.NgayKham <= '" + strDate2 + "'");
+
+                DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
+                model.setRowCount(0);
+                int i = 0;
+                while (rs.next()) {
+                    i++;
+                    String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
+                        rs.getString("NgayKham"), vi.format(rs.getInt("TienKham")), vi.format(rs.getInt("TienThuoc")),
+                        vi.format(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
+                    DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
+                    tbModel.addRow(data);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } catch (ParseException ex) {
+            Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public BillList(String CMND) {
+        initComponents();
+        btnInvoiceDetails.setEnabled(false);
+        Calendar ca = new GregorianCalendar();
+        String day = ca.get(Calendar.DAY_OF_MONTH) + "";
+        String month = ca.get(Calendar.MONTH) + 1 + "";
+        String year = ca.get(Calendar.YEAR) + "";
+        this.CMND = CMND;
         if (day.length() == 1) {
             day = "0" + day;
         }
