@@ -2,9 +2,11 @@ package clinicmanagement;
 
 import static clinicmanagement.Home.scaleImage;
 import java.awt.AlphaComposite;
+import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.InvalidPathException;
@@ -25,6 +27,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -342,6 +349,11 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton2.setForeground(new java.awt.Color(0, 99, 28));
         jButton2.setText("In báo cáo");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 550, 156, 37));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -607,6 +619,72 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
         b.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        try{
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("Danh Sách Báo Cáo");
+            
+            Cell cell;
+            XSSFRow row;
+            int rownum = 0;
+            row = sheet.createRow(0);
+            
+            cell =  row.createCell(0, CellType.STRING);
+            cell.setCellValue("BÁO CÁO DOANH THU THÁNG");
+            
+            row = sheet.createRow(1);
+            cell =  row.createCell(0, CellType.STRING);
+            cell.setCellValue("STT");
+
+            // 
+            cell = row.createCell(1, CellType.STRING);
+            cell.setCellValue("Ngày");
+            
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellValue("Số bệnh nhân");
+            
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellValue("Doanh thu");
+            
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellValue("Tỷ lệ");
+            
+            
+            DefaultTableModel tbModel = (DefaultTableModel) jTable1.getModel();
+            for ( int i = 0 ; i < tbModel.getRowCount();  i++ ) {                
+                row = sheet.createRow(i+2);
+                // EmpNo (A)
+                cell = row.createCell(0, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 0).toString());
+                // EmpName (B)
+                cell = row.createCell(1, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 1).toString());
+                // Salary (C)
+                cell = row.createCell(2, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 2).toString());
+                // Grade (D)
+                cell = row.createCell(3, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 3).toString());
+                // Bonus (E)
+                cell = row.createCell(4, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 4).toString());
+                
+            }
+            String ten = jComboBox1.getSelectedItem().toString() + "-" + jComboBox2.getSelectedItem().toString();
+            String save = "D:/"+"BAOCAODOANHTHU-" + ten + ".xlsx";
+            File file = new File(save);  
+            file.getParentFile().mkdirs();
+            FileOutputStream outFile = new FileOutputStream(file);
+            workbook.write(outFile);
+            System.out.println("Created file: " + file.getAbsolutePath());
+            
+            Desktop.getDesktop().open(file);
+        
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton2MouseClicked
 
     /**
      * @param args the command line arguments
