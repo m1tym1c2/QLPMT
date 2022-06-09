@@ -410,7 +410,7 @@ public class StaffInformation extends javax.swing.JDialog {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 690, -1, -1));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 690, -1, -1));
 
         FNgaySinh.setDateFormatString("dd-MM-yyyy");
         FNgaySinh.addPropertyChangeListener(new java.beans.PropertyChangeListener() {

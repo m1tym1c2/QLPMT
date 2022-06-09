@@ -4,7 +4,16 @@
  */
 package clinicmanagement;
 
+import static clinicmanagement.Home.scaleImage;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,10 +23,14 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.RowFilter;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -59,8 +72,69 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                 {
                     
                 }
+        
+        JTableHeader header = Table.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer(Table));
+        getContentPane().setBackground(Color.white);
         NgayThangNam.setText("Ngày "+LocalDate.now().getDayOfMonth() + " Tháng "+LocalDate.now().getMonthValue() + " Năm " + LocalDate.now().getYear());
         jPanel4.setVisible(false);
+        RetriveData();
+    }
+    
+    private void RetriveData() {
+        if ("admin".equals(CMND)) {
+            ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+            Anhdaidien.setIcon(iconnull);
+            Tentaikhoan.setText("admin");
+        } else {
+            try {
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT TenNhanVien, HinhAnh, NHANVIEN.MaNhanVien, CHUCNANG.MaChucNang, TenChucNang FROM NHANVIEN, CHUCNANG, PHANQUYEN "
+                        + "WHERE CMND = '" + CMND + "' AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang");
+                if (rs.next()) {
+                    Tentaikhoan.setText(rs.getString("TenNhanVien"));
+                    try {
+
+                        URL url = getClass().getResource(rs.getString("HinhAnh"));
+                        File file = new File(url.getPath());
+                        BufferedImage master = ImageIO.read(file);
+                        try {
+                            master = scaleImage(64, 64, master);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        int diameter = Math.min(master.getWidth(), master.getHeight());
+                        BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D g2d = mask.createGraphics();
+                        g2d.fillOval(0, 0, diameter - 1, diameter - 1);
+                        g2d.dispose();
+
+                        BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
+                        g2d = masked.createGraphics();
+                        int x = (diameter - master.getWidth()) / 2;
+                        int y = (diameter - master.getHeight()) / 2;
+                        g2d.drawImage(master, x, y, null);
+                        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+                        g2d.drawImage(mask, 0, 0, null);
+                        g2d.dispose();
+                        ImageIcon icon = new ImageIcon(masked);
+                        Anhdaidien.setIcon(icon);
+                    } catch (InvalidPathException | NullPointerException | IOException ex) {
+                        ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+                        Anhdaidien.setIcon(iconnull);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra", "Đăng nhập thất bại", 2);
+                }
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
     }
     
     private void HienThi() throws SQLException {
@@ -145,7 +219,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                 jButton3MouseClicked(evt);
             }
         });
-        jPanel4.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 11, -1, 49));
+        jPanel4.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 11, 200, 49));
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/278996697_723755712095971_8418662915417084857_n.png"))); // NOI18N
         jPanel4.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 14, -1, -1));
@@ -155,7 +229,12 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Đổi mật khẩu");
         jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jPanel4.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 69, 201, 46));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 69, 200, 46));
 
         jButton5.setBackground(new java.awt.Color(242, 111, 51));
         jButton5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -176,7 +255,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/277367234_720289712438638_7547041272784298626_n.png"))); // NOI18N
         jPanel4.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 65, -1, 50));
 
-        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 90, 280, 180));
+        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 80, 280, 180));
 
         NgayThangNam.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         NgayThangNam.setForeground(new java.awt.Color(0, 84, 42));
@@ -283,7 +362,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                 .addComponent(Tentaikhoan)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Nutmuiten)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -310,7 +389,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                         .addComponent(Tentaikhoan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addGap(24, 24, 24)
                 .addComponent(Nutmuiten)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -319,6 +398,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Anh/Group 34.png"))); // NOI18N
         jLabel2.setText("jLabel2");
+        jLabel2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel2MouseClicked(evt);
@@ -328,6 +408,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Anh/Group 32.png"))); // NOI18N
         jLabel3.setText("jLabel3");
+        jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jLabel3MousePressed(evt);
@@ -340,6 +421,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         jButton2.setForeground(new java.awt.Color(0, 99, 28));
         jButton2.setText("Quay lại");
         jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -358,6 +440,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         jButton1.setForeground(new java.awt.Color(0, 99, 28));
         jButton1.setText("Tra cứu bệnh nhân");
         jButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -369,7 +452,9 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -381,8 +466,24 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        PatientLookup dialog = new PatientLookup(CMND);
-        dialog.setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                PatientLookup dialog = new PatientLookup(CMND);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        dialog.dispose();
+                        DanhSachKhamBenh frame = new DanhSachKhamBenh(CMND);
+                        frame.setVisible(true);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -404,7 +505,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                             dialog.dispose();
-                            DanhSachKhamBenh frame = new DanhSachKhamBenh();
+                            DanhSachKhamBenh frame = new DanhSachKhamBenh(CMND);
                             frame.setVisible(true);
                         }
                     });
@@ -444,7 +545,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         dialog.dispose();
-                        DanhSachKhamBenh frame = new DanhSachKhamBenh();
+                        DanhSachKhamBenh frame = new DanhSachKhamBenh(CMND);
                         frame.setVisible(true);
                     }
                 });
@@ -478,7 +579,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    ThemBenhNhan dialog = new ThemBenhNhan();
+                    ThemBenhNhan dialog = new ThemBenhNhan(CMND);
                     dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
                     for (WindowListener wl : dialog.getWindowListeners()) {
                         dialog.removeWindowListener(wl);
@@ -487,7 +588,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                             dialog.dispose();
-                            DanhSachKhamBenh frame = new DanhSachKhamBenh();
+                            DanhSachKhamBenh frame = new DanhSachKhamBenh(CMND);
                             frame.setVisible(true);
                         }
                     });
@@ -514,11 +615,33 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Home().setVisible(true);
+                new Home(CMND).setVisible(true);
             }
         });
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                ChangePassword dialog = new ChangePassword(new javax.swing.JFrame(), true, CMND);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        dialog.dispose();
+                        DanhSachKhamBenh frame = new DanhSachKhamBenh(CMND);
+                        frame.setVisible(true);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -550,7 +673,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DanhSachKhamBenh().setVisible(true);
+                new DanhSachKhamBenh("1111").setVisible(true);
             }
         });
     }

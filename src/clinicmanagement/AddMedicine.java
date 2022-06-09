@@ -141,7 +141,6 @@ public class AddMedicine extends javax.swing.JDialog {
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        QUAYLAI = new javax.swing.JButton();
 
         jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -197,6 +196,11 @@ public class AddMedicine extends javax.swing.JDialog {
                 XACNHANMouseClicked(evt);
             }
         });
+        XACNHAN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                XACNHANActionPerformed(evt);
+            }
+        });
 
         jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jComboBox1.addItemListener(new java.awt.event.ItemListener() {
@@ -211,21 +215,6 @@ public class AddMedicine extends javax.swing.JDialog {
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel7.setText("jLabel7");
 
-        QUAYLAI.setBackground(new java.awt.Color(255, 255, 255));
-        QUAYLAI.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        QUAYLAI.setForeground(new java.awt.Color(255, 255, 255));
-        QUAYLAI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/anh/Dấu X.png"))); // NOI18N
-        QUAYLAI.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                QUAYLAIMouseClicked(evt);
-            }
-        });
-        QUAYLAI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                QUAYLAIActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -234,48 +223,41 @@ public class AddMedicine extends javax.swing.JDialog {
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(23, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(26, 26, 26)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap())))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(jLabel5)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel1)
+                                .addComponent(jLabel2)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())))
             .addGroup(layout.createSequentialGroup()
                 .addGap(110, 110, 110)
                 .addComponent(XACNHAN, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(QUAYLAI, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addComponent(QUAYLAI, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -297,7 +279,7 @@ public class AddMedicine extends javax.swing.JDialog {
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(XACNHAN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addGap(51, 51, 51))
         );
 
         pack();
@@ -305,20 +287,7 @@ public class AddMedicine extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void XACNHANMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XACNHANMouseClicked
-       try
-        {
-            if(LUUDATA()==1)
-            {
-                JOptionPane.showMessageDialog(this, "Bạn đã thêm thuốc thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                MedicineUsageManagement frame = new MedicineUsageManagement();
-                this.dispose();
-                frame.setVisible(true);
-            }            
-        }
-        catch(SQLException e)
-        {
-            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
-        }        
+           
         
     }//GEN-LAST:event_XACNHANMouseClicked
 
@@ -330,24 +299,6 @@ public class AddMedicine extends javax.swing.JDialog {
         });
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void QUAYLAIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QUAYLAIActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MedicineUsageManagement().setVisible(true);
-            }
-        });
-        this.dispose();
-    }//GEN-LAST:event_QUAYLAIActionPerformed
-
-    private void QUAYLAIMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_QUAYLAIMouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MedicineUsageManagement().setVisible(true);
-            }
-        });
-        this.dispose();
-    }//GEN-LAST:event_QUAYLAIMouseClicked
 
     public void ChangeItem()throws SQLException{
         
@@ -380,6 +331,23 @@ public class AddMedicine extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void XACNHANActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XACNHANActionPerformed
+        try
+        {
+            if(LUUDATA()==1)
+            {
+                JOptionPane.showMessageDialog(this, "Bạn đã thêm thuốc thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                MedicineUsageManagement frame = new MedicineUsageManagement();
+                this.dispose();
+                frame.setVisible(true);
+            }            
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+        }    
+    }//GEN-LAST:event_XACNHANActionPerformed
 
 
     public static void main(String args[]) {
@@ -427,7 +395,6 @@ public class AddMedicine extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton QUAYLAI;
     private javax.swing.JButton XACNHAN;
     private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;

@@ -4,6 +4,7 @@
  */
 package clinicmanagement;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.Connection;
@@ -14,6 +15,7 @@ import java.sql.*;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -34,6 +36,9 @@ public class DanhSachLoaiBenh extends javax.swing.JFrame {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         this.CMND = CMND;
+        JTableHeader header = Table.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer(Table));
+        getContentPane().setBackground(Color.white);
         HienThi();
         
     }
@@ -82,12 +87,14 @@ public class DanhSachLoaiBenh extends javax.swing.JFrame {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Tentrang2.setBackground(new java.awt.Color(255, 255, 255));
-        Tentrang2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        Tentrang2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         Tentrang2.setForeground(new java.awt.Color(0, 84, 42));
         Tentrang2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         Tentrang2.setText("DANH SÁCH CÁC LOẠI BỆNH");
+        getContentPane().add(Tentrang2, new org.netbeans.lib.awtextra.AbsoluteConstraints(136, 21, -1, -1));
 
         Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -113,9 +120,15 @@ public class DanhSachLoaiBenh extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(Table);
+        if (Table.getColumnModel().getColumnCount() > 0) {
+            Table.getColumnModel().getColumn(0).setPreferredWidth(50);
+            Table.getColumnModel().getColumn(1).setPreferredWidth(500);
+        }
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 87, 748, 365));
 
         jButton3.setBackground(new java.awt.Color(255, 204, 204));
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton3.setForeground(new java.awt.Color(0, 99, 28));
         jButton3.setText("Thêm");
         jButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -124,9 +137,10 @@ public class DanhSachLoaiBenh extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 460, 120, 40));
 
         jButton4.setBackground(new java.awt.Color(255, 204, 204));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jButton4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton4.setForeground(new java.awt.Color(0, 99, 28));
         jButton4.setText("Xóa");
         jButton4.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -135,40 +149,7 @@ public class DanhSachLoaiBenh extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addComponent(Tentrang2)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(Tentrang2)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 459, 120, 40));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

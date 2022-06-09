@@ -1,5 +1,13 @@
 package clinicmanagement;
 
+import static clinicmanagement.Home.scaleImage;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,8 +16,13 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -22,6 +35,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
     private boolean User = false;
     private Connection connection = null;
     Locale localeVI = new Locale("vi", "VI");
+    private static String CMND = "";
     NumberFormat vi = NumberFormat.getInstance(localeVI);
 
     public BaoCaoDoanhThuThang() {
@@ -68,7 +82,110 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
             Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public BaoCaoDoanhThuThang(String CMND) {
+        initComponents();
+        jPanel3.setVisible(false);
+        this.CMND = CMND;
+        JTableHeader header = jTable1.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer(jTable1));
+        try {
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            connection = databaseConnection.getConnection(jButton1);
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT DISTINCT BAOCAOTHANG.Nam FROM BAOCAOTHANG, CT_BAOCAOTHANG "
+                    + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam");
 
+            jComboBox2.removeAllItems();
+
+            while (rs.next()) {
+                jComboBox2.addItem(rs.getString("Nam"));
+            }
+
+            rs = statement.executeQuery("SELECT DISTINCT BAOCAOTHANG.Thang FROM BAOCAOTHANG, CT_BAOCAOTHANG "
+                    + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam AND BAOCAOTHANG.Nam = "
+                    + jComboBox2.getItemAt(0));
+            jComboBox1.removeAllItems();
+
+            while (rs.next()) {
+                jComboBox1.addItem(rs.getString("Thang"));
+            }
+
+            rs = statement.executeQuery("SELECT * FROM BAOCAOTHANG, CT_BAOCAOTHANG "
+                    + "WHERE BAOCAOTHANG.Thang = CT_BAOCAOTHANG.Thang AND BAOCAOTHANG.Nam = CT_BAOCAOTHANG.Nam AND BAOCAOTHANG.Nam = "
+                    + jComboBox2.getItemAt(0) + " AND BAOCAOTHANG.Thang = " + jComboBox1.getItemAt(0));
+
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+            int i = 0;
+            while (rs.next()) {
+                i++;
+                String data[] = {Integer.toString(i), rs.getString("Ngay"), rs.getString("SoBenhNhan"),
+                    vi.format(rs.getInt("DoanhThuNgay")), rs.getString("TiLe") + "%"};
+                DefaultTableModel tbModel = (DefaultTableModel) jTable1.getModel();
+                tbModel.addRow(data);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        RetriveData();
+    }
+    private void RetriveData() {
+        if ("admin".equals(CMND)) {
+            ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+            Anhdaidien.setIcon(iconnull);
+            Tentaikhoan.setText("admin");
+        } else {
+            try {
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT TenNhanVien, HinhAnh, NHANVIEN.MaNhanVien, CHUCNANG.MaChucNang, TenChucNang FROM NHANVIEN, CHUCNANG, PHANQUYEN "
+                        + "WHERE CMND = '" + CMND + "' AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang");
+                if (rs.next()) {
+                    Tentaikhoan.setText(rs.getString("TenNhanVien"));
+                
+                    try {
+
+                        URL url = getClass().getResource(rs.getString("HinhAnh"));
+                        File file = new File(url.getPath());
+                        BufferedImage master = ImageIO.read(file);
+                        try {
+                            master = scaleImage(64, 64, master);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        int diameter = Math.min(master.getWidth(), master.getHeight());
+                        BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D g2d = mask.createGraphics();
+                        g2d.fillOval(0, 0, diameter - 1, diameter - 1);
+                        g2d.dispose();
+
+                        BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
+                        g2d = masked.createGraphics();
+                        int x = (diameter - master.getWidth()) / 2;
+                        int y = (diameter - master.getHeight()) / 2;
+                        g2d.drawImage(master, x, y, null);
+                        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+                        g2d.drawImage(mask, 0, 0, null);
+                        g2d.dispose();
+                        ImageIcon icon = new ImageIcon(masked);
+                        Anhdaidien.setIcon(icon);
+                    } catch (InvalidPathException | NullPointerException | IOException ex) {
+                        ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+                        Anhdaidien.setIcon(iconnull);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra", "Đăng nhập thất bại", 2);
+                }
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -98,6 +215,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
         Anhdaidien = new javax.swing.JLabel();
         Nutmuiten = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         placeholderTextField1 = new customview.PlaceholderTextField();
         jLabel2 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -207,24 +325,29 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 570, 156, 36));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 550, 156, 36));
 
         jButton3.setBackground(new java.awt.Color(255, 204, 204));
         jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton3.setForeground(new java.awt.Color(0, 99, 28));
         jButton3.setText("Quay lại");
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 570, 156, 34));
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 550, 156, 34));
 
         jButton2.setBackground(new java.awt.Color(255, 204, 204));
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton2.setForeground(new java.awt.Color(0, 99, 28));
         jButton2.setText("In báo cáo");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 570, 156, 37));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 550, 156, 37));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 84, 42));
         jLabel1.setText("Tháng:");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 120, -1, 42));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, -1, 42));
 
         jPanel2.setBackground(new java.awt.Color(208, 242, 224));
         jPanel2.setPreferredSize(new java.awt.Dimension(1121, 87));
@@ -253,11 +376,13 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/277027184_555937372561581_5654092174016176725_n.png"))); // NOI18N
 
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/277027184_555937372561581_5654092174016176725_n.png"))); // NOI18N
+
         placeholderTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         placeholderTextField1.setPlaceholder("Tìm kiếm...");
-        placeholderTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                placeholderTextField1KeyPressed(evt);
+        placeholderTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                placeholderTextField1ActionPerformed(evt);
             }
         });
 
@@ -273,50 +398,52 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(375, 375, 375)
-                        .addComponent(jLabel4))
-                    .addComponent(placeholderTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                        .addGap(310, 310, 310)
+                        .addComponent(jLabel5))
+                    .addComponent(placeholderTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addComponent(jLabel4)
+                .addGap(25, 25, 25)
                 .addComponent(Anhdaidien, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(Tentaikhoan)
                 .addGap(18, 18, 18)
                 .addComponent(Nutmuiten)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(Anhdaidien)
-                        .addGap(22, 22, 22))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Tentaikhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Nutmuiten))
-                        .addGap(31, 31, 31))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(13, 13, 13)
+                        .addComponent(Nutmuiten))
+                    .addComponent(Tentaikhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(44, 44, 44))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Anhdautrang)
+                    .addComponent(Anhdautrang, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Tentrang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Anhdaidien)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(5, 5, 5)
-                                .addComponent(jLabel4))
-                            .addComponent(placeholderTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(Tentrang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGap(10, 10, 10)
+                                    .addComponent(jLabel5))
+                                .addComponent(placeholderTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel4))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 70));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1130, 70));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 84, 42));
         jLabel2.setText("Năm:");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 120, -1, 40));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 120, -1, 40));
 
         jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jComboBox1.addItemListener(new java.awt.event.ItemListener() {
@@ -324,7 +451,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
                 jComboBox1ItemStateChanged(evt);
             }
         });
-        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 171, 30));
+        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 130, 171, 30));
 
         jComboBox2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jComboBox2.addItemListener(new java.awt.event.ItemListener() {
@@ -332,7 +459,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
                 jComboBox2ItemStateChanged(evt);
             }
         });
-        jPanel1.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, 180, 30));
+        jPanel1.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 130, 180, 30));
 
         jTable1.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -354,9 +481,10 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
             jTable1.getColumnModel().getColumn(2).setMaxWidth(100);
             jTable1.getColumnModel().getColumn(3).setPreferredWidth(200);
             jTable1.getColumnModel().getColumn(3).setMaxWidth(200);
+            jTable1.getColumnModel().getColumn(4).setPreferredWidth(200);
         }
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 190, 990, 320));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 200, 1030, 320));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -378,7 +506,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         java.awt.EventQueue.invokeLater(() -> {
-            ChiTietBaoCaoThang chiTietBaoCaoThang = new ChiTietBaoCaoThang();
+            ChiTietBaoCaoThang chiTietBaoCaoThang = new ChiTietBaoCaoThang(CMND);
             chiTietBaoCaoThang.setMonth(jComboBox1.getSelectedItem().toString());
             chiTietBaoCaoThang.setYear(jComboBox2.getSelectedItem().toString());
 //            System.out.println(chiTietBaoCaoThang.getMonth() + " " +chiTietBaoCaoThang.getYear());
@@ -467,12 +595,18 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
-    private void placeholderTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_placeholderTextField1KeyPressed
+    private void placeholderTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeholderTextField1ActionPerformed
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
         jTable1.setRowSorter(sorter);
         sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
-    }//GEN-LAST:event_placeholderTextField1KeyPressed
+    }//GEN-LAST:event_placeholderTextField1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        BillList b = new BillList(CMND);
+        b.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -528,6 +662,7 @@ public class BaoCaoDoanhThuThang extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

@@ -4,6 +4,8 @@
  */
 package clinicmanagement;
 
+import static clinicmanagement.Home.scaleImage;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,6 +15,9 @@ import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,6 +50,7 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
      * Creates new form Home
      */
     private boolean User = false;
+    static private String CMND = "";
 
     public ReportMedicineUsage() {
         initComponents();
@@ -54,31 +60,99 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         JTableHeader header = table.getTableHeader();
         header.setDefaultRenderer(new HeaderRenderer(table));
-        
+
     }
-    
-    public int LoadData()throws SQLException{        
+
+    public ReportMedicineUsage(String CMND) {
+        initComponents();
+        jPanel1.setVisible(false);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        getContentPane().setBackground(Color.white);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        JTableHeader header = table.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer(table));
+        this.CMND = CMND;
+        RetriveData();
+        ThangItemStateChanged(null);
+    }
+
+    private void RetriveData() {
+        if ("admin".equals(CMND)) {
+            ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+            Anhdaidien.setIcon(iconnull);
+            Tentaikhoan.setText("admin");
+        } else {
+            try {
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT TenNhanVien, HinhAnh, NHANVIEN.MaNhanVien, CHUCNANG.MaChucNang, TenChucNang FROM NHANVIEN, CHUCNANG, PHANQUYEN "
+                        + "WHERE CMND = '" + CMND + "' AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang");
+                if (rs.next()) {
+                    Tentaikhoan.setText(rs.getString("TenNhanVien"));
+                    try {
+
+                        URL url = getClass().getResource(rs.getString("HinhAnh"));
+                        File file = new File(url.getPath());
+                        BufferedImage master = ImageIO.read(file);
+                        try {
+                            master = scaleImage(64, 64, master);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        int diameter = Math.min(master.getWidth(), master.getHeight());
+                        BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D g2d = mask.createGraphics();
+                        g2d.fillOval(0, 0, diameter - 1, diameter - 1);
+                        g2d.dispose();
+
+                        BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
+                        g2d = masked.createGraphics();
+                        int x = (diameter - master.getWidth()) / 2;
+                        int y = (diameter - master.getHeight()) / 2;
+                        g2d.drawImage(master, x, y, null);
+                        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+                        g2d.drawImage(mask, 0, 0, null);
+                        g2d.dispose();
+                        ImageIcon icon = new ImageIcon(masked);
+                        Anhdaidien.setIcon(icon);
+                    } catch (InvalidPathException | NullPointerException | IOException ex) {
+                        ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+                        Anhdaidien.setIcon(iconnull);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra", "Đăng nhập thất bại", 2);
+                }
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public int LoadData() throws SQLException {
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();        
-        
+        Statement stm = conn.createStatement();
+
         ResultSet rs = stm.executeQuery("SELECT TenThuoc ,TenDonViTinh ,SoLuongDung ,SoLanDung "
                 + "                      FROM THUOC, BAOCAOSUDUNGTHUOC  "
                 + "                      WHERE THUOC.MaThuoc  = BAOCAOSUDUNGTHUOC.MaThuoc AND Thang = " + Thang.getSelectedItem().toString() + " AND NAM = " + Nam.getSelectedItem().toString());
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        while (rs.next())
-        {
-            Vector row = new Vector();          
-            row.add(model.getRowCount()+1);
+        while (rs.next()) {
+            Vector row = new Vector();
+            row.add(model.getRowCount() + 1);
             row.add(rs.getString("TenThuoc"));
             row.add(rs.getString("TenDonViTinh"));
             row.add(String.valueOf(rs.getInt("SoLuongDung")));
             row.add(String.valueOf(rs.getInt("SoLanDung")));
             model.getRowCount();
-            model.addRow(row);            
+            model.addRow(row);
         }
-        rs.close(); 
+        rs.close();
         stm.close();
         conn.close();
         return 1;
@@ -178,6 +252,11 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
                 jButton1MouseClicked(evt);
             }
         });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/278996697_723755712095971_8418662915417084857_n.png"))); // NOI18N
 
@@ -186,6 +265,11 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Đổi mật khẩu");
         jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setBackground(new java.awt.Color(242, 111, 51));
         jButton5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -332,7 +416,8 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 90, -1, -1));
 
         Thang.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        Thang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "1", "2", "3", "4", "5", "6" }));
+        Thang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6" }));
+        Thang.setSelectedIndex(4);
         Thang.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 ThangItemStateChanged(evt);
@@ -368,25 +453,7 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
     }//GEN-LAST:event_NutmuitenMouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true);
-                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                for (WindowListener wl : dialog.getWindowListeners()) {
-                    dialog.removeWindowListener(wl);
-                }
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        dialog.dispose();
-                        ReportMedicineUsage frame = new ReportMedicineUsage();
-                        frame.setVisible(true);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-        this.dispose();
+
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void inbaocaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inbaocaoMouseClicked
@@ -406,7 +473,9 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
     }//GEN-LAST:event_QuayLaiMouseClicked
 
     private void QuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QuayLaiActionPerformed
-        // TODO add your handling code here:
+        MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
+        frame.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_QuayLaiActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -414,68 +483,108 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
         form.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
-    private void LapBaoCao() throws SQLException
-    {
+    private void LapBaoCao() throws SQLException {
         DatabaseConnection dtc = new DatabaseConnection();
         Connection conn = dtc.getConnection(this);
         Statement statement = conn.createStatement();
         Statement stm = conn.createStatement();
-        ResultSet rs = statement.executeQuery("SELECT THUOC.MaThuoc, SUM(SoLuongDung), COUNT(*) FROM THUOC, CT_PHIEUKHAMBENH, PHIEUKHAMBENH WHERE THUOC.MaThuoc = CT_PHIEUKHAMBENH.MaThuoc AND CT_PHIEUKHAMBENH.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh AND MONTH(NgayKham) = "+Thang.getSelectedItem().toString()+" AND YEAR(NgayKham) = "+Nam.getSelectedItem().toString() + " GROUP BY THUOC.MaThuoc");
-        while (rs.next())
-        {
-            stm.executeUpdate("INSERT INTO BAOCAOSUDUNGTHUOC VALUES ("+Thang.getSelectedItem().toString()+","+Nam.getSelectedItem().toString()+",'"+rs.getString(1)+"',"+rs.getInt(2)+","+rs.getInt(3)+")");
+        ResultSet rs = statement.executeQuery("SELECT THUOC.MaThuoc, SUM(SoLuongDung), COUNT(*) FROM THUOC, CT_PHIEUKHAMBENH, PHIEUKHAMBENH WHERE THUOC.MaThuoc = CT_PHIEUKHAMBENH.MaThuoc AND CT_PHIEUKHAMBENH.MaPhieuKhamBenh = PHIEUKHAMBENH.MaPhieuKhamBenh AND MONTH(NgayKham) = " + Thang.getSelectedItem().toString() + " AND YEAR(NgayKham) = " + Nam.getSelectedItem().toString() + " GROUP BY THUOC.MaThuoc");
+        while (rs.next()) {
+            stm.executeUpdate("INSERT INTO BAOCAOSUDUNGTHUOC VALUES (" + Thang.getSelectedItem().toString() + "," + Nam.getSelectedItem().toString() + ",'" + rs.getString(1) + "'," + rs.getInt(2) + "," + rs.getInt(3) + ")");
         }
         rs.close();
         statement.close();
         conn.close();
     }
     private void ThangItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ThangItemStateChanged
-            try
-            {
-                DatabaseConnection dtc = new DatabaseConnection();
-                Connection conn = dtc.getConnection(this);
-                Statement statement = conn.createStatement();
-                boolean flag = false;
-                ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM BAOCAOSUDUNGTHUOC WHERE Thang = "+Thang.getSelectedItem().toString()+" AND NAM = " + Nam.getSelectedItem().toString());
-                if (rs.next())
-                {
-                    if (rs.getInt(1)==0) flag = false;
-                    else flag = true;
-                }
-                if (flag)
-                {
-                    LoadData();
-                }
-                else
-                {
-                    LapBaoCao();
-                    LoadData();
+        try {
+            DatabaseConnection dtc = new DatabaseConnection();
+            Connection conn = dtc.getConnection(this);
+            Statement statement = conn.createStatement();
+            boolean flag = false;
+            ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM BAOCAOSUDUNGTHUOC WHERE Thang = " + Thang.getSelectedItem().toString() + " AND NAM = " + Nam.getSelectedItem().toString());
+            if (rs.next()) {
+                if (rs.getInt(1) == 0) {
+                    flag = false;
+                } else {
+                    flag = true;
                 }
             }
-            catch (Exception e)
-            {
-                JOptionPane.showMessageDialog(this, e.toString());
+            if (flag) {
+                LoadData();
+            } else {
+                LapBaoCao();
+                LoadData();
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.toString());
+        }
     }//GEN-LAST:event_ThangItemStateChanged
 
     private void NamItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_NamItemStateChanged
-        try
-        {
-            if( LoadData() == 0)
+        try {
+            if (LoadData() == 0) {
                 JOptionPane.showMessageDialog(this, "Thời gian này chưa có báo cáo, vui lòng chọn thời gian khác", "Chưa có thông tin", ERROR_MESSAGE);
-        }
-        catch(SQLException e)
-        {
+            }
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_NamItemStateChanged
 
     private void placeholderTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_placeholderTextField1KeyPressed
         DefaultTableModel model = (DefaultTableModel) table.getModel();
-        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel> (model);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
         table.setRowSorter(sorter);
         sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
     }//GEN-LAST:event_placeholderTextField1KeyPressed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true, CMND);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        dialog.dispose();
+                        ReportMedicineUsage frame = new ReportMedicineUsage(CMND);
+                        frame.setVisible(true);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if ("admin".equals(CMND)) {
+            JOptionPane.showMessageDialog(this, "admin không thể đổi mật khẩu", "Lỗi", ERROR_MESSAGE);
+        } else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    ChangePassword dialog = new ChangePassword(new javax.swing.JFrame(), true, CMND);
+                    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
+                    }
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            ReportMedicineUsage frame = new ReportMedicineUsage(CMND);
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments

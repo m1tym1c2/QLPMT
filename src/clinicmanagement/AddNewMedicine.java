@@ -3,6 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package clinicmanagement;
+
+import static clinicmanagement.Home.scaleImage;
+import java.awt.AlphaComposite;
 import java.sql.*;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,6 +15,9 @@ import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -37,6 +43,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
      */
     private boolean User = false;
     private String filename = "";
+    private String CMND = "";
     private File f;
 
     public AddNewMedicine() {
@@ -46,33 +53,106 @@ public class AddNewMedicine extends javax.swing.JFrame {
         getContentPane().setBackground(Color.white);
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         jPanel1.setVisible(false);
-        
-        try
-        {
-            LoadData();           
-        }
-        catch(SQLException e)
-        {
+
+        try {
+            LoadData();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Chưa có cách dùng/ đơn vị tính, bạn vui lòng thêm cách dùng trước", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    public void LoadData()throws SQLException{
-        
+
+    public AddNewMedicine(String CMND) {
+        initComponents();
+
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        getContentPane().setBackground(Color.white);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        jPanel1.setVisible(false);
+        this.CMND = CMND;
+        try {
+            LoadData();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Chưa có cách dùng/ đơn vị tính, bạn vui lòng thêm cách dùng trước", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
+        RetriveData();
+    }
+
+    public void LoadData() throws SQLException {
+
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();        
-        
+        Statement stm = conn.createStatement();
+
         ResultSet rs = stm.executeQuery("SELECT TenCachDung FROM CACHDUNG;");
-        while(rs.next())
+        while (rs.next()) {
             cachdung.addItem(rs.getString("TenCachDung"));
-        
+        }
+
         rs = stm.executeQuery("SELECT TenDonViTinh FROM DONVITINH;");
-        while(rs.next())
+        while (rs.next()) {
             Donvi.addItem(rs.getString("TenDonViTinh"));
+        }
         //Donvi.setSelectedIndex(1);
-        rs.close(); 
+        rs.close();
         stm.close();
         conn.close();
+    }
+
+    private void RetriveData() {
+        if ("admin".equals(CMND)) {
+            ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+            Anhdaidien.setIcon(iconnull);
+            Tentaikhoan.setText("admin");
+        } else {
+            try {
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT TenNhanVien, HinhAnh, NHANVIEN.MaNhanVien, CHUCNANG.MaChucNang, TenChucNang FROM NHANVIEN, CHUCNANG, PHANQUYEN "
+                        + "WHERE CMND = '" + CMND + "' AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang");
+                if (rs.next()) {
+                    Tentaikhoan.setText(rs.getString("TenNhanVien"));
+
+                    try {
+
+                        URL url = getClass().getResource(rs.getString("HinhAnh"));
+                        File file = new File(url.getPath());
+                        BufferedImage master = ImageIO.read(file);
+                        try {
+                            master = scaleImage(64, 64, master);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        int diameter = Math.min(master.getWidth(), master.getHeight());
+                        BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D g2d = mask.createGraphics();
+                        g2d.fillOval(0, 0, diameter - 1, diameter - 1);
+                        g2d.dispose();
+
+                        BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
+                        g2d = masked.createGraphics();
+                        int x = (diameter - master.getWidth()) / 2;
+                        int y = (diameter - master.getHeight()) / 2;
+                        g2d.drawImage(master, x, y, null);
+                        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+                        g2d.drawImage(mask, 0, 0, null);
+                        g2d.dispose();
+                        ImageIcon icon = new ImageIcon(masked);
+                        Anhdaidien.setIcon(icon);
+                    } catch (InvalidPathException | NullPointerException | IOException ex) {
+                        ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+                        Anhdaidien.setIcon(iconnull);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra", "Đăng nhập thất bại", 2);
+                }
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
     }
 
     public static BufferedImage scaleImage(int w, int h, BufferedImage img) throws Exception {
@@ -134,7 +214,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Anhdaidien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Anh/image 6.png"))); // NOI18N
-        jPanel2.add(Anhdaidien, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 10, -1, -1));
+        jPanel2.add(Anhdaidien, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 13, -1, -1));
 
         Tentaikhoan.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         Tentaikhoan.setForeground(new java.awt.Color(0, 84, 42));
@@ -157,6 +237,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton1.setBackground(new java.awt.Color(0, 166, 84));
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -168,14 +249,27 @@ public class AddNewMedicine extends javax.swing.JFrame {
                 jButton1MouseClicked(evt);
             }
         });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 12, -1, 50));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/278996697_723755712095971_8418662915417084857_n.png"))); // NOI18N
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         jButton4.setBackground(new java.awt.Color(0, 166, 84));
         jButton4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Đổi mật khẩu");
         jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 197, 46));
 
         jButton5.setBackground(new java.awt.Color(242, 111, 51));
         jButton5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -187,60 +281,14 @@ public class AddNewMedicine extends javax.swing.JFrame {
                 jButton5ActionPerformed(evt);
             }
         });
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 130, 197, 46));
+        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 72, -1, -1));
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/278367228_415742123260148_2336724036194180860_n.png"))); // NOI18N
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 54, 46));
 
         jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/277367234_720289712438638_7547041272784298626_n.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(jLabel2))
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))))
-        );
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, 55));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 80, 280, 180));
 
@@ -313,6 +361,11 @@ public class AddNewMedicine extends javax.swing.JFrame {
                 jButton2MouseClicked(evt);
             }
         });
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 500, 160, 40));
 
         Luu.setBackground(new java.awt.Color(255, 204, 204));
@@ -324,6 +377,11 @@ public class AddNewMedicine extends javax.swing.JFrame {
         Luu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 LuuMouseClicked(evt);
+            }
+        });
+        Luu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LuuActionPerformed(evt);
             }
         });
         getContentPane().add(Luu, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 500, 160, 40));
@@ -382,7 +440,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
         JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         chooser.setMultiSelectionEnabled(false);
         FileFilter imageFilter = new FileNameExtensionFilter(
-            "Image files", ImageIO.getReaderFileSuffixes());
+                "Image files", ImageIO.getReaderFileSuffixes());
         chooser.setFileFilter(imageFilter);
         int option = chooser.showOpenDialog(this);
         f = chooser.getSelectedFile();
@@ -402,61 +460,122 @@ public class AddNewMedicine extends javax.swing.JFrame {
         this.dispose();
         frame.setVisible(true);
     }//GEN-LAST:event_jButton2MouseClicked
-    public int LUU()throws SQLException{
-        if(jTextField2.getText()==null || jTextField3.getText()==null || filename == "") {
+    public int LUU() throws SQLException {
+        if (jTextField2.getText() == null || jTextField3.getText() == null || filename == "") {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đủ thông tin! ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             return 0;
         }
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
         Statement stm = conn.createStatement();
-        
+
         String donvi = Donvi.getSelectedItem().toString();
         //thêm đơn vị tính
         ResultSet rs;
-        
+
         //thêm cách dùng
         String cd = cachdung.getSelectedItem().toString();
-        rs = stm.executeQuery("SELECT MaCachDung, TenCachDung from CACHDUNG   ");       
-        String macachdung ="";
-        while(rs.next()){
-            if(rs.getString("TenCachDung").equals(cd)){
+        rs = stm.executeQuery("SELECT MaCachDung, TenCachDung from CACHDUNG   ");
+        String macachdung = "";
+        while (rs.next()) {
+            if (rs.getString("TenCachDung").equals(cd)) {
                 macachdung = rs.getString("MaCachDung");
             }
-        }  
+        }
         //theem thuoc
         String tenthuoc = jTextField2.getText();
         rs = stm.executeQuery("SELECT TenThuoc from THUOC   ");
         boolean kt = false;
         int sothuoc = 0;
-        while(rs.next()){
-            if(rs.getString("TenThuoc").equals(tenthuoc)) kt =true;
+        while (rs.next()) {
+            if (rs.getString("TenThuoc").equals(tenthuoc)) {
+                kt = true;
+            }
             sothuoc++;
         }
-        String mathuoc = "T" + String.valueOf(sothuoc+1);
-        
+        String mathuoc = "T" + String.valueOf(sothuoc + 1);
+
         rs = stm.executeQuery("SELECT MaCachDung from CACHDUNG   ");
-        while(rs.next()){
-            if(rs.getString("MaCachDung").equals(mathuoc)) {
+        while (rs.next()) {
+            if (rs.getString("MaCachDung").equals(mathuoc)) {
                 sothuoc++;
-                mathuoc = "CD" + String.valueOf(sothuoc+1);
-            }            
+                mathuoc = "CD" + String.valueOf(sothuoc + 1);
+            }
         }
-        if(!kt) stm.executeUpdate("INSERT INTO THUOC  VALUES ( N'" + mathuoc +"',N'" + tenthuoc + "',N'" + donvi + "','"+0+"',N'"+ jTextField3.getText() +"',N'" + macachdung + "',N'" + f.getAbsolutePath() +"');");
-        else {
+        if (!kt) {
+            stm.executeUpdate("INSERT INTO THUOC  VALUES ( N'" + mathuoc + "',N'" + tenthuoc + "',N'" + donvi + "','" + 0 + "',N'" + jTextField3.getText() + "',N'" + macachdung + "',N'" + f.getAbsolutePath() + "');");
+        } else {
             JOptionPane.showMessageDialog(this, "Thuốc này đã có", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             return 0;
         }
-        rs.close(); 
+        rs.close();
         stm.close();
         conn.close();
         return 1;
     }
     private void LuuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LuuMouseClicked
-        try
-        {
-            if(LUU()==1)
-            {
+
+
+    }//GEN-LAST:event_LuuMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true, CMND);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        dialog.dispose();
+                        AddNewMedicine frame = new AddNewMedicine(CMND);
+                        frame.setVisible(true);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
+        frame.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if ("admin".equals(CMND)) {
+            JOptionPane.showMessageDialog(this, "admin không thể đổi mật khẩu", "Lỗi", ERROR_MESSAGE);
+        } else {
+
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    ChangePassword dialog = new ChangePassword(new javax.swing.JFrame(), true, CMND);
+                    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
+                    }
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            AddNewMedicine frame = new AddNewMedicine(CMND);
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void LuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LuuActionPerformed
+        try {
+            if (LUU() == 1) {
                 JOptionPane.showMessageDialog(this, "Bạn đã lưu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 java.awt.EventQueue.invokeLater(new Runnable() {
                     public void run() {
@@ -464,16 +583,12 @@ public class AddNewMedicine extends javax.swing.JFrame {
                     }
                 });
                 this.dispose();
-            }            
-        }
-        catch(SQLException e)
-        {
+            }
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
-        }    
+        }
+    }//GEN-LAST:event_LuuActionPerformed
 
-    }//GEN-LAST:event_LuuMouseClicked
-
-    
     /**
      * @param args the command line arguments
      */
@@ -507,7 +622,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddNewMedicine().setVisible(true);
+                new AddNewMedicine("1111").setVisible(true);
             }
         });
     }

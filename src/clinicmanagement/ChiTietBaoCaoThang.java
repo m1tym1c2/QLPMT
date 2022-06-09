@@ -1,7 +1,15 @@
 package clinicmanagement;
 
+import static clinicmanagement.Home.scaleImage;
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
 import javax.swing.WindowConstants;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -13,6 +21,10 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 /**
  *
@@ -22,10 +34,8 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
 
     private boolean User = false;
     private Connection connection = null;
-    private String user = "sa";
-    private String password = "12345678";
-    private String url = "jdbc:sqlserver://NGOCTIENTNT:1433;databaseName=QUANLYPHONGMACHTU";
     Locale localeVI = new Locale("vi", "VI");
+    private static String CMND = "";
     NumberFormat vi = NumberFormat.getInstance(localeVI);
 
     public String getMonth() {
@@ -113,6 +123,69 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
     public ChiTietBaoCaoThang() {
         initComponents();
         jPanel4.setVisible(false);
+    }
+    
+    public ChiTietBaoCaoThang(String CMND) {
+        initComponents();
+        jPanel4.setVisible(false);
+        this.CMND=CMND;
+        RetriveData();
+    }
+    
+    private void RetriveData() {
+        if ("admin".equals(CMND)) {
+            ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+            Anhdaidien.setIcon(iconnull);
+            Tentaikhoan.setText("admin");
+        } else {
+            try {
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT TenNhanVien, HinhAnh, NHANVIEN.MaNhanVien, CHUCNANG.MaChucNang, TenChucNang FROM NHANVIEN, CHUCNANG, PHANQUYEN "
+                        + "WHERE CMND = '" + CMND + "' AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang");
+                if (rs.next()) {
+                    Tentaikhoan.setText(rs.getString("TenNhanVien"));
+                    try {
+
+                        URL url = getClass().getResource(rs.getString("HinhAnh"));
+                        File file = new File(url.getPath());
+                        BufferedImage master = ImageIO.read(file);
+                        try {
+                            master = scaleImage(64, 64, master);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        int diameter = Math.min(master.getWidth(), master.getHeight());
+                        BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D g2d = mask.createGraphics();
+                        g2d.fillOval(0, 0, diameter - 1, diameter - 1);
+                        g2d.dispose();
+
+                        BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
+                        g2d = masked.createGraphics();
+                        int x = (diameter - master.getWidth()) / 2;
+                        int y = (diameter - master.getHeight()) / 2;
+                        g2d.drawImage(master, x, y, null);
+                        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+                        g2d.drawImage(mask, 0, 0, null);
+                        g2d.dispose();
+                        ImageIcon icon = new ImageIcon(masked);
+                        Anhdaidien.setIcon(icon);
+                    } catch (InvalidPathException | NullPointerException | IOException ex) {
+                        ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+                        Anhdaidien.setIcon(iconnull);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra", "Đăng nhập thất bại", 2);
+                }
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
     }
 
     private static PieDataset createDataset(int nhanVien, int thuoc, boolean check) {
@@ -380,7 +453,7 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
         Tentrang1.setForeground(new java.awt.Color(0, 84, 42));
         Tentrang1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         Tentrang1.setText("CHI TIẾT DOANH THU THÁNG\n");
-        jPanel1.add(Tentrang1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, 510, 50));
+        jPanel1.add(Tentrang1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, 530, 50));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -441,7 +514,7 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         java.awt.EventQueue.invokeLater(() -> {
-            new BaoCaoDoanhThuThang().setVisible(true);
+            new BaoCaoDoanhThuThang(CMND).setVisible(true);
         });
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed

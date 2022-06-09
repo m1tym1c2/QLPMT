@@ -7,6 +7,8 @@ package clinicmanagement;
 import static clinicmanagement.AddMedicine.donvi;
 import static clinicmanagement.AddMedicine.mathuoc;
 import static clinicmanagement.AddMedicine.soluong;
+import static clinicmanagement.Home.scaleImage;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -16,6 +18,9 @@ import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,12 +35,15 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.text.DefaultCaret;
 
 /**
@@ -50,7 +58,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private boolean User = false;
     private double tyle = 1;
     private static String CMND = "";
-    
+
     public MedicineUsageManagement() {
         initComponents();
         jPanel1.setVisible(false);
@@ -59,17 +67,14 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         JTableHeader header = table.getTableHeader();
         header.setDefaultRenderer(new HeaderRenderer(table));
-        try
-        {
-            LoadData();           
-        }
-        catch(SQLException e)
-        {
+        try {
+            LoadData();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }
-    
-    public MedicineUsageManagement( String CMND) {
+
+    public MedicineUsageManagement(String CMND) {
         initComponents();
         jPanel1.setVisible(false);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -78,55 +83,112 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         JTableHeader header = table.getTableHeader();
         this.CMND = CMND;
         header.setDefaultRenderer(new HeaderRenderer(table));
-        try
-        {
-            LoadData();           
-        }
-        catch(SQLException e)
-        {
+        RetriveData();
+        try {
+            LoadData();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }
-     public void LoadData()throws SQLException{
-        
+
+    private void RetriveData() {
+        if ("admin".equals(CMND)) {
+            ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+            Anhdaidien.setIcon(iconnull);
+            Tentaikhoan.setText("admin");
+        } else {
+            try {
+                DatabaseConnection DTBC = new DatabaseConnection();
+                Connection conn = DTBC.getConnection(this);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT TenNhanVien, HinhAnh, NHANVIEN.MaNhanVien, CHUCNANG.MaChucNang, TenChucNang FROM NHANVIEN, CHUCNANG, PHANQUYEN "
+                        + "WHERE CMND = '" + CMND + "' AND PHANQUYEN.MaNhanVien = NHANVIEN.MaNhanVien AND CHUCNANG.MaChucNang = PHANQUYEN.MaChucNang");
+                if (rs.next()) {
+                    Tentaikhoan.setText(rs.getString("TenNhanVien"));
+                    try {
+
+                        URL url = getClass().getResource(rs.getString("HinhAnh"));
+                        File file = new File(url.getPath());
+                        BufferedImage master = ImageIO.read(file);
+                        try {
+                            master = scaleImage(64, 64, master);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        int diameter = Math.min(master.getWidth(), master.getHeight());
+                        BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D g2d = mask.createGraphics();
+                        g2d.fillOval(0, 0, diameter - 1, diameter - 1);
+                        g2d.dispose();
+
+                        BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
+                        g2d = masked.createGraphics();
+                        int x = (diameter - master.getWidth()) / 2;
+                        int y = (diameter - master.getHeight()) / 2;
+                        g2d.drawImage(master, x, y, null);
+                        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+                        g2d.drawImage(mask, 0, 0, null);
+                        g2d.dispose();
+                        ImageIcon icon = new ImageIcon(masked);
+                        Anhdaidien.setIcon(icon);
+                    } catch (InvalidPathException | NullPointerException | IOException ex) {
+                        ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
+                        Anhdaidien.setIcon(iconnull);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra", "Đăng nhập thất bại", 2);
+                }
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void LoadData() throws SQLException {
+
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();        
+        Statement stm = conn.createStatement();
         ResultSet rs = stm.executeQuery("SELECT GiaTri FROM THAMSO WHERE TenThamSo = 'TiGiaNhapBan'");
-        if (rs.next()) TyGia.setText(String.valueOf(rs.getInt(1)));
-        rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc,CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n" +
-                                        ",SoLuongTon,TenDonViTinh ,DonGiaNhap ,DonGiaBan \n" +
-                                        "FROM THUOC, CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC , (SELECT   max(ct1.MaPhieuNhapThuoc) MaPhieuNhapThuoc\n" +
-                                        "                                                   FROM CT_PHIEUNHAPTHUOC ct1													\n" +
-                                        "                                                   GROUP BY MaThuoc) CTNHAPTHUOC \n" +
-                                        "WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  \n" +
-                                        "AND CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc\n" +
-                                        "AND CTNHAPTHUOC.MaPhieuNhapThuoc = CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc");
-        
+        if (rs.next()) {
+            TyGia.setText(String.valueOf(rs.getInt(1)));
+        }
+        rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc,CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n"
+                + ",SoLuongTon,TenDonViTinh ,DonGiaNhap ,DonGiaBan \n"
+                + "FROM THUOC, CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC , (SELECT   max(ct1.MaPhieuNhapThuoc) MaPhieuNhapThuoc\n"
+                + "                                                   FROM CT_PHIEUNHAPTHUOC ct1													\n"
+                + "                                                   GROUP BY MaThuoc) CTNHAPTHUOC \n"
+                + "WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  \n"
+                + "AND CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc\n"
+                + "AND CTNHAPTHUOC.MaPhieuNhapThuoc = CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc");
+
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        while (rs.next())
-        {
-            Vector row = new Vector();          
-            row.add(model.getRowCount()+1);
+        while (rs.next()) {
+            Vector row = new Vector();
+            row.add(model.getRowCount() + 1);
             row.add(rs.getString("MaThuoc"));
             row.add(rs.getString("TenThuoc"));
-            
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");        
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             String strDate = formatter.format(rs.getDate("NgayNhap"));
             row.add(strDate);
-            
+
             row.add(String.valueOf(rs.getInt("SoLuongTon")));
             row.add(rs.getString("TenDonViTinh"));
             row.add(String.valueOf(rs.getInt("DonGiaNhap")));
             row.add(String.valueOf(rs.getInt("DonGiaBan")));
             model.getRowCount();
-            model.addRow(row);            
+            model.addRow(row);
         }
-        rs.close(); 
+        rs.close();
         stm.close();
         conn.close();
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -203,6 +265,11 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
 
         placeholderTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         placeholderTextField1.setPlaceholder("Tìm kiếm...");
+        placeholderTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                placeholderTextField1ActionPerformed(evt);
+            }
+        });
         jPanel2.add(placeholderTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 22, 410, 40));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, -10, 1000, 80));
@@ -302,23 +369,24 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         table.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Mã thuốc", "Tên thuốc", "Ngày nhập", "Lượng tồn", "ĐVT", "Giá nhập", "Giá bán", ""
+                "STT", "Mã thuốc", "Tên thuốc", "Ngày nhập", "Lượng tồn", "ĐVT", "Giá nhập", "Giá bán"
             }
         ));
+        table.setColumnSelectionAllowed(true);
         table.setEditingColumn(0);
         table.setEditingRow(0);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -337,7 +405,6 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
             table.getColumnModel().getColumn(5).setPreferredWidth(50);
             table.getColumnModel().getColumn(6).setPreferredWidth(100);
             table.getColumnModel().getColumn(7).setPreferredWidth(100);
-            table.getColumnModel().getColumn(8).setPreferredWidth(20);
         }
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 940, 380));
@@ -403,7 +470,12 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                 ThemThuocMouseClicked(evt);
             }
         });
-        getContentPane().add(ThemThuoc, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 70, 200, 40));
+        ThemThuoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThemThuocActionPerformed(evt);
+            }
+        });
+        getContentPane().add(ThemThuoc, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 80, 200, 40));
 
         QuayLai.setBackground(new java.awt.Color(255, 204, 204));
         QuayLai.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -414,6 +486,11 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         QuayLai.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 QuayLaiMouseClicked(evt);
+            }
+        });
+        QuayLai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                QuayLaiActionPerformed(evt);
             }
         });
         getContentPane().add(QuayLai, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 520, 160, 40));
@@ -427,6 +504,11 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         ThemLoaiThuocMoi.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ThemLoaiThuocMoiMouseClicked(evt);
+            }
+        });
+        ThemLoaiThuocMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThemLoaiThuocMoiActionPerformed(evt);
             }
         });
         getContentPane().add(ThemLoaiThuocMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 520, 200, 40));
@@ -492,7 +574,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         dialog.dispose();
-                        MedicineUsageManagement frame = new MedicineUsageManagement();
+                        MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
                         frame.setVisible(true);
                     }
                 });
@@ -503,8 +585,8 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void BaoCaoSDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BaoCaoSDMouseClicked
-        
-        ReportMedicineUsage form = new ReportMedicineUsage();
+
+        ReportMedicineUsage form = new ReportMedicineUsage(CMND);
         form.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_BaoCaoSDMouseClicked
@@ -512,21 +594,21 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private void TyGiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TyGiaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TyGiaActionPerformed
-    public void LUU()throws SQLException{
+    public void LUU() throws SQLException {
         tyle = Integer.valueOf(TyGia.getText());
-        
+
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();  
-        
-        stm.executeUpdate("UPDATE CT_PHIEUNHAPTHUOC set DonGiaBan = DonGiaNhap*" + tyle/100 );
-        stm.executeUpdate("UPDATE THAMSO SET GiaTri = "+TyGia.getText()+" WHERE TenThamSo = 'TiGiaNhapBan'"); 
+        Statement stm = conn.createStatement();
+
+        stm.executeUpdate("UPDATE CT_PHIEUNHAPTHUOC set DonGiaBan = DonGiaNhap*" + tyle / 100);
+        stm.executeUpdate("UPDATE THAMSO SET GiaTri = " + TyGia.getText() + " WHERE TenThamSo = 'TiGiaNhapBan'");
         stm.close();
         conn.close();
         TyGia.setText(String.valueOf(tyle));
     }
     private void LuuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LuuMouseClicked
-        
+
     }//GEN-LAST:event_LuuMouseClicked
 
     private void ThemThuocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThemThuocMouseClicked
@@ -539,28 +621,20 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_ThemThuocMouseClicked
 
     private void QuayLaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_QuayLaiMouseClicked
-        Home frame = new Home();
-        this.dispose();
-        frame.setVisible(true);
+
     }//GEN-LAST:event_QuayLaiMouseClicked
 
     private void LuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LuuActionPerformed
         tyle = Integer.valueOf(TyGia.getText());
         JOptionPane.showMessageDialog(this, "Bạn có chắc đổi tỷ lệ giá bán hay không?", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        try
-        {
+        try {
             LUU();
-        }
-        catch(SQLException e)
-        {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
-        try
-        {
+        try {
             LoadData();
-        }
-        catch(SQLException e)
-        {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_LuuActionPerformed
@@ -572,19 +646,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void ThemLoaiThuocMoiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThemLoaiThuocMoiMouseClicked
-        tyle = Integer.valueOf(TyGia.getText());
-        AddMedicine.setData(tyle);
-        java.awt.EventQueue.invokeLater(() -> {
-            AddMedicine dialog = new AddMedicine(new javax.swing.JFrame(), true);
-            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosing(java.awt.event.WindowEvent e) {
-                    System.exit(0);
-                }
-            });
-            dialog.setVisible(true);
-        });
-        this.dispose();
+
     }//GEN-LAST:event_ThemLoaiThuocMoiMouseClicked
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
@@ -610,7 +672,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_ThemdvMouseClicked
 
     private void themcdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_themcdMouseClicked
-        
+
     }//GEN-LAST:event_themcdMouseClicked
 
     private void themcdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themcdActionPerformed
@@ -625,7 +687,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         dialog.dispose();
-                        MedicineUsageManagement frame = new MedicineUsageManagement();
+                        MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
                         frame.setVisible(true);
                     }
                 });
@@ -647,7 +709,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         dialog.dispose();
-                        MedicineUsageManagement frame = new MedicineUsageManagement();
+                        MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
                         frame.setVisible(true);
                     }
                 });
@@ -656,6 +718,43 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         });
         this.dispose();
     }//GEN-LAST:event_ThemdvActionPerformed
+
+    private void ThemThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemThuocActionPerformed
+        AddNewMedicine frame = new AddNewMedicine(CMND);
+        this.dispose();
+        frame.setVisible(true);
+    }//GEN-LAST:event_ThemThuocActionPerformed
+
+    private void placeholderTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeholderTextField1ActionPerformed
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+        table.setRowSorter(sorter);
+        sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
+    }//GEN-LAST:event_placeholderTextField1ActionPerformed
+
+    private void QuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QuayLaiActionPerformed
+        Home frame = new Home(CMND);
+        this.dispose();
+        frame.setVisible(true);
+    }//GEN-LAST:event_QuayLaiActionPerformed
+
+    private void ThemLoaiThuocMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemLoaiThuocMoiActionPerformed
+        tyle = Integer.valueOf(TyGia.getText());
+        AddMedicine.setData(tyle);
+        java.awt.EventQueue.invokeLater(() -> {
+            AddMedicine dialog = new AddMedicine(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    dialog.dispose();
+                    MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
+                    frame.setVisible(true);
+                }
+            });
+            dialog.setVisible(true);
+        });
+        this.dispose();
+    }//GEN-LAST:event_ThemLoaiThuocMoiActionPerformed
 
     /**
      * @param args the command line arguments

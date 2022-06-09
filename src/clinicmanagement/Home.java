@@ -413,7 +413,7 @@ public class Home extends javax.swing.JFrame {
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         if ("000".equals(MaChucNang) || "001".equals(MaChucNang)) {
-            MedicineUsageManagement form = new MedicineUsageManagement();
+            MedicineUsageManagement form = new MedicineUsageManagement(CMND);
             form.setVisible(true);
             this.dispose();
         } else {
@@ -435,7 +435,7 @@ public class Home extends javax.swing.JFrame {
 
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
         if ("000".equals(MaChucNang) || "002".equals(MaChucNang)) {
-            BillList form = new BillList();
+            BillList form = new BillList(CMND);
             form.setVisible(true);
             this.dispose();
         } else {
@@ -465,36 +465,32 @@ public class Home extends javax.swing.JFrame {
                     try {
                     java.awt.EventQueue.invokeLater(new Runnable() {
                         public void run() {
-                            try
-                            {
-                                DanhSachLoaiBenh dialog = new DanhSachLoaiBenh();
-                            dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                            for (WindowListener wl : dialog.getWindowListeners()) {
-                                dialog.removeWindowListener(wl);
-                            }
-                            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                                @Override
-                                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                                    dialog.dispose();
-                                    Home frame = new Home(CMND);
-                                    frame.setVisible(true);
+                            try {
+                                DanhSachLoaiBenh dialog = new DanhSachLoaiBenh(CMND);
+                                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                                for (WindowListener wl : dialog.getWindowListeners()) {
+                                    dialog.removeWindowListener(wl);
                                 }
-                            });
-                            dialog.setVisible(true);
-                            }
-                            catch (Exception e)
-                                    {
-                                    
+                                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                                    @Override
+                                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                        dialog.dispose();
+                                        Home frame = new Home(CMND);
+                                        frame.setVisible(true);
                                     }
+                                });
+                                dialog.setVisible(true);
+                            } catch (Exception e) {
+
+                            }
                         }
                     });
                     this.dispose();
                 } catch (Exception e) {
 
-                } finally
-                    {
-                        break;
-                    }
+                } finally {
+                    break;
+                }
                 case 1:
                     try {
                     DanhSachKhamBenh form = new DanhSachKhamBenh(CMND);
@@ -502,10 +498,9 @@ public class Home extends javax.swing.JFrame {
                     this.dispose();
                 } catch (Exception e) {
 
-                } finally
-                    {
-                        break;
-                    }
+                } finally {
+                    break;
+                }
                 case 2:
                     try {
                     java.awt.EventQueue.invokeLater(new Runnable() {
@@ -529,11 +524,9 @@ public class Home extends javax.swing.JFrame {
                     this.dispose();
                 } catch (Exception e) {
 
+                } finally {
+                    break;
                 }
-                    finally
-                    {
-                        break;
-                    }
             }
 
         } else {
@@ -543,30 +536,34 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel9MouseClicked
 
     private void DoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoiMatKhauActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                ChangePassword dialog = new ChangePassword(new javax.swing.JFrame(), true, CMND);
-                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                for (WindowListener wl : dialog.getWindowListeners()) {
-                    dialog.removeWindowListener(wl);
-                }
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        dialog.dispose();
-                        Home frame = new Home(CMND);
-                        frame.setVisible(true);
+        if ("admin".equals(CMND)) {
+            JOptionPane.showMessageDialog(this, "admin không thể đổi mật khẩu", "Lỗi", ERROR_MESSAGE);
+        } else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    ChangePassword dialog = new ChangePassword(new javax.swing.JFrame(), true, CMND);
+                    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
                     }
-                });
-                dialog.setVisible(true);
-            }
-        });
-        this.dispose();
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            Home frame = new Home(CMND);
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
+        }
     }//GEN-LAST:event_DoiMatKhauActionPerformed
 
     /**
-     * @param args the command line arguments
-     */
+         * @param args the command line arguments
+         */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

@@ -53,57 +53,36 @@ public class ThemDV extends javax.swing.JDialog {
         ten = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        LUU.setBackground(new java.awt.Color(255, 255, 255));
+        LUU.setBackground(new java.awt.Color(255, 204, 204));
         LUU.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        LUU.setForeground(new java.awt.Color(0, 99, 28));
         LUU.setText("Lưu");
         LUU.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 LUUMouseClicked(evt);
             }
         });
+        getContentPane().add(LUU, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 209, 83, 40));
 
-        TROLAI.setBackground(new java.awt.Color(255, 255, 255));
+        TROLAI.setBackground(new java.awt.Color(255, 204, 204));
         TROLAI.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        TROLAI.setForeground(new java.awt.Color(0, 99, 28));
         TROLAI.setText("Quay lại");
         TROLAI.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TROLAIMouseClicked(evt);
             }
         });
+        getContentPane().add(TROLAI, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 209, 106, 40));
 
         ten.setColumns(20);
         ten.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         ten.setRows(5);
         jScrollPane1.setViewportView(ten);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(LUU)
-                        .addGap(103, 103, 103)
-                        .addComponent(TROLAI)))
-                .addContainerGap(32, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LUU)
-                    .addComponent(TROLAI))
-                .addContainerGap())
-        );
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 24, 465, 167));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

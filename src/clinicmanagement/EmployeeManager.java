@@ -27,9 +27,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -194,19 +197,24 @@ public class EmployeeManager extends javax.swing.JFrame {
         jPanel1.add(jLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, 261, 49));
 
         Anhdaidien.setText("Avatar");
-        jPanel1.add(Anhdaidien, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 5, 64, 64));
+        jPanel1.add(Anhdaidien, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 3, 64, 64));
 
         Tentaikhoan.setBackground(new java.awt.Color(1, 63, 65));
         Tentaikhoan.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         Tentaikhoan.setForeground(new java.awt.Color(1, 84, 43));
         Tentaikhoan.setText("Trần Ngọc Tiến");
-        jPanel1.add(Tentaikhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 20, 190, 28));
+        jPanel1.add(Tentaikhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 190, 28));
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/277027184_555937372561581_5654092174016176725_n.png"))); // NOI18N
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 15, -1, -1));
 
         placeholderTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         placeholderTextField1.setPlaceholder("Tìm kiếm...");
+        placeholderTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                placeholderTextField1ActionPerformed(evt);
+            }
+        });
         jPanel1.add(placeholderTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 10, 410, 40));
 
         Nutmuiten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Anh/Screenshot 2022-04-26 103146.png"))); // NOI18N
@@ -313,6 +321,7 @@ public class EmployeeManager extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton2.setForeground(new java.awt.Color(0, 99, 28));
         jButton2.setText("Thông tin nhân viên");
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -324,6 +333,7 @@ public class EmployeeManager extends javax.swing.JFrame {
         jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton3.setForeground(new java.awt.Color(0, 99, 28));
         jButton3.setText("Thêm nhân viên mới");
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -335,6 +345,7 @@ public class EmployeeManager extends javax.swing.JFrame {
         jButton6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton6.setForeground(new java.awt.Color(0, 99, 28));
         jButton6.setText("Lập bảng tính lương nhân viên");
+        jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
@@ -346,6 +357,7 @@ public class EmployeeManager extends javax.swing.JFrame {
         jButton7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton7.setForeground(new java.awt.Color(0, 99, 28));
         jButton7.setText("Quay lại");
+        jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -463,6 +475,13 @@ public class EmployeeManager extends javax.swing.JFrame {
         home.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void placeholderTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeholderTextField1ActionPerformed
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel> (model);
+        table.setRowSorter(sorter);
+        sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
+    }//GEN-LAST:event_placeholderTextField1ActionPerformed
 
     public static void main(String args[]) {
         try {

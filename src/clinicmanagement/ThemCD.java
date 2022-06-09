@@ -51,8 +51,9 @@ public class ThemCD extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        LUU.setBackground(new java.awt.Color(255, 255, 255));
-        LUU.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        LUU.setBackground(new java.awt.Color(255, 204, 204));
+        LUU.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        LUU.setForeground(new java.awt.Color(0, 99, 28));
         LUU.setText("Lưu");
         LUU.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -60,8 +61,9 @@ public class ThemCD extends javax.swing.JDialog {
             }
         });
 
-        TROLAI.setBackground(new java.awt.Color(255, 255, 255));
-        TROLAI.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        TROLAI.setBackground(new java.awt.Color(255, 204, 204));
+        TROLAI.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        TROLAI.setForeground(new java.awt.Color(0, 99, 28));
         TROLAI.setText("Quay lại");
         TROLAI.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -79,23 +81,22 @@ public class ThemCD extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(LUU)
-                        .addGap(103, 103, 103)
-                        .addComponent(TROLAI)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 486, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(87, 87, 87)
+                .addComponent(LUU, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(TROLAI)
+                .addGap(66, 66, 66))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LUU)
                     .addComponent(TROLAI))
