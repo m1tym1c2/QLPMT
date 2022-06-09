@@ -91,6 +91,11 @@ public class PatientLookup extends javax.swing.JFrame {
                 placeholderTextField1ActionPerformed(evt);
             }
         });
+        placeholderTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                placeholderTextField1KeyPressed(evt);
+            }
+        });
         jPanel3.add(placeholderTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 80, 410, 40));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
@@ -268,6 +273,13 @@ public class PatientLookup extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void placeholderTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_placeholderTextField1KeyPressed
+        DefaultTableModel model = (DefaultTableModel) Table.getModel();
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel> (model);
+        Table.setRowSorter(sorter);
+        sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
+    }//GEN-LAST:event_placeholderTextField1KeyPressed
     
     public static void main(String args[]) {
         try {
