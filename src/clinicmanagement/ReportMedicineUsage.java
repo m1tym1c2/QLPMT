@@ -7,6 +7,7 @@ package clinicmanagement;
 import static clinicmanagement.Home.scaleImage;
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -15,6 +16,7 @@ import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.InvalidPathException;
@@ -39,6 +41,11 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.text.DefaultCaret;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -457,9 +464,71 @@ public class ReportMedicineUsage extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void inbaocaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inbaocaoMouseClicked
-        AddNewMedicine frame = new AddNewMedicine();
-        this.dispose();
-        frame.setVisible(true);
+        try{
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("Danh Sách Báo Cáo");
+            
+            Cell cell;
+            XSSFRow row;
+            int rownum = 0;
+            row = sheet.createRow(0);
+            
+            cell =  row.createCell(0, CellType.STRING);
+            cell.setCellValue("DANH SÁCH BÁO CÁO SỬ DỤNG THUỐC ");
+            
+            row = sheet.createRow(1);
+            
+            cell =  row.createCell(0, CellType.STRING);
+            cell.setCellValue("STT");
+
+            // 
+            cell = row.createCell(1, CellType.STRING);
+            cell.setCellValue("Tên Thuốc");
+            
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellValue("Đơn vị tính");
+            
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellValue("Số lượng dùng");
+            
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellValue("Số lần dùng");
+            
+            
+            DefaultTableModel tbModel = (DefaultTableModel) table.getModel();
+            for ( int i = 0 ; i < tbModel.getRowCount();  i++ ) {                
+                row = sheet.createRow(i+2);
+                // EmpNo (A)
+                cell = row.createCell(0, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 0).toString());
+                // EmpName (B)
+                cell = row.createCell(1, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 1).toString());
+                // Salary (C)
+                cell = row.createCell(2, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 2).toString());
+                // Grade (D)
+                cell = row.createCell(3, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 3).toString());
+                // Bonus (E)
+                cell = row.createCell(4, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 4).toString());
+                
+            }
+            String ten = Thang.getSelectedItem().toString() + "-" + Nam.getSelectedItem().toString();
+            System.out.println("Created file: " + ten);
+            String save = "D:/"+"DANHSACHBAOCAOTHUOC-" + ten + ".xlsx";
+            File file = new File(save);  
+            file.getParentFile().mkdirs();
+            FileOutputStream outFile = new FileOutputStream(file);
+            workbook.write(outFile);
+            System.out.println("Created file: " + file.getAbsolutePath());
+            
+            Desktop.getDesktop().open(file);
+        
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_inbaocaoMouseClicked
 
     private void inbaocaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inbaocaoActionPerformed

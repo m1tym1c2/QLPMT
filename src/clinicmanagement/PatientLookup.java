@@ -1,9 +1,12 @@
 package clinicmanagement;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -16,6 +19,11 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -121,6 +129,11 @@ public class PatientLookup extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 99, 28));
         jButton1.setText("In danh sách");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
         jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 630, 160, 40));
 
         jButton2.setBackground(new java.awt.Color(255, 204, 204));
@@ -184,6 +197,77 @@ public class PatientLookup extends javax.swing.JFrame {
         dialog.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        try{
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("Danh Sách Bệnh Nhân");
+            
+            Cell cell;
+            XSSFRow row;
+            int rownum = 0;
+            row = sheet.createRow(0);
+            
+            cell = row.createCell(2, CellType.NUMERIC);
+            cell.setCellValue("DANH SÁCH BỆNH NHÂN");
+            
+            row = sheet.createRow(1);
+            cell =  row.createCell(0, CellType.STRING);
+            cell.setCellValue("STT");  
+            // 
+            cell = row.createCell(1, CellType.STRING);
+            cell.setCellValue("Mã bệnh nhân");
+            
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellValue("Họ tên");
+            
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellValue("Ngày khám");
+            
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellValue("Loại bệnh");
+            
+            cell = row.createCell(5, CellType.STRING);
+            cell.setCellValue("Triệu chứng");
+            
+            
+            DefaultTableModel tbModel = (DefaultTableModel) Table.getModel();
+            for ( int i = 0 ; i < tbModel.getRowCount();  i++ ) {                
+                row = sheet.createRow(i+2);
+                // EmpNo (A)
+                cell = row.createCell(0, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 0).toString());
+                // EmpName (B)
+                cell = row.createCell(1, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 1).toString());
+                // Salary (C)
+                cell = row.createCell(2, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 2).toString());
+                // Grade (D)
+                cell = row.createCell(3, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 3).toString());
+                // Bonus (E)
+                cell = row.createCell(4, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 4).toString());
+                
+                cell = row.createCell(5, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 4).toString());
+                
+            }
+            
+            String save = "D:/DANHSACHBENHNHAN.xlsx";
+            File file = new File(save);  
+            file.getParentFile().mkdirs();
+            FileOutputStream outFile = new FileOutputStream(file);
+            workbook.write(outFile);
+            System.out.println("Created file: " + file.getAbsolutePath());
+            
+            Desktop.getDesktop().open(file);
+        
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton1MouseClicked
     
     public static void main(String args[]) {
         try {

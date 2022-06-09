@@ -3,6 +3,7 @@ package clinicmanagement;
 import static clinicmanagement.Home.scaleImage;
 import java.awt.AWTException;
 import java.awt.AlphaComposite;
+import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -12,6 +13,7 @@ import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -41,6 +43,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.joda.time.DateTime;
 
 /**
@@ -383,10 +390,10 @@ public class BillList extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(jLabel5))
-                    .addComponent(ThongTinCaNhan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(ThongTinCaNhan, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                         .addComponent(DoiMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(DangXuat, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -397,7 +404,7 @@ public class BillList extends javax.swing.JFrame {
                             .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         jPanel3.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 10, 280, 180));
@@ -466,6 +473,11 @@ public class BillList extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 99, 28));
         jButton1.setText("In danh sách hóa đơn");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -680,6 +692,90 @@ public class BillList extends javax.swing.JFrame {
         tableDark1.setRowSorter(sorter);
         sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
     }//GEN-LAST:event_placeholderTextField1ActionPerformed
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        try{
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("Danh Sách ");
+            
+            Cell cell;
+            XSSFRow row;
+            int rownum = 0;
+            row = sheet.createRow(0);
+            
+            cell =  row.createCell(0, CellType.STRING);
+            cell.setCellValue("DANH SÁCH HÓA ĐƠN ");
+            
+            row = sheet.createRow(1);
+            
+            cell =  row.createCell(0, CellType.STRING);
+            cell.setCellValue("STT");
+
+            // 
+            cell = row.createCell(1, CellType.STRING);
+            cell.setCellValue("Mã hóa đơn");
+            
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellValue("Tên khách hàng");
+            
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellValue("Ngày khám");
+            
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellValue("Tiền khám");
+            
+            cell = row.createCell(5, CellType.STRING);
+            cell.setCellValue("Tiền thuốc");
+            
+            cell = row.createCell(6, CellType.STRING);
+            cell.setCellValue("Tổng");           
+            
+            
+            DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
+            for ( int i = 0 ; i < tbModel.getRowCount();  i++ ) {                
+                row = sheet.createRow(i+2);
+                // EmpNo (A)
+                cell = row.createCell(0, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 0).toString());
+                // EmpName (B)
+                cell = row.createCell(1, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 1).toString());
+                // Salary (C)
+                cell = row.createCell(2, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 2).toString());
+                // Grade (D)
+                cell = row.createCell(3, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 3).toString());
+                // Bonus (E)
+                cell = row.createCell(4, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 4).toString());
+                
+                cell = row.createCell(5, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 5).toString());
+                // Bonus (E)
+                cell = row.createCell(6, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 6).toString());
+                
+            }
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyy");        
+            String tungay = formatter.format(jDateChooser1.getDate());  
+            String denngay = formatter.format(jDateChooser2.getDate()); 
+            
+            String ten = tungay + "-" + denngay;
+            System.out.println("Created file: " + ten);
+            String save = "D:/"+"DANHSACHHOADON-" +ten+ ".xlsx";
+            File file = new File(save);  
+            file.getParentFile().mkdirs();
+            FileOutputStream outFile = new FileOutputStream(file);
+            workbook.write(outFile);
+            System.out.println("Created file: " + file.getAbsolutePath());
+            
+            Desktop.getDesktop().open(file);
+        
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton1MouseClicked
 
     public static void main(String args[]) {
         try {

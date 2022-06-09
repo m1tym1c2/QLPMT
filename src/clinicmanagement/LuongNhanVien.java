@@ -7,12 +7,14 @@ package clinicmanagement;
 import static clinicmanagement.Home.scaleImage;
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.InvalidPathException;
@@ -35,6 +37,11 @@ import javax.swing.RowFilter;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -275,6 +282,11 @@ public class LuongNhanVien extends javax.swing.JFrame {
         in.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         in.setForeground(new java.awt.Color(0, 99, 28));
         in.setText("In bảng tính lương");
+        in.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                inMouseClicked(evt);
+            }
+        });
         jPanel1.add(in, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 510, 192, 36));
 
         jPanel2.setBackground(new java.awt.Color(208, 242, 224));
@@ -514,6 +526,85 @@ public class LuongNhanVien extends javax.swing.JFrame {
         table.setRowSorter(sorter);
         sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
     }//GEN-LAST:event_placeholderTextField1ActionPerformed
+
+    private void inMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inMouseClicked
+        try{
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("Danh Sách ");
+            
+            Cell cell;
+            XSSFRow row;
+            int rownum = 0;
+            row = sheet.createRow(0);
+            
+            cell =  row.createCell(0, CellType.STRING);
+            cell.setCellValue("BẢNG LƯƠNG NHÂN VIÊN");
+            
+            row = sheet.createRow(1);
+            
+            cell =  row.createCell(0, CellType.STRING);
+            cell.setCellValue("STT");
+
+            // 
+            cell = row.createCell(1, CellType.STRING);
+            cell.setCellValue("Mã nhân viên");
+            
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellValue("Tên nhân viên");
+            
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellValue("Lương cơ bản");
+            
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellValue("Hệ số");
+            
+            cell = row.createCell(5, CellType.STRING);
+            cell.setCellValue("Tiền thưởng");
+            
+            cell = row.createCell(6, CellType.STRING);
+            cell.setCellValue("Tổng");           
+            
+            
+            DefaultTableModel tbModel = (DefaultTableModel) table.getModel();
+            for ( int i = 0 ; i < tbModel.getRowCount();  i++ ) {                
+                row = sheet.createRow(i+2);
+                // EmpNo (A)
+                cell = row.createCell(0, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 0).toString());
+                // EmpName (B)
+                cell = row.createCell(1, CellType.STRING);
+                cell.setCellValue(tbModel.getValueAt(i, 1).toString());
+                // Salary (C)
+                cell = row.createCell(2, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 2).toString());
+                // Grade (D)
+                cell = row.createCell(3, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 3).toString());
+                // Bonus (E)
+                cell = row.createCell(4, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 4).toString());
+                
+                cell = row.createCell(5, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 5).toString());
+                // Bonus (E)
+                cell = row.createCell(6, CellType.NUMERIC);
+                cell.setCellValue(tbModel.getValueAt(i, 6).toString());
+                
+            }
+            String ten = jComboBox1.getSelectedItem().toString() + "-" + jComboBox2.getSelectedItem().toString();
+            String save = "D:/"+"LUONGNHANVIEN-" + ten + ".xlsx";
+            File file = new File(save);  
+            file.getParentFile().mkdirs();
+            FileOutputStream outFile = new FileOutputStream(file);
+            workbook.write(outFile);
+            System.out.println("Created file: " + file.getAbsolutePath());
+            
+            Desktop.getDesktop().open(file);
+        
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_inMouseClicked
 
     /**
      * @param args the command line arguments

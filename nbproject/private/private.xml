@@ -3,22 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/LuongNhanVien.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/BaoCaoDoanhThuThang.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/UserInformation.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/ThayDoiThongTinThamSo.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/BillList.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/ForgotPassword.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/ThemCD.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/Home.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/ThemBenhNhan.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/AddMedicine.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/ChiTietBaoCaoThang.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/AddStaff.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/ThemDV.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/DatabaseConnection.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/PatientLookup.java</file>
-            <file>file:/E:/FinalJava/ClinicManagementJava/src/clinicmanagement/ChangePassword.java</file>
+            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/ReportMedicineUsage.java</file>
+            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/LuongNhanVien.java</file>
+            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/BillList.java</file>
+            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/BaoCaoDoanhThuThang.java</file>
+            <file>file:/D:/JAVA/ClinicManagementJava/src/clinicmanagement/PatientLookup.java</file>
         </group>
     </open-files>
 </project-private>
