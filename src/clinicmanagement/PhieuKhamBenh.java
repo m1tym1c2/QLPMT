@@ -27,12 +27,21 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
      * Creates new form PhieuKhamBenh
      */
     public static String TenBenhNhan;
+    public static String TenTrieuChung = "";
+    public static int LoaiBenhChon = 0;
+    public static boolean MoLanDau;
     public static String MaBenhNhan;
     public static String MaNhanVien = "NV001";
     private static String MaPhieuKhamBenh;
     private static String CMND = "";
     public PhieuKhamBenh() {
         initComponents();
+        if (MoLanDau)
+        {
+            LoaiBenhChon = 0;
+            TenTrieuChung = "";
+        }
+        TrieuChung.setText(TenTrieuChung);
         this.setLocationRelativeTo(null);
         try {
             DatabaseConnection DTBC = new DatabaseConnection();
@@ -42,6 +51,8 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
             while (rs.next()) {
                 LoaiBenh.addItem(rs.getString(1));
             }
+            
+            LoaiBenh.setSelectedIndex(LoaiBenhChon);
             rs = stm.executeQuery("SELECT MaPhieuKhamBenh FROM PHIEUKHAMBENH WHERE MaBenhNhan = '"+MaBenhNhan+"' AND MaNhanVien is null");
             while (rs.next())
             {
@@ -502,6 +513,8 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     }//GEN-LAST:event_NutmuitenMouseClicked
 
     private void jLabel7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MousePressed
+        LoaiBenhChon = LoaiBenh.getSelectedIndex();
+        TenTrieuChung = TrieuChung.getText();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {

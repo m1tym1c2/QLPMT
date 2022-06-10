@@ -492,6 +492,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
         if (Table.getSelectedRow() == -1)
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một bệnh nhân", "Cảnh báo chưa chọn bệnh nhân", 2);
         else {
+            PhieuKhamBenh.MoLanDau = true;
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     PhieuKhamBenh.TenBenhNhan = model.getValueAt(Table.getSelectedRow(), 2).toString();

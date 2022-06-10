@@ -23,6 +23,7 @@ public class KeThuoc extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         DocDuLieu();
+        PhieuKhamBenh.MoLanDau = false;
     }
     
     public KeThuoc(String CMND) throws SQLException {

@@ -5,13 +5,11 @@
         <group>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/PhieuKhamBenh.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/ChiTietHoaDon.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/KeThuoc.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DanhSachKhamBenh.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/BillList.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/AddNewMedicine.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/LuongNhanVien.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/ChiTietBaoCaoThang.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/PatientLookup.java</file>
-            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/MedicineUsageManagement.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DatabaseConnection.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/ClinicManagement.java</file>
             <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/AddStaff.java</file>
