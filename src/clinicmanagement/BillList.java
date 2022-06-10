@@ -456,6 +456,11 @@ public class BillList extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tableDark1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDark1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableDark1);
         if (tableDark1.getColumnModel().getColumnCount() > 0) {
             tableDark1.getColumnModel().getColumn(0).setPreferredWidth(50);
@@ -776,6 +781,13 @@ public class BillList extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void tableDark1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDark1MouseClicked
+        if (tableDark1.getSelectedRow() >= 0) {
+            jButton3.setEnabled(true);
+        }
+        else jButton3.setEnabled(false);
+    }//GEN-LAST:event_tableDark1MouseClicked
 
     public static void main(String args[]) {
         try {
