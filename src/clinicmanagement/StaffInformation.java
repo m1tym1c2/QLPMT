@@ -185,7 +185,7 @@ public class StaffInformation extends javax.swing.JDialog {
                 row.add(rs.getString("TenBenhnhan"));
                 Date date = rs.getDate("NgayKham");
                 row.add(simpDate.format(date));
-                row.add(rs.getString("GiaTriHoaDon"));
+                row.add(String.format("%,d",rs.getInt("GiaTriHoaDon")));
                 model.getRowCount();
                 model.addRow(row);
             }

@@ -3,6 +3,7 @@ package clinicmanagement;
 import static clinicmanagement.Home.scaleImage;
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -25,6 +26,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.JPanel;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -124,14 +127,14 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
         initComponents();
         jPanel4.setVisible(false);
     }
-    
+
     public ChiTietBaoCaoThang(String CMND) {
         initComponents();
         jPanel4.setVisible(false);
-        this.CMND=CMND;
+        this.CMND = CMND;
         RetriveData();
     }
-    
+
     private void RetriveData() {
         if ("admin".equals(CMND)) {
             ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
@@ -190,8 +193,11 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
 
     private static PieDataset createDataset(int nhanVien, int thuoc, boolean check) {
         DefaultPieDataset dataset = new DefaultPieDataset();
-        if (check) dataset.setValue("Nhân Viên", nhanVien);
-        else dataset.setValue("Tiền Khám", nhanVien);
+        if (check) {
+            dataset.setValue("Nhân Viên", nhanVien);
+        } else {
+            dataset.setValue("Tiền Khám", nhanVien);
+        }
         dataset.setValue("Thuốc", thuoc);
         return dataset;
     }
@@ -200,6 +206,16 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
         JFreeChart chart = ChartFactory.createPieChart("", dataset, true, true, false);
 
         return chart;
+    }
+
+    public BufferedImage createImage(JPanel panel) {
+
+        int w = panel.getWidth();
+        int h = panel.getHeight();
+        BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = bi.createGraphics();
+        panel.paint(g);
+        return bi;
     }
 
     /**
@@ -220,34 +236,35 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        Thang = new javax.swing.JLabel();
-        thang = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        Nam = new javax.swing.JLabel();
-        nam = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         Anhdautrang = new javax.swing.JLabel();
         Tentaikhoan = new javax.swing.JLabel();
         Anhdaidien = new javax.swing.JLabel();
         Nutmuiten = new javax.swing.JLabel();
         Tentrang = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        Tentrang1 = new javax.swing.JLabel();
+        Thang = new javax.swing.JLabel();
+        Nam = new javax.swing.JLabel();
+        thang = new javax.swing.JLabel();
+        nam = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        Tentrang1 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -303,20 +320,16 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
 
         jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 90, 280, 180));
 
-        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel11.setText("0 VND");
-        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 510, -1, 18));
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 84, 42));
-        jLabel5.setText("Nguồn chi:");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 300, -1, -1));
-
         jButton1.setBackground(new java.awt.Color(255, 204, 204));
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 99, 28));
         jButton1.setText("In báo cáo");
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 580, 175, 36));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 600, 175, 36));
 
         jButton2.setBackground(new java.awt.Color(255, 204, 204));
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -327,40 +340,7 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 580, 174, 36));
-
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 84, 42));
-        jLabel6.setText("Tổng lợi nhuận:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 480, -1, -1));
-
-        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(0, 84, 42));
-        jLabel12.setText("Tổng thu: 0 VND");
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 550, -1, 30));
-
-        Thang.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        Thang.setForeground(new java.awt.Color(0, 84, 42));
-        Thang.setText("Tháng:");
-        jPanel1.add(Thang, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 130, -1, 42));
-
-        thang.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        thang.setText("5");
-        jPanel1.add(thang, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 130, 31, 42));
-
-        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(0, 84, 42));
-        jLabel7.setText("Lương nhân viên:");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 330, -1, -1));
-
-        Nam.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        Nam.setForeground(new java.awt.Color(0, 84, 42));
-        Nam.setText("Năm:");
-        jPanel1.add(Nam, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 130, -1, 42));
-
-        nam.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        nam.setText("2022");
-        jPanel1.add(nam, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 130, 54, 42));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 600, 174, 36));
 
         jPanel2.setBackground(new java.awt.Color(208, 242, 224));
 
@@ -394,7 +374,7 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
                 .addComponent(Anhdautrang, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Tentrang, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 560, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 580, Short.MAX_VALUE)
                 .addComponent(Anhdaidien, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Tentaikhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -420,55 +400,45 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1220, 70));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1240, 70));
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 84, 42));
-        jLabel8.setText("Nhập thuốc:");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 410, -1, -1));
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 84, 42));
-        jLabel3.setText("Nguồn thu từ các phiếu khám bệnh:");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 240, -1, -1));
-
-        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel9.setText("0 VND");
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 360, -1, 18));
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel4.setText("0 VND");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 270, -1, 18));
-
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel10.setText("0 VND");
-        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 440, -1, 18));
-
-        jLabel13.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(0, 84, 42));
-        jLabel13.setText("Tổng chi: 0 VND");
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 550, -1, 30));
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Tentrang1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         Tentrang1.setForeground(new java.awt.Color(0, 84, 42));
         Tentrang1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         Tentrang1.setText("CHI TIẾT DOANH THU THÁNG\n");
-        jPanel1.add(Tentrang1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, 530, 50));
+        jPanel6.add(Tentrang1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 0, 530, 50));
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        Thang.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        Thang.setForeground(new java.awt.Color(0, 84, 42));
+        Thang.setText("Tháng:");
+        jPanel6.add(Thang, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 40, -1, 42));
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 340, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 330, Short.MAX_VALUE)
-        );
+        Nam.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        Nam.setForeground(new java.awt.Color(0, 84, 42));
+        Nam.setText("Năm:");
+        jPanel6.add(Nam, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 40, -1, 42));
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 210, 340, 330));
+        thang.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        thang.setText("5");
+        jPanel6.add(thang, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 40, 31, 42));
+
+        nam.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        nam.setText("2022");
+        jPanel6.add(nam, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 40, 54, 42));
+
+        jLabel2.setBackground(new java.awt.Color(102, 102, 102));
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel2.setText("Nguồn chi");
+        jPanel6.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 100, -1, -1));
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel1.setText("Nguồn thu");
+        jPanel6.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, -1, 20));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setPreferredSize(new java.awt.Dimension(340, 330));
@@ -484,24 +454,83 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
             .addGap(0, 330, Short.MAX_VALUE)
         );
 
-        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, -1, -1));
+        jPanel6.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, -1, -1));
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel1.setText("Nguồn thu");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 190, -1, 20));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel2.setBackground(new java.awt.Color(102, 102, 102));
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel2.setText("Nguồn chi");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 190, -1, -1));
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 340, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 330, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, -1, -1));
+
+        jLabel13.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(0, 84, 42));
+        jLabel13.setText("Tổng chi: 0 VND");
+        jPanel6.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 460, -1, 30));
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(0, 84, 42));
+        jLabel12.setText("Tổng thu: 0 VND");
+        jPanel6.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 460, -1, 30));
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 84, 42));
+        jLabel6.setText("Tổng lợi nhuận:");
+        jPanel6.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 380, -1, -1));
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel11.setText("0 VND");
+        jPanel6.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 410, -1, 18));
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel10.setText("0 VND");
+        jPanel6.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 340, -1, 18));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 84, 42));
+        jLabel8.setText("Nhập thuốc:");
+        jPanel6.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 310, -1, -1));
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 84, 42));
+        jLabel7.setText("Lương nhân viên:");
+        jPanel6.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 230, -1, -1));
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel9.setText("0 VND");
+        jPanel6.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 260, -1, 18));
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel4.setText("0 VND");
+        jPanel6.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 170, -1, 18));
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 84, 42));
+        jLabel5.setText("Nguồn chi:");
+        jPanel6.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 200, -1, -1));
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 84, 42));
+        jLabel3.setText("Nguồn thu từ các phiếu khám bệnh:");
+        jPanel6.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 140, -1, -1));
+
+        jPanel1.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 1210, 500));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -554,6 +583,22 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
             User = false;
         }
     }//GEN-LAST:event_NutmuitenMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            Desktop desktop = Desktop.getDesktop();  
+            DateTime time = DateTime.now();
+            File outputfile = new File("D:\\BC_"+ time.toString("yyyy_MM_dd_HH_mm_ss") +".png");
+            ImageIO.write(createImage(jPanel6), "png", outputfile);
+            JOptionPane.showMessageDialog(this, "Đã lưu ở "+outputfile.getAbsolutePath());
+            if (outputfile.exists()) //checks file exists or not  
+            {
+                desktop.open(outputfile);              //opens the specified file  
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -625,6 +670,7 @@ public class ChiTietBaoCaoThang extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JLabel nam;
     private javax.swing.JLabel thang;
     // End of variables declaration//GEN-END:variables

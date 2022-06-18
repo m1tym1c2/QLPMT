@@ -62,7 +62,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
             date.setText(simp.format(rs.getDate("NgayKham")));
             TrieuChung.setText(rs.getString("TrieuChung"));
             jLabel3.setText(rs.getString("TenLoaiBenh"));
-            tienKham.setText(rs.getString("TienKham"));
+            tienKham.setText(String.format("%,d",rs.getInt("TienKham")));
             int money = rs.getInt("TienKham");
 
             rs = statement.executeQuery("SELECT * FROM CT_PHIEUKHAMBENH, THUOC, DONVITINH "
@@ -76,14 +76,14 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
             while (rs.next()) {
                 i++;
                 String data[] = {Integer.toString(i), rs.getString("TenThuoc"), rs.getString("TenDonViTinh"),
-                    rs.getString("SoLuongDung"), rs.getString("DonGiaThuoc"),
-                    Integer.toString(rs.getInt("DonGiaThuoc") * rs.getInt("SoLuongDung"))};
+                    rs.getString("SoLuongDung"),String.format("%,d",rs.getInt("DonGiaThuoc")),
+                    String.format("%,d",rs.getInt("DonGiaThuoc") * rs.getInt("SoLuongDung"))};
                 sum += rs.getInt("DonGiaThuoc") * rs.getInt("SoLuongDung");
                 DefaultTableModel tbModel = (DefaultTableModel) jTable1.getModel();
                 tbModel.addRow(data);
             }
             TongTien = sum + money;
-            tongTien.setText((sum + money) + " VND");
+            tongTien.setText(String.format("%,d",(sum + money)) + " VND");
             rs = statement.executeQuery("SELECT NHANVIEN.MaNhanVien, TenNhanVien FROM NHANVIEN, PHIEUKHAMBENH WHERE PHIEUKHAMBENH.MaNhanVien = NHANVIEN.MaNhanVien AND PHIEUKHAMBENH.MaPhieuKhamBenh = '"+maPhieuKhamBenh+"'");
             while (rs.next())
             {

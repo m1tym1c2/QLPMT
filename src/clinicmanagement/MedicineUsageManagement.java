@@ -179,8 +179,8 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
 
             row.add(String.valueOf(rs.getInt("SoLuongTon")));
             row.add(rs.getString("TenDonViTinh"));
-            row.add(String.valueOf(rs.getInt("DonGiaNhap")));
-            row.add(String.valueOf(rs.getInt("DonGiaBan")));
+            row.add(String.format("%,d",rs.getInt("DonGiaNhap")));
+            row.add(String.format("%,d",rs.getInt("DonGiaBan")));
             model.getRowCount();
             model.addRow(row);
         }
@@ -655,7 +655,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         ManagementDrugUse.SetData(mathuoc);
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new ManagementDrugUse().setVisible(true);
+                new ManagementDrugUse(CMND).setVisible(true);
             } catch (Exception ex) {
                 Logger.getLogger(MedicineUsageManagement.class.getName()).log(Level.SEVERE, null, ex);
             }

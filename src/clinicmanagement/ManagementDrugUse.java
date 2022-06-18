@@ -89,7 +89,7 @@ public class ManagementDrugUse extends javax.swing.JFrame {
                 if (rs.next()) {
                     Tentaikhoan.setText(rs.getString("TenNhanVien"));
                     try {
-
+                        
                         URL url = getClass().getResource(rs.getString("HinhAnh"));
                         File file = new File(url.getPath());
                         BufferedImage master = ImageIO.read(file);
@@ -215,12 +215,12 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        buttonBack = new customview.MyButton();
         Anh = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         Anhdaidien = new javax.swing.JLabel();
         Tentaikhoan = new javax.swing.JLabel();
@@ -336,16 +336,6 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jLabel2.setText("THÔNG TIN THUỐC");
         jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 0, -1, -1));
 
-        buttonBack.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        buttonBack.setLabel("Quay lại");
-        buttonBack.setRadius(15);
-        buttonBack.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                buttonBackMouseClicked(evt);
-            }
-        });
-        jPanel3.add(buttonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 410, 120, -1));
-
         Anh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/demo.jpg"))); // NOI18N
         Anh.setText("jLabel14");
         jPanel3.add(Anh, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 310, 320));
@@ -386,6 +376,17 @@ public class ManagementDrugUse extends javax.swing.JFrame {
             }
         });
         jPanel3.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 410, -1, -1));
+
+        jButton6.setBackground(new java.awt.Color(255, 204, 204));
+        jButton6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton6.setForeground(new java.awt.Color(0, 99, 28));
+        jButton6.setText("Quay lại");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 410, -1, -1));
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 827, 465));
 
@@ -443,15 +444,6 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         stm.close();
         conn.close();
     }
-    private void buttonBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonBackMouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MedicineUsageManagement(CMND).setVisible(true);
-            }
-        });
-        this.dispose();
-    }//GEN-LAST:event_buttonBackMouseClicked
-
     private void NutmuitenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NutmuitenMouseClicked
         if (User == false) {
             jPanel1.setVisible(true);
@@ -557,6 +549,15 @@ public class ManagementDrugUse extends javax.swing.JFrame {
             }
 
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MedicineUsageManagement(CMND).setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButton6ActionPerformed
     
     
     public static void main(String args[]) {
@@ -585,12 +586,12 @@ public class ManagementDrugUse extends javax.swing.JFrame {
     private javax.swing.JLabel Anhdaidien;
     private javax.swing.JLabel Nutmuiten;
     private javax.swing.JLabel Tentaikhoan;
-    private customview.MyButton buttonBack;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;

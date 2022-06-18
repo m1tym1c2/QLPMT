@@ -654,56 +654,6 @@ public class BillList extends javax.swing.JFrame {
     }//GEN-LAST:event_DangXuatActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-            var capture = new Robot().createScreenCapture(screenRect);
-            DateTime time = DateTime.now();
-            ImageIO.write(capture, "png", new File("D:\\" + time.toString("yyyy_MM_dd_HH_mm_ss") + ".png"));
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
-            }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        BaoCaoDoanhThuThang dialog = new BaoCaoDoanhThuThang(CMND);
-        dialog.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
-        try {
-            DatabaseConnection databaseConnection = new DatabaseConnection();
-            connection = databaseConnection.getConnection(jLabel);
-            Statement statement = connection.createStatement();
-
-            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON WHERE HOADON.MaHoaDon = '" + model.getValueAt(tableDark1.getSelectedRow(), 1).toString() + "'");
-            ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(this, rootPaneCheckingEnabled, CMND);
-            rs.next();
-            chiTietHoaDon.setMaPhieuKhamBenh(rs.getString("MaPhieuKhamBenh"));
-            chiTietHoaDon.setVisible(true);
-        } catch (SQLException ex) {
-            Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Home(CMND).setVisible(true);
-            }
-        });
-        this.dispose();
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void placeholderTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeholderTextField1ActionPerformed
-        DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
-        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
-        tableDark1.setRowSorter(sorter);
-        sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
-    }//GEN-LAST:event_placeholderTextField1ActionPerformed
-
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         try{
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet sheet = workbook.createSheet("Danh Sách ");
@@ -785,6 +735,49 @@ public class BillList extends javax.swing.JFrame {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        BaoCaoDoanhThuThang dialog = new BaoCaoDoanhThuThang(CMND);
+        dialog.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
+        try {
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            connection = databaseConnection.getConnection(jLabel);
+            Statement statement = connection.createStatement();
+
+            ResultSet rs = statement.executeQuery("SELECT * FROM HOADON WHERE HOADON.MaHoaDon = '" + model.getValueAt(tableDark1.getSelectedRow(), 1).toString() + "'");
+            ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(this, rootPaneCheckingEnabled, CMND);
+            rs.next();
+            chiTietHoaDon.setMaPhieuKhamBenh(rs.getString("MaPhieuKhamBenh"));
+            chiTietHoaDon.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Home(CMND).setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void placeholderTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeholderTextField1ActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+        tableDark1.setRowSorter(sorter);
+        sorter.setRowFilter(RowFilter.regexFilter(placeholderTextField1.getText()));
+    }//GEN-LAST:event_placeholderTextField1ActionPerformed
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void tableDark1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableDark1KeyPressed
