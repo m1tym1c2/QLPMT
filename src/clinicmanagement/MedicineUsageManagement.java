@@ -164,7 +164,15 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                 + "WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  \n"
                 + "AND CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc\n"
                 + "AND CTNHAPTHUOC.MaPhieuNhapThuoc = CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc");
-
+        rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc,CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n" +
+                                        ",SoLuongTon,TenDonViTinh, LoaiThuoc, TenCachDung ,DonGiaNhap ,DonGiaBan \n" +
+                                        "FROM THUOC,CACHDUNG, CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC , (SELECT   max(ct1.MaPhieuNhapThuoc) MaPhieuNhapThuoc\n" +
+                                        "                                                   FROM CT_PHIEUNHAPTHUOC ct1													\n" +
+                                        "                                                   GROUP BY MaThuoc) CTNHAPTHUOC \n" +
+                                        "WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  \n" +
+                                        "AND CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc\n" +
+                                        "AND CTNHAPTHUOC.MaPhieuNhapThuoc = CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc"
+                                        + "   AND THUOC.MaThuoc = CT_PHIEUNHAPTHUOC.MaThuoc                 ");
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         while (rs.next()) {
@@ -179,6 +187,8 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
 
             row.add(String.valueOf(rs.getInt("SoLuongTon")));
             row.add(rs.getString("TenDonViTinh"));
+            row.add(rs.getString("LoaiThuoc"));
+            row.add(rs.getString("TenCachDung"));
             row.add(String.format("%,d",rs.getInt("DonGiaNhap")));
             row.add(String.format("%,d",rs.getInt("DonGiaBan")));
             model.getRowCount();
@@ -214,8 +224,6 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         BaoCaoSD = new javax.swing.JButton();
         TyGia = new javax.swing.JTextField();
@@ -226,6 +234,8 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         ThemLoaiThuocMoi = new javax.swing.JButton();
         Themdv = new javax.swing.JButton();
         themcd = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
 
         placeholderTextField2.setText("placeholderTextField2");
 
@@ -363,51 +373,6 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 80, 280, 180));
-
-        jScrollPane1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-
-        table.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        table.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "STT", "Mã thuốc", "Tên thuốc", "Ngày nhập", "Lượng tồn", "ĐVT", "Giá nhập", "Giá bán"
-            }
-        ));
-        table.setColumnSelectionAllowed(true);
-        table.setEditingColumn(0);
-        table.setEditingRow(0);
-        table.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(table);
-        table.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setPreferredWidth(30);
-            table.getColumnModel().getColumn(1).setPreferredWidth(150);
-            table.getColumnModel().getColumn(2).setPreferredWidth(150);
-            table.getColumnModel().getColumn(3).setPreferredWidth(100);
-            table.getColumnModel().getColumn(4).setPreferredWidth(50);
-            table.getColumnModel().getColumn(5).setPreferredWidth(50);
-            table.getColumnModel().getColumn(6).setPreferredWidth(100);
-            table.getColumnModel().getColumn(7).setPreferredWidth(100);
-        }
-
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 940, 380));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(1, 84, 43));
@@ -549,6 +514,40 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         });
         getContentPane().add(themcd, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 520, 200, 40));
 
+        jScrollPane1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        table.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "STT", "Mã thuốc", "Tên thuốc", "Ngày nhập", "Lượng tồn", "ĐVT", "Loại thuốc", "Cách Dùng", "Giá nhập", "Giá bán"
+            }
+        ));
+        table.setColumnSelectionAllowed(true);
+        table.setEditingColumn(0);
+        table.setEditingRow(0);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(table);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 940, 380));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -649,20 +648,6 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
 
     }//GEN-LAST:event_ThemLoaiThuocMoiMouseClicked
 
-    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        int row = table.getSelectedRow();
-        String mathuoc = table.getModel().getValueAt(row, 1).toString();
-        ManagementDrugUse.SetData(mathuoc);
-        java.awt.EventQueue.invokeLater(() -> {
-            try {
-                new ManagementDrugUse(CMND).setVisible(true);
-            } catch (Exception ex) {
-                Logger.getLogger(MedicineUsageManagement.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-        this.dispose();
-    }//GEN-LAST:event_tableMouseClicked
-
     private void ThemdvMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThemdvMouseClicked
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -755,6 +740,20 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         });
         this.dispose();
     }//GEN-LAST:event_ThemLoaiThuocMoiActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        int row = table.getSelectedRow();
+        String mathuoc = table.getModel().getValueAt(row, 1).toString();
+        ManagementDrugUse.SetData(mathuoc);
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new ManagementDrugUse().setVisible(true);
+            } catch (Exception ex) {
+                Logger.getLogger(MedicineUsageManagement.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_tableMouseClicked
 
     /**
      * @param args the command line arguments

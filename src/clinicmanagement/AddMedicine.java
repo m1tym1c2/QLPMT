@@ -80,7 +80,7 @@ public class AddMedicine extends javax.swing.JDialog {
     }
     public int LUUDATA()throws SQLException{
         
-        if(jTextField2.getText()==null || jTextField1.getText()==null) {
+        if(jTextField2.getText()==null || jTextField1.getText()==null|| cssx1.getText()==null) {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đủ thông tin! ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             return 0;
         }
@@ -112,7 +112,7 @@ public class AddMedicine extends javax.swing.JDialog {
         stm.executeUpdate("insert into PHIEUNHAPTHUOC VALUES (N'"+ maphieunhapthuoc + "',"+ gianhap*soluongthem 
                 + ",'"+java.time.LocalDate.now()+"') "); 
         stm.executeUpdate("insert into CT_PHIEUNHAPTHUOC VALUES (N'"+ maphieunhapthuoc +"','"
-                + mathuoc + "',"+ soluongthem+","+gianhap+","+ gianhap*Tyle + ") ");
+                + mathuoc + "',"+ soluongthem+","+gianhap+","+ gianhap*Tyle + ",N'"+cssx1.getText()+"') ");
         
          
         
@@ -130,6 +130,8 @@ public class AddMedicine extends javax.swing.JDialog {
     private void initComponents() {
 
         jButton3 = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        cssx = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -141,6 +143,8 @@ public class AddMedicine extends javax.swing.JDialog {
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        cssx1 = new javax.swing.JTextField();
 
         jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -151,6 +155,14 @@ public class AddMedicine extends javax.swing.JDialog {
                 jButton3ActionPerformed(evt);
             }
         });
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(1, 84, 43));
+        jLabel8.setText("Cơ sở sản xuất:");
+
+        cssx.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        cssx.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        cssx.setPreferredSize(new java.awt.Dimension(100, 18));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thêm thuốc");
@@ -215,6 +227,14 @@ public class AddMedicine extends javax.swing.JDialog {
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel7.setText("jLabel7");
 
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(1, 84, 43));
+        jLabel9.setText("Cơ sở sản xuất:");
+
+        cssx1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        cssx1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        cssx1.setPreferredSize(new java.awt.Dimension(100, 18));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -235,7 +255,7 @@ public class AddMedicine extends javax.swing.JDialog {
                                 .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addContainerGap())))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel1)
                                 .addComponent(jLabel2)
@@ -244,8 +264,7 @@ public class AddMedicine extends javax.swing.JDialog {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addComponent(jLabel5)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())))
@@ -253,6 +272,12 @@ public class AddMedicine extends javax.swing.JDialog {
                 .addGap(110, 110, 110)
                 .addComponent(XACNHAN, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel9)
+                .addGap(18, 18, 18)
+                .addComponent(cssx1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -277,7 +302,11 @@ public class AddMedicine extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(cssx1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(XACNHAN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(51, 51, 51))
         );
@@ -396,6 +425,8 @@ public class AddMedicine extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton XACNHAN;
+    private javax.swing.JTextField cssx;
+    private javax.swing.JTextField cssx1;
     private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -405,6 +436,8 @@ public class AddMedicine extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables

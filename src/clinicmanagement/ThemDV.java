@@ -51,8 +51,10 @@ public class ThemDV extends javax.swing.JDialog {
         TROLAI = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         ten = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(400, 300));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         LUU.setBackground(new java.awt.Color(255, 204, 204));
@@ -64,7 +66,7 @@ public class ThemDV extends javax.swing.JDialog {
                 LUUMouseClicked(evt);
             }
         });
-        getContentPane().add(LUU, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 209, 83, 40));
+        getContentPane().add(LUU, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 200, 83, 40));
 
         TROLAI.setBackground(new java.awt.Color(255, 204, 204));
         TROLAI.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -75,14 +77,18 @@ public class ThemDV extends javax.swing.JDialog {
                 TROLAIMouseClicked(evt);
             }
         });
-        getContentPane().add(TROLAI, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 209, 106, 40));
+        getContentPane().add(TROLAI, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 200, 106, 40));
 
         ten.setColumns(20);
         ten.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         ten.setRows(5);
         jScrollPane1.setViewportView(ten);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 24, 465, 167));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 310, 140));
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setText("THÊM ĐƠN VỊ");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -158,6 +164,7 @@ public class ThemDV extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton LUU;
     private javax.swing.JButton TROLAI;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea ten;
     // End of variables declaration//GEN-END:variables

@@ -163,7 +163,7 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         rs = stm.executeQuery("SELECT TenDonViTinh  FROM DONVITINH");
         while(rs.next()) jComboBox1.addItem(rs.getString("TenDonViTinh"));
         
-        rs = stm.executeQuery("SELECT NgayNhap ,SoLuongNhap ,DonGiaNhap ,DonGiaBan "
+        rs = stm.executeQuery("SELECT NgayNhap ,SoLuongNhap ,DonGiaNhap ,DonGiaBan, CosoSX  "
                 + "                      FROM  CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC "
                 + "                      WHERE CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc "
                 + "                      AND CT_PHIEUNHAPTHUOC.MaThuoc = N'"+ mathuoc +"';");
@@ -181,8 +181,9 @@ public class ManagementDrugUse extends javax.swing.JFrame {
             row.add(String.valueOf(rs.getInt("SoLuongNhap")));
             row.add(String.valueOf(rs.getInt("DonGiaNhap")));
             row.add(String.valueOf(rs.getInt("DonGiaBan")));
+            row.add(rs.getString("CosoSX"));
             model.getRowCount();
-            model.addRow(row);            
+            model.addRow(row);         
         }
         
         rs.close(); 
@@ -216,11 +217,11 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         Anh = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         Anhdaidien = new javax.swing.JLabel();
         Tentaikhoan = new javax.swing.JLabel();
@@ -340,21 +341,6 @@ public class ManagementDrugUse extends javax.swing.JFrame {
         Anh.setText("jLabel14");
         jPanel3.add(Anh, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 310, 320));
 
-        table.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "STT", "Ngày nhập", "SL", "Giá nhập", "Giá bán"
-            }
-        ));
-        jScrollPane2.setViewportView(table);
-
-        jPanel3.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 320, -1, 80));
-
         jButton2.setBackground(new java.awt.Color(255, 204, 204));
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton2.setForeground(new java.awt.Color(0, 99, 28));
@@ -387,6 +373,21 @@ public class ManagementDrugUse extends javax.swing.JFrame {
             }
         });
         jPanel3.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 410, -1, -1));
+
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "STT", "Ngày nhập", "SL", "Giá nhập", "Giá bán", "Cơ sở SX"
+            }
+        ));
+        jScrollPane2.setViewportView(table);
+
+        jPanel3.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 320, -1, 80));
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 827, 465));
 
