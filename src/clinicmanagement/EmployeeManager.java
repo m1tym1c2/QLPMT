@@ -429,6 +429,9 @@ public class EmployeeManager extends javax.swing.JFrame {
         if ("".equals(MaNV)){
             JOptionPane.showMessageDialog(this, "Chưa chọn nhận viên để xem thông tin", "Lỗi", ERROR_MESSAGE);
         }
+        else if ("PMT000".equals(MaNV)){
+            JOptionPane.showMessageDialog(this, "Không thể xem thông tin admin", "Lỗi", ERROR_MESSAGE);
+        }
         else {
             java.awt.EventQueue.invokeLater(() -> {
             StaffInformation dialog = new StaffInformation(new javax.swing.JFrame(), true, MaNV, CMND);

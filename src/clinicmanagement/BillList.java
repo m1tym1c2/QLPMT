@@ -121,6 +121,7 @@ public class BillList extends javax.swing.JFrame {
             Logger.getLogger(BillList.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public BillList(String CMND) {
         initComponents();
         jButton3.setEnabled(false);
@@ -182,6 +183,7 @@ public class BillList extends javax.swing.JFrame {
         }
         RetriveData();
     }
+
     private void RetriveData() {
         if ("admin".equals(CMND)) {
             ImageIcon iconnull = new ImageIcon(getClass().getResource("/anh/NotSetAvt.png"));
@@ -325,6 +327,11 @@ public class BillList extends javax.swing.JFrame {
         ThongTinCaNhan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ThongTinCaNhanMouseClicked(evt);
+            }
+        });
+        ThongTinCaNhan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThongTinCaNhanActionPerformed(evt);
             }
         });
 
@@ -598,47 +605,33 @@ public class BillList extends javax.swing.JFrame {
     }//GEN-LAST:event_NutmuitenMouseClicked
 
     private void ThongTinCaNhanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThongTinCaNhanMouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true, CMND);
-                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                for (WindowListener wl : dialog.getWindowListeners()) {
-                    dialog.removeWindowListener(wl);
-                }
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        dialog.dispose();
-                        Home frame = new Home(CMND);
-                        frame.setVisible(true);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-        this.dispose();
+
     }//GEN-LAST:event_ThongTinCaNhanMouseClicked
 
     private void DoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoiMatKhauActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                ChangePassword dialog = new ChangePassword(new javax.swing.JFrame(), true, CMND);
-                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                for (WindowListener wl : dialog.getWindowListeners()) {
-                    dialog.removeWindowListener(wl);
-                }
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        dialog.dispose();
-                        BillList frame = new BillList(CMND);
-                        frame.setVisible(true);
+        if ("admin".equals(CMND)) {
+            JOptionPane.showMessageDialog(this, "Không thể xem thông tin admin", "Lỗi", ERROR_MESSAGE);
+        } else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    ChangePassword dialog = new ChangePassword(new javax.swing.JFrame(), true, CMND);
+                    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
                     }
-                });
-                dialog.setVisible(true);
-            }
-        });
-        this.dispose();
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            BillList frame = new BillList(CMND);
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
+        }
     }//GEN-LAST:event_DoiMatKhauActionPerformed
 
     private void DangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DangXuatActionPerformed
@@ -654,46 +647,45 @@ public class BillList extends javax.swing.JFrame {
     }//GEN-LAST:event_DangXuatActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try{
+        try {
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet sheet = workbook.createSheet("Danh Sách ");
-            
+
             Cell cell;
             XSSFRow row;
             int rownum = 0;
             row = sheet.createRow(0);
-            
-            cell =  row.createCell(0, CellType.STRING);
+
+            cell = row.createCell(0, CellType.STRING);
             cell.setCellValue("DANH SÁCH HÓA ĐƠN ");
-            
+
             row = sheet.createRow(1);
-            
-            cell =  row.createCell(0, CellType.STRING);
+
+            cell = row.createCell(0, CellType.STRING);
             cell.setCellValue("STT");
 
             // 
             cell = row.createCell(1, CellType.STRING);
             cell.setCellValue("Mã hóa đơn");
-            
+
             cell = row.createCell(2, CellType.STRING);
             cell.setCellValue("Tên khách hàng");
-            
+
             cell = row.createCell(3, CellType.STRING);
             cell.setCellValue("Ngày khám");
-            
+
             cell = row.createCell(4, CellType.STRING);
             cell.setCellValue("Tiền khám");
-            
+
             cell = row.createCell(5, CellType.STRING);
             cell.setCellValue("Tiền thuốc");
-            
+
             cell = row.createCell(6, CellType.STRING);
-            cell.setCellValue("Tổng");           
-            
-            
+            cell.setCellValue("Tổng");
+
             DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
-            for ( int i = 0 ; i < tbModel.getRowCount();  i++ ) {                
-                row = sheet.createRow(i+2);
+            for (int i = 0; i < tbModel.getRowCount(); i++) {
+                row = sheet.createRow(i + 2);
                 // EmpNo (A)
                 cell = row.createCell(0, CellType.STRING);
                 cell.setCellValue(tbModel.getValueAt(i, 0).toString());
@@ -709,30 +701,30 @@ public class BillList extends javax.swing.JFrame {
                 // Bonus (E)
                 cell = row.createCell(4, CellType.NUMERIC);
                 cell.setCellValue(tbModel.getValueAt(i, 4).toString());
-                
+
                 cell = row.createCell(5, CellType.NUMERIC);
                 cell.setCellValue(tbModel.getValueAt(i, 5).toString());
                 // Bonus (E)
                 cell = row.createCell(6, CellType.NUMERIC);
                 cell.setCellValue(tbModel.getValueAt(i, 6).toString());
-                
+
             }
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyy");        
-            String tungay = formatter.format(jDateChooser1.getDate());  
-            String denngay = formatter.format(jDateChooser2.getDate()); 
-            
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyy");
+            String tungay = formatter.format(jDateChooser1.getDate());
+            String denngay = formatter.format(jDateChooser2.getDate());
+
             String ten = tungay + "-" + denngay;
             System.out.println("Created file: " + ten);
-            String save = "D:/"+"DANHSACHHOADON-" +ten+ ".xlsx";
-            File file = new File(save);  
+            String save = "D:/" + "DANHSACHHOADON-" + ten + ".xlsx";
+            File file = new File(save);
             file.getParentFile().mkdirs();
             FileOutputStream outFile = new FileOutputStream(file);
             workbook.write(outFile);
             System.out.println("Created file: " + file.getAbsolutePath());
-            
+
             Desktop.getDesktop().open(file);
-        
-        }catch (Exception e){
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -777,16 +769,42 @@ public class BillList extends javax.swing.JFrame {
     }//GEN-LAST:event_placeholderTextField1ActionPerformed
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        
+
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void tableDark1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableDark1KeyPressed
-        
+
     }//GEN-LAST:event_tableDark1KeyPressed
 
     private void tableDark1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDark1MousePressed
         jButton3.setEnabled(true);
     }//GEN-LAST:event_tableDark1MousePressed
+
+    private void ThongTinCaNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThongTinCaNhanActionPerformed
+        if ("admin".equals(CMND)) {
+            JOptionPane.showMessageDialog(this, "Không thể xem thông tin admin", "Lỗi", ERROR_MESSAGE);
+        } else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true, CMND);
+                    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
+                    }
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            Home frame = new Home(CMND);
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
+        }
+    }//GEN-LAST:event_ThongTinCaNhanActionPerformed
 
     public static void main(String args[]) {
         try {

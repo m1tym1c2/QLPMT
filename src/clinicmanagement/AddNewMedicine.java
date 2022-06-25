@@ -409,25 +409,29 @@ public class AddNewMedicine extends javax.swing.JFrame {
     }//GEN-LAST:event_NutmuitenMouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true);
-                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                for (WindowListener wl : dialog.getWindowListeners()) {
-                    dialog.removeWindowListener(wl);
-                }
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        dialog.dispose();
-                        AddNewMedicine frame = new AddNewMedicine();
-                        frame.setVisible(true);
+      if ("admin".equals(CMND)) {
+            JOptionPane.showMessageDialog(this, "Không thể xem thông tin admin", "Lỗi", ERROR_MESSAGE);
+        } else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true, CMND);
+                    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
                     }
-                });
-                dialog.setVisible(true);
-            }
-        });
-        this.dispose();
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            Home frame = new Home(CMND);
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
+        }
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -579,7 +583,7 @@ public class AddNewMedicine extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Bạn đã lưu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 java.awt.EventQueue.invokeLater(new Runnable() {
                     public void run() {
-                        new MedicineUsageManagement().setVisible(true);
+                        new MedicineUsageManagement(CMND).setVisible(true);
                     }
                 });
                 this.dispose();

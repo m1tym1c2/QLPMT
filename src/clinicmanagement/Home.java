@@ -191,6 +191,11 @@ public class Home extends javax.swing.JFrame {
                 ThongTinCaNhanMouseClicked(evt);
             }
         });
+        ThongTinCaNhan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThongTinCaNhanActionPerformed(evt);
+            }
+        });
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/278996697_723755712095971_8418662915417084857_n.png"))); // NOI18N
 
@@ -390,29 +395,34 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_NutmuitenMouseClicked
 
     private void ThongTinCaNhanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThongTinCaNhanMouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true, CMND);
-                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                for (WindowListener wl : dialog.getWindowListeners()) {
-                    dialog.removeWindowListener(wl);
-                }
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        dialog.dispose();
-                        Home frame = new Home(CMND);
-                        frame.setVisible(true);
+        if ("admin".equals(CMND)) {
+            JOptionPane.showMessageDialog(this, "Không thể xem thông tin admin", "Lỗi", ERROR_MESSAGE);
+        } else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    UserInformation dialog = new UserInformation(new javax.swing.JFrame(), true, CMND);
+                    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                    for (WindowListener wl : dialog.getWindowListeners()) {
+                        dialog.removeWindowListener(wl);
                     }
-                });
-                dialog.setVisible(true);
-            }
-        });
-        this.dispose();
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            dialog.dispose();
+                            Home frame = new Home(CMND);
+                            frame.setVisible(true);
+                        }
+                    });
+                    dialog.setVisible(true);
+                }
+            });
+            this.dispose();
+        }
     }//GEN-LAST:event_ThongTinCaNhanMouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
-        if ("000".equals(MaChucNang) || "001".equals(MaChucNang)) {
+        if ("000".equals(MaChucNang) || "001".equals(MaChucNang) || "003".equals(MaChucNang) || "005".equals(MaChucNang) || "007".equals(MaChucNang)
+                || "009".equals(MaChucNang) || "011".equals(MaChucNang) || "013".equals(MaChucNang) || "015".equals(MaChucNang)) {
             MedicineUsageManagement form = new MedicineUsageManagement(CMND);
             form.setVisible(true);
             this.dispose();
@@ -434,7 +444,8 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_DangXuatActionPerformed
 
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
-        if ("000".equals(MaChucNang) || "002".equals(MaChucNang)) {
+        if ("000".equals(MaChucNang) || "002".equals(MaChucNang) || "003".equals(MaChucNang) || "006".equals(MaChucNang) || "007".equals(MaChucNang)
+                || "010".equals(MaChucNang) || "011".equals(MaChucNang) || "014".equals(MaChucNang) || "015".equals(MaChucNang)) {
             BillList form = new BillList(CMND);
             form.setVisible(true);
             this.dispose();
@@ -444,7 +455,8 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel5MouseClicked
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-        if ("000".equals(MaChucNang) || "003".equals(MaChucNang)) {
+        if ("000".equals(MaChucNang) || "004".equals(MaChucNang) || "005".equals(MaChucNang) || "006".equals(MaChucNang) || "007".equals(MaChucNang)
+                || "012".equals(MaChucNang) || "013".equals(MaChucNang) || "014".equals(MaChucNang) || "015".equals(MaChucNang)) {
             EmployeeManager form = new EmployeeManager(CMND);
             form.setVisible(true);
             this.dispose();
@@ -455,7 +467,8 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel7MouseClicked
 
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
-        if ("000".equals(MaChucNang) || "004".equals(MaChucNang)) {
+        if ("000".equals(MaChucNang) || "008".equals(MaChucNang) || "009".equals(MaChucNang) || "010".equals(MaChucNang) || "011".equals(MaChucNang)
+                || "012".equals(MaChucNang) || "013".equals(MaChucNang) || "014".equals(MaChucNang) || "015".equals(MaChucNang)) {
             String[] options = new String[]{"Danh sách loại bệnh", "Danh sách khám bệnh", "Thay đổi tham số"};
             int response = JOptionPane.showOptionDialog(this, "Chọn trang bạn muốn tới", "Chọn",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
@@ -561,9 +574,13 @@ public class Home extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_DoiMatKhauActionPerformed
 
+    private void ThongTinCaNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThongTinCaNhanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ThongTinCaNhanActionPerformed
+
     /**
-         * @param args the command line arguments
-         */
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

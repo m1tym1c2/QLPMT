@@ -156,14 +156,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         if (rs.next()) {
             TyGia.setText(String.valueOf(rs.getInt(1)));
         }
-        rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc,CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n"
-                + ",SoLuongTon,TenDonViTinh ,DonGiaNhap ,DonGiaBan \n"
-                + "FROM THUOC, CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC , (SELECT   max(ct1.MaPhieuNhapThuoc) MaPhieuNhapThuoc\n"
-                + "                                                   FROM CT_PHIEUNHAPTHUOC ct1													\n"
-                + "                                                   GROUP BY MaThuoc) CTNHAPTHUOC \n"
-                + "WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  \n"
-                + "AND CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc\n"
-                + "AND CTNHAPTHUOC.MaPhieuNhapThuoc = CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc");
+        
         rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc,CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n" +
                                         ",SoLuongTon,TenDonViTinh, LoaiThuoc, TenCachDung ,DonGiaNhap ,DonGiaBan \n" +
                                         "FROM THUOC,CACHDUNG, CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC , (SELECT   max(ct1.MaPhieuNhapThuoc) MaPhieuNhapThuoc\n" +

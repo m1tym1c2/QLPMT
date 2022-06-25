@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -49,7 +51,7 @@ public class StaffInformation extends javax.swing.JDialog {
      */
     private static String CMND = "";
     private static String MANV = "";
-    private static boolean flag = false;
+    private boolean flag = false;
 
     public StaffInformation(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -104,7 +106,7 @@ public class StaffInformation extends javax.swing.JDialog {
 
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dd);
-            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(ddd);            
+            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(ddd);
             Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse(dddd);
             Date date3 = new SimpleDateFormat("yyyy-MM-dd").parse(ddddd);
             jDateChooser1.setDate(date1);
@@ -185,7 +187,7 @@ public class StaffInformation extends javax.swing.JDialog {
                 row.add(rs.getString("TenBenhnhan"));
                 Date date = rs.getDate("NgayKham");
                 row.add(simpDate.format(date));
-                row.add(String.format("%,d",rs.getInt("GiaTriHoaDon")));
+                row.add(String.format("%,d", rs.getInt("GiaTriHoaDon")));
                 model.getRowCount();
                 model.addRow(row);
             }
@@ -242,6 +244,7 @@ public class StaffInformation extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         FNgaySinh = new com.toedter.calendar.JDateChooser();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thong tin nhan vien");
@@ -326,7 +329,7 @@ public class StaffInformation extends javax.swing.JDialog {
                 cbbActionPerformed(evt);
             }
         });
-        getContentPane().add(cbb, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 300, 226, -1));
+        getContentPane().add(cbb, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 300, 190, -1));
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(1, 84, 43));
@@ -419,6 +422,14 @@ public class StaffInformation extends javax.swing.JDialog {
             }
         });
         getContentPane().add(FNgaySinh, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 160, 180, -1));
+
+        jButton3.setText("...");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 300, 30, 30));
 
         pack();
         setLocationRelativeTo(null);
@@ -539,6 +550,45 @@ public class StaffInformation extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_cbbActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                DanhSachChucVu dialog = new DanhSachChucVu();
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        java.awt.EventQueue.invokeLater(new Runnable() {
+                            public void run() {
+                                StaffInformation addStaff = new StaffInformation(new javax.swing.JFrame(), true, MANV, CMND);
+                                addStaff.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                                for (WindowListener wl : addStaff.getWindowListeners()) {
+                                    addStaff.removeWindowListener(wl);
+                                }
+                                addStaff.addWindowListener(new java.awt.event.WindowAdapter() {
+                                    @Override
+                                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                        addStaff.dispose();
+                                        EmployeeManager frame = new EmployeeManager(CMND);
+                                        frame.setVisible(true);
+                                    }
+                                });
+                                dialog.setVisible(false);
+                                addStaff.setVisible(true);
+                            }
+
+                        });
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -591,6 +641,7 @@ public class StaffInformation extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> cbb;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel11;

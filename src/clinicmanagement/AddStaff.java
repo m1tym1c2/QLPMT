@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -115,11 +116,12 @@ public class AddStaff extends javax.swing.JDialog {
                 } else {
                     MaNV.setText("PMT" + num);
                 }
-                rs = stm.executeQuery("select manhanvien from nhanvien where exists (select manhanvien from nhanvien where manhanvien='" + MaNV.getText()+"')");
-                if (rs.next() == false)
-                    flag=false;
-                else
+                rs = stm.executeQuery("select manhanvien from nhanvien where exists (select manhanvien from nhanvien where manhanvien='" + MaNV.getText() + "')");
+                if (rs.next() == false) {
+                    flag = false;
+                } else {
                     num++;
+                }
             }
             rs = stm.executeQuery("SELECT * FROM CHUCNANG WHERE MaChucNang <> '000'");
             while (rs.next()) {
@@ -173,6 +175,7 @@ public class AddStaff extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         HeSo = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Them moi nhan vien");
@@ -243,7 +246,7 @@ public class AddStaff extends javax.swing.JDialog {
         getContentPane().add(Luong, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 360, 270, 28));
 
         Combobox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        getContentPane().add(Combobox, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 280, 270, -1));
+        getContentPane().add(Combobox, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 280, 230, -1));
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 166, 84));
@@ -307,6 +310,14 @@ public class AddStaff extends javax.swing.JDialog {
         HeSo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         getContentPane().add(HeSo, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 400, 270, 28));
 
+        jButton2.setText("...");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 280, 30, -1));
+
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
@@ -348,12 +359,11 @@ public class AddStaff extends javax.swing.JDialog {
             if (icon == null) {
                 JOptionPane.showMessageDialog(this, "", "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
             }
-
             File file = new File("src\\assets\\" + MaNV.getText().trim() + ".png");
             try {
                 ImageIO.write(bi, "png", file);
             } catch (Exception ex) {
-
+                
             }
             String ep = "";
             try {
@@ -378,27 +388,15 @@ public class AddStaff extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Không được để trống lương!!!", "Lỗi", ERROR_MESSAGE);
                 return;
             }
-            rs = stm.executeQuery("select CMND from nhanvien where exists (select CMND from nhanvien where CMND='" + FCMND.getText()+"')");
+            rs = stm.executeQuery("select CMND from nhanvien where exists (select CMND from nhanvien where CMND='" + FCMND.getText() + "')");
             if (rs.next() == true) {
                 JOptionPane.showMessageDialog(this, "Trùng CMND!!!", "Lỗi", ERROR_MESSAGE);
                 return;
             }
             String MaChucNang = "";
-            switch (Combobox.getSelectedIndex()) {
-                case 0:
-                    MaChucNang = "001";
-                    break;
-                case 1:
-                    MaChucNang = "002";
-                    break;
-                case 2:
-                    MaChucNang = "003";
-                    break;
-                case 3:
-                    MaChucNang = "004";
-                    break;
-                default:
-                    break;
+            rs = stm.executeQuery("Select * from chucnang where TenChucNang = N'"+ String.valueOf(Combobox.getSelectedItem()) +"'");
+            if (rs.next() == true){
+                MaChucNang = rs.getString("MaChucNang");
             }
             stm.execute("insert into nhanvien values('" + MaNV.getText() + "','" + FCMND.getText() + "','" + si.format(FNgaySinh.getDate()) + "',N'"
                     + jTextArea1.getText() + "','" + Email.getText() + "'," + Luong.getText() + "," + HeSo.getText() + ",N'/assets/" + MaNV.getText().trim() + ".png" + "','"
@@ -413,6 +411,45 @@ public class AddStaff extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                DanhSachChucVu dialog = new DanhSachChucVu();
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        java.awt.EventQueue.invokeLater(new Runnable() {
+                            public void run() {
+                                AddStaff addStaff = new AddStaff(new javax.swing.JFrame(), true, CMND);
+                                addStaff.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                                for (WindowListener wl : addStaff.getWindowListeners()) {
+                                    addStaff.removeWindowListener(wl);
+                                }
+                                addStaff.addWindowListener(new java.awt.event.WindowAdapter() {
+                                    @Override
+                                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                        addStaff.dispose();
+                                        EmployeeManager frame = new EmployeeManager(CMND);
+                                        frame.setVisible(true);
+                                    }
+                                });
+                                dialog.setVisible(false);
+                                addStaff.setVisible(true);
+                            }
+                            
+                        });
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -464,6 +501,7 @@ public class AddStaff extends javax.swing.JDialog {
     private javax.swing.JTextField Luong;
     private javax.swing.JLabel MaNV;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
