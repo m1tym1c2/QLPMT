@@ -157,7 +157,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
             TyGia.setText(String.valueOf(rs.getInt(1)));
         }
         
-        rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc,CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n" +
+        rs = stm.executeQuery("SELECT Distinct CT_PHIEUNHAPTHUOC.MaThuoc,TenThuoc ,NgayNhap\n" +
                                         ",SoLuongTon,TenDonViTinh, LoaiThuoc, TenCachDung ,DonGiaNhap ,DonGiaBan \n" +
                                         "FROM THUOC,CACHDUNG, CT_PHIEUNHAPTHUOC , PHIEUNHAPTHUOC , (SELECT   max(ct1.MaPhieuNhapThuoc) MaPhieuNhapThuoc\n" +
                                         "                                                   FROM CT_PHIEUNHAPTHUOC ct1													\n" +
@@ -165,7 +165,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
                                         "WHERE THUOC.MaThuoc  = CT_PHIEUNHAPTHUOC.MaThuoc  \n" +
                                         "AND CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc = PHIEUNHAPTHUOC.MaPhieuNhapThuoc\n" +
                                         "AND CTNHAPTHUOC.MaPhieuNhapThuoc = CT_PHIEUNHAPTHUOC.MaPhieuNhapThuoc"
-                                        + "   AND THUOC.MaThuoc = CT_PHIEUNHAPTHUOC.MaThuoc                 ");
+                                        + "   AND THUOC.MaThuoc = CT_PHIEUNHAPTHUOC.MaThuoc AND THUOC.MaCachDung = CACHDUNG.MaCachDung                 ");
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         while (rs.next()) {
@@ -509,7 +509,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
 
         jScrollPane1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
-        table.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        table.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null, null},
@@ -538,6 +538,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(table);
+        table.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 940, 380));
 

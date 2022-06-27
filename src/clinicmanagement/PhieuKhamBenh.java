@@ -70,7 +70,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
             {
                 MaPhieuKhamBenh = rs.getString(1);
             }
-            rs = stm.executeQuery("SELECT TenThuoc, TenDonViTinh, SoLuongDung, TenCachDung FROM THUOC, CT_PHIEUKHAMBENH, CACHDUNG WHERE THUOC.MaThuoc = CT_PHIEUKHAMBENH.MaThuoc AND CACHDUNG.MaCachDung = THUOC.MaCachDung AND MaPhieuKhamBenh = '"+MaPhieuKhamBenh+"'");
+            rs = stm.executeQuery("SELECT TenThuoc, TenDonViTinh, SoLuongDung, TenCachDung, LieuDung FROM THUOC, CT_PHIEUKHAMBENH, CACHDUNG WHERE THUOC.MaThuoc = CT_PHIEUKHAMBENH.MaThuoc AND CACHDUNG.MaCachDung = THUOC.MaCachDung AND MaPhieuKhamBenh = '"+MaPhieuKhamBenh+"'");
             DefaultTableModel model = (DefaultTableModel) Table.getModel();
             int STT = 1;
             while (rs.next())
@@ -81,6 +81,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
                 vector.add(rs.getString(2));
                 vector.add(rs.getString(3));
                 vector.add(rs.getString(4));
+                vector.add(rs.getString(5));
                 model.addRow(vector);
                 STT++;
             }
@@ -114,7 +115,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
             {
                 MaPhieuKhamBenh = rs.getString(1);
             }
-            rs = stm.executeQuery("SELECT TenThuoc, TenDonViTinh, SoLuongDung, TenCachDung FROM THUOC, CT_PHIEUKHAMBENH, CACHDUNG WHERE THUOC.MaThuoc = CT_PHIEUKHAMBENH.MaThuoc AND CACHDUNG.MaCachDung = THUOC.MaCachDung AND MaPhieuKhamBenh = '"+MaPhieuKhamBenh+"'");
+            rs = stm.executeQuery("SELECT TenThuoc, TenDonViTinh, SoLuongDung, TenCachDung, LieuDung FROM THUOC, CT_PHIEUKHAMBENH, CACHDUNG WHERE THUOC.MaThuoc = CT_PHIEUKHAMBENH.MaThuoc AND CACHDUNG.MaCachDung = THUOC.MaCachDung AND MaPhieuKhamBenh = '"+MaPhieuKhamBenh+"'");
             DefaultTableModel model = (DefaultTableModel) Table.getModel();
             int STT = 1;
             while (rs.next())
@@ -125,6 +126,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
                 vector.add(rs.getString(2));
                 vector.add(rs.getString(3));
                 vector.add(rs.getString(4));
+                vector.add(rs.getString(5));
                 model.addRow(vector);
                 STT++;
             }
@@ -327,11 +329,11 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
 
             },
             new String [] {
-                "STT", "Thuốc", "Đơn vị tính", "Số lượng", "Cách dùng"
+                "STT", "Thuốc", "Đơn vị tính", "Số lượng", "Cách dùng", "Liều dùng"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
