@@ -7,12 +7,14 @@ package clinicmanagement;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -164,7 +166,20 @@ public class ThemCD extends javax.swing.JDialog {
     private void TROLAIMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TROLAIMouseClicked
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DanhSachCachDung(CMND).setVisible(true);
+                DanhSachCachDung dialog = new DanhSachCachDung(CMND);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        dialog.dispose();
+                        MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
+                        frame.setVisible(true);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
         this.dispose();

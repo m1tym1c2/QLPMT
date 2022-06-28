@@ -589,7 +589,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    KeThuoc dialog = new KeThuoc();
+                    KeThuoc dialog = new KeThuoc(CMND);
                     KeThuoc.MaPhieuKhamBenh = MaPhieuKhamBenh;
                     dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
                     for (WindowListener wl : dialog.getWindowListeners()) {
@@ -599,7 +599,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                             dialog.dispose();
-                            PhieuKhamBenh frame = new PhieuKhamBenh();
+                            PhieuKhamBenh frame = new PhieuKhamBenh(CMND);
                             frame.setVisible(true);
                         }
                     });

@@ -21,52 +21,52 @@ public class AddMedicine extends javax.swing.JDialog {
     public static String soluong = "";
 
     static void setData(double tyle) {
-        Tyle = tyle/100;
+        Tyle = tyle / 100;
     }
-    
+
     public AddMedicine(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         getContentPane().setBackground(Color.white);
         it = this;
-        try
-        {
-            LoadData();           
-        }
-        catch(SQLException e)
-        {
+        try {
+            LoadData();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Chưa có thuốc! ", "Lỗi ", ERROR_MESSAGE);
         }
     }
-    public void LoadData()throws SQLException{
-        
+
+    public void LoadData() throws SQLException {
+
         jComboBox1.removeAllItems();
-        
+
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();        
-        
+        Statement stm = conn.createStatement();
+
         ResultSet rs = stm.executeQuery("SELECT DISTINCT  TenThuoc  FROM THUOC ");
-        rs = stm.executeQuery("SELECT DISTINCT TenThuoc FROM THUOC " );
-        while(rs.next())    jComboBox1.addItem(rs.getString("TenThuoc"));        
-        
+        rs = stm.executeQuery("SELECT DISTINCT TenThuoc FROM THUOC ");
+        while (rs.next()) {
+            jComboBox1.addItem(rs.getString("TenThuoc"));
+        }
+
         jComboBox1.setSelectedIndex(0);
         String tenthuoc = jComboBox1.getSelectedItem().toString();
- 
+
         rs = stm.executeQuery("SELECT MaThuoc, TenDonViTinh, SoLuongTon FROM THUOC WHERE  TenThuoc = N'" + tenthuoc + "' ");
-        
+
         rs.next();
         mathuoc = rs.getString("MaThuoc");
         donvi = rs.getString("TenDonViTinh");
         soluong = String.valueOf(rs.getString("SoLuongTon"));
         jLabel6.setText(donvi);
         jLabel7.setText(soluong);
-        
-        rs.close(); 
+
+        rs.close();
         stm.close();
         conn.close();
     }
-    
+
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -78,48 +78,51 @@ public class AddMedicine extends javax.swing.JDialog {
         }
         return true;
     }
-    public int LUUDATA()throws SQLException{
-        
-        if(jTextField2.getText()==null || jTextField1.getText()==null|| cssx1.getText()==null) {
+
+    public int LUUDATA() throws SQLException {
+
+        if (jTextField2.getText() == null || jTextField1.getText() == null || cssx1.getText() == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đủ thông tin! ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             return 0;
         }
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();        
-        
-        if( !isNumeric(jTextField1.getText()) || !isNumeric(jTextField2.getText())){
+        Statement stm = conn.createStatement();
+
+        if (!isNumeric(jTextField1.getText()) || !isNumeric(jTextField2.getText())) {
             JOptionPane.showMessageDialog(this, "Số lượng và giá tiền cần phải là số!", "Lỗi dữ liệu!", ERROR_MESSAGE);
             return 0;
         }
-        
+
         java.time.LocalDate Now = java.time.LocalDate.now();
         java.time.LocalTime time = java.time.LocalTime.now();
-        String thang = String.valueOf(Now.getMonthValue()) ;
-        String ngay = String.valueOf(Now.getDayOfMonth()) ;
-        String giay = String.valueOf(time.getMinute()) ;
-        if(thang.length()==1) thang = "0"+ thang;
-        if(ngay.length()==1) ngay = "0"+ ngay;
-        if(giay.length()==1) giay = "0"+ giay;
-        String maphieunhapthuoc = String.valueOf(Now.getYear()) + thang  + ngay + 
-                String.valueOf(time.getHour())  + String.valueOf(time.getMinute()) + giay ;  
-        
-        
+        String thang = String.valueOf(Now.getMonthValue());
+        String ngay = String.valueOf(Now.getDayOfMonth());
+        String giay = String.valueOf(time.getMinute());
+        if (thang.length() == 1) {
+            thang = "0" + thang;
+        }
+        if (ngay.length() == 1) {
+            ngay = "0" + ngay;
+        }
+        if (giay.length() == 1) {
+            giay = "0" + giay;
+        }
+        String maphieunhapthuoc = String.valueOf(Now.getYear()) + thang + ngay
+                + String.valueOf(time.getHour()) + String.valueOf(time.getMinute()) + giay;
+
         double soluongthem = Double.parseDouble(jTextField1.getText());
         double gianhap = Double.parseDouble(jTextField2.getText());
-        
-        String strDate = java.time.LocalDate.now().getDayOfMonth() + "-"  + java.time.LocalDate.now().getMonthValue() + "-"  + java.time.LocalDate.now().getYear();
-        stm.executeUpdate("insert into PHIEUNHAPTHUOC VALUES (N'"+ maphieunhapthuoc + "',"+ gianhap*soluongthem 
-                + ",'"+java.time.LocalDate.now()+"') "); 
-        stm.executeUpdate("insert into CT_PHIEUNHAPTHUOC VALUES (N'"+ maphieunhapthuoc +"','"
-                + mathuoc + "',"+ soluongthem+","+gianhap+","+ gianhap*Tyle + ",N'"+cssx1.getText()+"') ");
-        
-         
-        
-        
+
+        String strDate = java.time.LocalDate.now().getDayOfMonth() + "-" + java.time.LocalDate.now().getMonthValue() + "-" + java.time.LocalDate.now().getYear();
+        stm.executeUpdate("insert into PHIEUNHAPTHUOC VALUES (N'" + maphieunhapthuoc + "'," + gianhap * soluongthem
+                + ",'" + java.time.LocalDate.now() + "') ");
+        stm.executeUpdate("insert into CT_PHIEUNHAPTHUOC VALUES (N'" + maphieunhapthuoc + "','"
+                + mathuoc + "'," + soluongthem + "," + gianhap + "," + gianhap * Tyle + ",N'" + cssx1.getText() + "') ");
+
         double soluongton = Double.parseDouble(soluong);
-        stm.executeUpdate("UPDATE THUOC set SoLuongTon = "+ (soluongton + soluongthem) +" WHERE MaThuoc = '"+mathuoc+"'  ");    
-        
+        stm.executeUpdate("UPDATE THUOC set SoLuongTon = " + (soluongton + soluongthem) + " WHERE MaThuoc = '" + mathuoc + "'  ");
+
         stm.close();
         conn.close();
         return 1;
@@ -316,8 +319,8 @@ public class AddMedicine extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void XACNHANMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XACNHANMouseClicked
-           
-        
+
+
     }//GEN-LAST:event_XACNHANMouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -329,55 +332,47 @@ public class AddMedicine extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    public void ChangeItem()throws SQLException{
-        
+    public void ChangeItem() throws SQLException {
+
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();        
-        
+        Statement stm = conn.createStatement();
+
         String tenthuoc = jComboBox1.getSelectedItem().toString();
- 
+
         ResultSet rs = stm.executeQuery("SELECT MaThuoc, TenDonViTinh, SoLuongTon FROM THUOC WHERE  TenThuoc = N'" + tenthuoc + "' ");
-        
+
         rs.next();
         mathuoc = rs.getString("MaThuoc");
         donvi = rs.getString("TenDonViTinh");
         soluong = String.valueOf(rs.getString("SoLuongTon"));
         jLabel6.setText(donvi);
         jLabel7.setText(soluong);
-        
-        rs.close(); 
+
+        rs.close();
         stm.close();
         conn.close();
     }
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
-        try
-        {
-            ChangeItem();           
-        }
-        catch(SQLException e)
-        {
+        try {
+            ChangeItem();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     private void XACNHANActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XACNHANActionPerformed
-        try
-        {
-            if(LUUDATA()==1)
-            {
+        try {
+            if (LUUDATA() == 1) {
                 JOptionPane.showMessageDialog(this, "Bạn đã thêm thuốc thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 MedicineUsageManagement frame = new MedicineUsageManagement();
                 this.dispose();
                 frame.setVisible(true);
-            }            
-        }
-        catch(SQLException e)
-        {
+            }
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
-        }    
+        }
     }//GEN-LAST:event_XACNHANActionPerformed
-
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

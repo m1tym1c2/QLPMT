@@ -657,7 +657,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private void themcdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themcdActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DanhSachCachDung dialog = new DanhSachCachDung();
+                DanhSachCachDung dialog = new DanhSachCachDung(CMND);
                 dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 for (WindowListener wl : dialog.getWindowListeners()) {
                     dialog.removeWindowListener(wl);
@@ -679,7 +679,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private void ThemdvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemdvActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DanhSachDonViTinh dialog = new DanhSachDonViTinh();
+                DanhSachDonViTinh dialog = new DanhSachDonViTinh(CMND);
                 dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 for (WindowListener wl : dialog.getWindowListeners()) {
                     dialog.removeWindowListener(wl);
@@ -699,9 +699,25 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_ThemdvActionPerformed
 
     private void ThemThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemThuocActionPerformed
-        AddNewMedicine frame = new AddNewMedicine(CMND);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                DanhSachCachDung dialog = new DanhSachCachDung(CMND);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        dialog.dispose();
+                        MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
+                        frame.setVisible(true);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
         this.dispose();
-        frame.setVisible(true);
     }//GEN-LAST:event_ThemThuocActionPerformed
 
     private void placeholderTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeholderTextField1ActionPerformed
@@ -741,7 +757,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
         ManagementDrugUse.SetData(mathuoc);
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new ManagementDrugUse().setVisible(true);
+                new ManagementDrugUse(CMND).setVisible(true);
             } catch (Exception ex) {
                 Logger.getLogger(MedicineUsageManagement.class.getName()).log(Level.SEVERE, null, ex);
             }

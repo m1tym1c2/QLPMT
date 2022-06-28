@@ -285,7 +285,7 @@ public class ThemBenhNhan extends javax.swing.JFrame {
                 stm.executeUpdate("INSERT INTO PHIEUKHAMBENH(MaPhieuKhamBenh, MaBenhNhan, NgayKham) VALUES ('"+MaPhieu+"','"+MaBN+"','"+NgayKham+"')");
                 JOptionPane.showMessageDialog(this, "Thêm bệnh nhân vào danh sách khám bệnh thành công","Thêm thành công", 1);
                 this.setVisible(false);
-                DanhSachKhamBenh frame = new DanhSachKhamBenh();
+                DanhSachKhamBenh frame = new DanhSachKhamBenh(CMND);
                 frame.setVisible(true);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, ex.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);

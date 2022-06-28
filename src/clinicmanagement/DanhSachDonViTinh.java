@@ -7,6 +7,7 @@ package clinicmanagement;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +15,9 @@ import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author admin
@@ -22,68 +25,65 @@ import javax.swing.table.DefaultTableModel;
 public class DanhSachDonViTinh extends javax.swing.JFrame {
 
     private static String CMND = "";
+
     public DanhSachDonViTinh() {
         initComponents();
         getContentPane().setBackground(Color.white);
         this.setLocationRelativeTo(null);
-         try
-        {
-            LoadData();           
-        }
-        catch(SQLException e)
-        {
+        try {
+            LoadData();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }
-    
+
     public DanhSachDonViTinh(String CMND) {
         initComponents();
         getContentPane().setBackground(Color.white);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         this.CMND = CMND;
-        try
-        {
-            LoadData();           
-        }
-        catch(SQLException e)
-        {
+        try {
+            LoadData();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }
-    public void LoadData()throws SQLException{
+
+    public void LoadData() throws SQLException {
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();        
-        
+        Statement stm = conn.createStatement();
+
         ResultSet rs = stm.executeQuery("SELECT TenDonViTinh FROM DONVITINH;");
-        
+
         DefaultTableModel model = (DefaultTableModel) Table.getModel();
         model.setRowCount(0);
-        while (rs.next())
-        {
-            Vector row = new Vector();          
-            row.add(model.getRowCount()+1);
+        while (rs.next()) {
+            Vector row = new Vector();
+            row.add(model.getRowCount() + 1);
             row.add(rs.getString("TenDonViTinh"));
             model.getRowCount();
-            model.addRow(row);            
+            model.addRow(row);
         }
-        rs.close(); 
+        rs.close();
         stm.close();
         conn.close();
     }
-    public void DELETE()throws SQLException{        
+
+    public void DELETE() throws SQLException {
         DatabaseConnection DTBC = new DatabaseConnection();
         Connection conn = DTBC.getConnection(this);
-        Statement stm = conn.createStatement();  
-        
+        Statement stm = conn.createStatement();
+
         int row = Table.getSelectedRow();
         String donvi = Table.getModel().getValueAt(row, 1).toString();
-        stm.executeUpdate("DELETE FROM DONVITINH WHERE TenDonViTinh = N'"+ donvi +"';");
-        
+        stm.executeUpdate("DELETE FROM DONVITINH WHERE TenDonViTinh = N'" + donvi + "';");
+
         stm.close();
         conn.close();
-    } 
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -194,27 +194,47 @@ public class DanhSachDonViTinh extends javax.swing.JFrame {
     private void themMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_themMouseClicked
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ThemDV dialog = new ThemDV(new javax.swing.JFrame(), true);
+                ThemDV dialog = new ThemDV(new DanhSachKhamBenh(), true, CMND);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        java.awt.EventQueue.invokeLater(new Runnable() {
+                            public void run() {
+                                DanhSachDonViTinh DV = new DanhSachDonViTinh(CMND);
+                                DV.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                                for (WindowListener wl : DV.getWindowListeners()) {
+                                    DV.removeWindowListener(wl);
+                                }
+                                DV.addWindowListener(new java.awt.event.WindowAdapter() {
+                                    @Override
+                                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                        DV.dispose();
+                                        MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
+                                        frame.setVisible(true);
+                                    }
+                                });
+                                DV.setVisible(true);
+                            }
+                        });
+                        dialog.dispose();
                     }
                 });
                 dialog.setVisible(true);
             }
         });
+        this.dispose();
     }//GEN-LAST:event_themMouseClicked
 
     private void XoaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XoaMouseClicked
-        try
-        {
-            DELETE();  
+        try {
+            DELETE();
             JOptionPane.showMessageDialog(this, "Đã xóa thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             LoadData();
-        }
-        catch(SQLException e)
-        {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_XoaMouseClicked

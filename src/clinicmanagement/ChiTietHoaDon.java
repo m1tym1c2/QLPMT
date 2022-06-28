@@ -298,7 +298,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
         }
         this.setVisible(false);
         java.awt.EventQueue.invokeLater(() -> {
-            new PhieuKhamBenh().setVisible(true);
+            new PhieuKhamBenh(CMND).setVisible(true);
         });
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -342,7 +342,7 @@ public class ChiTietHoaDon extends javax.swing.JDialog {
             statement.executeUpdate("INSERT INTO HOADON VALUES('"+MaHoaDon+"','"+maPhieuKhamBenh+"',"+String.valueOf(TongTien)+",'"+MaNhanVien+"')");
             JOptionPane.showMessageDialog(this, "Hóa đơn đã được in");
             java.awt.EventQueue.invokeLater(() -> {
-            new DanhSachKhamBenh().setVisible(true);
+            new DanhSachKhamBenh(CMND).setVisible(true);
         });
             this.dispose();
         } catch (Exception e)

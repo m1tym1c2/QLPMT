@@ -5,6 +5,9 @@
 package clinicmanagement;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +15,7 @@ import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,6 +29,7 @@ public class DanhSachCachDung extends javax.swing.JFrame {
     public DanhSachCachDung() {
         initComponents();
         getContentPane().setBackground(Color.white);
+        
         this.setLocationRelativeTo(null);
         try {
             LoadData();
@@ -36,6 +41,9 @@ public class DanhSachCachDung extends javax.swing.JFrame {
     public DanhSachCachDung(String CMND) {
         initComponents();
         getContentPane().setBackground(Color.white);
+        this.CMND = CMND;
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         this.CMND = CMND;
         try {
             LoadData();
@@ -123,6 +131,11 @@ public class DanhSachCachDung extends javax.swing.JFrame {
                 THEMMouseClicked(evt);
             }
         });
+        THEM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                THEMActionPerformed(evt);
+            }
+        });
 
         XOA.setBackground(new java.awt.Color(255, 204, 204));
         XOA.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
@@ -172,19 +185,7 @@ public class DanhSachCachDung extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void THEMMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_THEMMouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                ThemCD dialog = new ThemCD(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-        this.dispose();
+        
     }//GEN-LAST:event_THEMMouseClicked
     public void DELETE() throws SQLException {
         DatabaseConnection DTBC = new DatabaseConnection();
@@ -207,6 +208,44 @@ public class DanhSachCachDung extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.toString(), "Lỗi kết nối cơ sở dữ liệu", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_XOAMouseClicked
+
+    private void THEMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_THEMActionPerformed
+         java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                ThemCD dialog = new ThemCD(new DanhSachCachDung(), true, CMND);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                for (WindowListener wl : dialog.getWindowListeners()) {
+                    dialog.removeWindowListener(wl);
+                }
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        java.awt.EventQueue.invokeLater(new Runnable() {
+                            public void run() {
+                                DanhSachCachDung DV = new DanhSachCachDung(CMND);
+                                DV.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                                for (WindowListener wl : DV.getWindowListeners()) {
+                                    DV.removeWindowListener(wl);
+                                }
+                                DV.addWindowListener(new java.awt.event.WindowAdapter() {
+                                    @Override
+                                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                        DV.dispose();
+                                        MedicineUsageManagement frame = new MedicineUsageManagement(CMND);
+                                        frame.setVisible(true);
+                                    }
+                                });
+                                DV.setVisible(true);
+                            }
+                        });
+                        dialog.dispose();
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_THEMActionPerformed
 
     /**
      * @param args the command line arguments
