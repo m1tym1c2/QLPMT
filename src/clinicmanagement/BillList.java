@@ -261,15 +261,18 @@ public class BillList extends javax.swing.JFrame {
                 DefaultTableModel model = (DefaultTableModel) tableDark1.getModel();
                 model.setRowCount(0);
                 int i = 0;
+                long TongTien = 0;
                 while (rs.next()) {
                     i++;
                     SimpleDateFormat simp = new SimpleDateFormat("dd/MM/yyyy");
+                    TongTien = TongTien + rs.getInt("TienKham") + rs.getInt("TienThuoc");
                     String data[] = {Integer.toString(i), rs.getString("MaHoaDon"), rs.getString("TenBenhNhan"),
                         simp.format(rs.getDate("NgayKham")), vi.format(rs.getInt("TienKham")), vi.format(rs.getInt("TienThuoc")),
                         vi.format(rs.getInt("TienKham") + rs.getInt("TienThuoc"))};
                     DefaultTableModel tbModel = (DefaultTableModel) tableDark1.getModel();
                     tbModel.addRow(data);
                 }
+                TongHoaDon.setText(vi.format(TongTien) + " VND");
             } catch (SQLException ex) {
                 Logger.getLogger(ChiTietBaoCaoThang.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -290,7 +293,7 @@ public class BillList extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        TongHoaDon = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
@@ -300,6 +303,8 @@ public class BillList extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         Anhdaidien = new javax.swing.JLabel();
         Tentaikhoan = new javax.swing.JLabel();
@@ -421,10 +426,10 @@ public class BillList extends javax.swing.JFrame {
         jLabel3.setText("Từ ngày:");
         jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, -1, -1));
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(1, 84, 43));
-        jLabel4.setText("Đến ngày:");
-        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 90, -1, -1));
+        TongHoaDon.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        TongHoaDon.setForeground(new java.awt.Color(1, 84, 43));
+        TongHoaDon.setText("0");
+        jPanel3.add(TongHoaDon, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 530, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(1, 84, 43));
@@ -484,7 +489,7 @@ public class BillList extends javax.swing.JFrame {
             tableDark1.getColumnModel().getColumn(6).setPreferredWidth(200);
         }
 
-        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, 1010, -1));
+        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, 1010, 400));
 
         jButton1.setBackground(new java.awt.Color(255, 204, 204));
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -537,6 +542,16 @@ public class BillList extends javax.swing.JFrame {
             }
         });
         jPanel3.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 580, 130, 40));
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(1, 84, 43));
+        jLabel8.setText("Đến ngày:");
+        jPanel3.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 90, -1, -1));
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(1, 84, 43));
+        jLabel9.setText("Tổng: ");
+        jPanel3.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 530, -1, -1));
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 70, 1110, 650));
 
@@ -830,6 +845,7 @@ public class BillList extends javax.swing.JFrame {
     private javax.swing.JLabel Nutmuiten;
     private javax.swing.JLabel Tentaikhoan;
     private javax.swing.JButton ThongTinCaNhan;
+    private javax.swing.JLabel TongHoaDon;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -842,10 +858,11 @@ public class BillList extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

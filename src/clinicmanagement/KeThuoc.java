@@ -33,6 +33,7 @@ public class KeThuoc extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.CMND = CMND;
         DocDuLieu();
+        PhieuKhamBenh.MoLanDau = false;
     }
     private void DocDuLieu() throws SQLException
     {

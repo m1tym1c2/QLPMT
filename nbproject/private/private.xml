@@ -3,9 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/Finalne/ClinicManagementJava/src/clinicmanagement/MedicineUsageManagement.java</file>
-            <file>file:/E:/Finalne/ClinicManagementJava/src/clinicmanagement/AddMedicine.java</file>
-            <file>file:/E:/Finalne/ClinicManagementJava/src/clinicmanagement/ManagementDrugUse.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/ChiTietHoaDon.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/PhieuKhamBenh.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/KeThuoc.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DanhSachKhamBenh.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/BillList.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/ChiTietBaoCaoThang.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/DatabaseConnection.java</file>
+            <file>file:/D:/Java/DoAn/ClinicManagementJava/src/clinicmanagement/AddStaff.java</file>
         </group>
     </open-files>
 </project-private>

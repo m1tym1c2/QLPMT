@@ -52,6 +52,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
         {
             LoaiBenhChon = 0;
             TenTrieuChung = "";
+            MoLanDau = false;
         }
         TrieuChung.setText(TenTrieuChung);
         this.setLocationRelativeTo(null);
@@ -96,6 +97,13 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
     public PhieuKhamBenh(String CMND) {
         initComponents();
         try {
+            if (MoLanDau)
+        {
+            LoaiBenhChon = 0;
+            TenTrieuChung = "";
+            MoLanDau = false;
+        }
+            TrieuChung.setText(TenTrieuChung);
             this.CMND = CMND;
             DatabaseConnection DTBC = new DatabaseConnection();
             Connection conn = DTBC.getConnection(this);
@@ -110,6 +118,7 @@ public class PhieuKhamBenh extends javax.swing.JFrame {
             while (rs.next()) {
                 LoaiBenh.addItem(rs.getString(1));
             }
+            LoaiBenh.setSelectedIndex(LoaiBenhChon);
             rs = stm.executeQuery("SELECT MaPhieuKhamBenh FROM PHIEUKHAMBENH WHERE MaBenhNhan = '"+MaBenhNhan+"' AND MaNhanVien is null");
             while (rs.next())
             {

@@ -605,12 +605,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_LuuMouseClicked
 
     private void ThemThuocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThemThuocMouseClicked
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddNewMedicine().setVisible(true);
-            }
-        });
-        this.dispose();
+        
     }//GEN-LAST:event_ThemThuocMouseClicked
 
     private void QuayLaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_QuayLaiMouseClicked
@@ -701,7 +696,7 @@ public class MedicineUsageManagement extends javax.swing.JFrame {
     private void ThemThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemThuocActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DanhSachCachDung dialog = new DanhSachCachDung(CMND);
+                AddNewMedicine dialog = new AddNewMedicine(CMND);
                 dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 for (WindowListener wl : dialog.getWindowListeners()) {
                     dialog.removeWindowListener(wl);

@@ -498,6 +498,7 @@ public class DanhSachKhamBenh extends javax.swing.JFrame {
                     PhieuKhamBenh.TenBenhNhan = model.getValueAt(Table.getSelectedRow(), 2).toString();
                     PhieuKhamBenh.MaBenhNhan = model.getValueAt(Table.getSelectedRow(), 1).toString();
                     PhieuKhamBenh dialog = new PhieuKhamBenh(CMND);
+                    PhieuKhamBenh.MoLanDau = true;
                     dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
                     for (WindowListener wl : dialog.getWindowListeners()) {
                         dialog.removeWindowListener(wl);
