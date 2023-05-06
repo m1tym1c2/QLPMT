@@ -15,7 +15,7 @@
 | 1 | 21520497  | Nguyễn Huỳnh Minh Triết  |  |21520497@gm.uit.edu.vn   |
 | 2 | 21520472  | Nguyễn Minh Thư |[]()            |21520472@gm.uit.edu.vn|
 | 3 | 21520213  | Lê Châu Giang  |[]()        |21520213@gm.uit.edu.vn   |
-| 3 | 21520213  | Trịnh Minh Quân  |[]()        |21520213@gm.uit.edu.vn   |
+| 3 | 21522504  | Trịnh Minh Quân  |[]()        |21522504@gm.uit.edu.vn   |
 
 ## GIỚI THIỆU MÔN HỌC
 * **Tên môn học:** Nhập môn công nghệ phần mềm
