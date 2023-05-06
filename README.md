@@ -25,7 +25,7 @@
 * **Giảng viên**: ThS. Nguyễn Thị Thanh Trúc
 
 ## Report
-*•	Phần 1: Giới thiệu về đề tài, cung cấp các mục tiêu, dự định của nhóm và cái nhìn tổng quát
-*•	Phần 2: Xác định và mô hình hóa yêu cầu phần mềm
-*•	Phần 3: Xác định các yêu cầu chức năng, các trách nhiệm đối với các yêu cầu, sơ đồ use case, đặc tả use case, ERD, Class, Activity, State, Sequence, … 
-*•	Phần 4: Xác định các yêu cầu phi chức năng như tính hiệu quả, tính tin cậy
+* •	Phần 1: Giới thiệu về đề tài, cung cấp các mục tiêu, dự định của nhóm và cái nhìn tổng quát
+* •	Phần 2: Xác định và mô hình hóa yêu cầu phần mềm
+* •	Phần 3: Xác định các yêu cầu chức năng, các trách nhiệm đối với các yêu cầu, sơ đồ use case, đặc tả use case, ERD, Class, Activity, State, Sequence, … 
+* •	Phần 4: Xác định các yêu cầu phi chức năng như tính hiệu quả, tính tin cậy
