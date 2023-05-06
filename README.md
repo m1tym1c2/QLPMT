@@ -7,15 +7,15 @@
   </a>
 </p>
 
-<h1 align="center"><b>Phân tích và thiết kế thuật toán</b></h>
+<h1 align="center"><b>Nhập môn công nghệ phần mềm</b></h>
 
 ## THÀNH VIÊN NHÓM
-|STT| MSSV      | Họ và Tên       |Chức Vụ    | Github                                                  | Email                   |
-|---|:---------:| ---------------:|----------:|--------------------------------------------------------:|-------------------------:
-| 1 | 21520497  | Nguyễn Huỳnh Minh Triết  |Nhóm trưởng|  |21520497@gm.uit.edu.vn   |
-| 2 | 21520472  | Nguyễn Minh Thư |Thành viên |[]()            |21520472@gm.uit.edu.vn|
-| 3 | 21520213  | Lê Châu Giang  |Thành viên |[]()        |21520213@gm.uit.edu.vn   |
-| 3 | 21520213  | Trịnh Minh Quân  |Thành viên |[]()        |21520213@gm.uit.edu.vn   |
+|STT| MSSV      | Họ và Tên       | Github                                                  | Email                   |
+|---|:---------:| ---------------:|--------------------------------------------------------:|-------------------------:
+| 1 | 21520497  | Nguyễn Huỳnh Minh Triết  |  |21520497@gm.uit.edu.vn   |
+| 2 | 21520472  | Nguyễn Minh Thư |[]()            |21520472@gm.uit.edu.vn|
+| 3 | 21520213  | Lê Châu Giang  |[]()        |21520213@gm.uit.edu.vn   |
+| 3 | 21520213  | Trịnh Minh Quân  |[]()        |21520213@gm.uit.edu.vn   |
 
 ## GIỚI THIỆU MÔN HỌC
 * **Tên môn học:** Nhập môn công nghệ phần mềm
